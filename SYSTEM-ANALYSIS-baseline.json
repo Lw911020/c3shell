@@ -1,0 +1,86 @@
+{
+ "3": {
+  "frames": 14016,
+  "sat": 1494,
+  "sat_low_speed": 1197,
+  "sat_big_angle": 1427,
+  "mean_abs_torque": 0.2809,
+  "max_abs_steer_rate": 476.0,
+  "lane_departure_lr": [
+   0,
+   0
+  ]
+ },
+ "4": {
+  "frames": 14007,
+  "sat": 423,
+  "sat_low_speed": 0,
+  "sat_big_angle": 423,
+  "mean_abs_torque": 0.2032,
+  "max_abs_steer_rate": 44.0,
+  "lane_departure_lr": [
+   0,
+   0
+  ]
+ },
+ "5": {
+  "frames": 14021,
+  "sat": 1135,
+  "sat_low_speed": 0,
+  "sat_big_angle": 1108,
+  "mean_abs_torque": 0.2335,
+  "max_abs_steer_rate": 132.0,
+  "lane_departure_lr": [
+   0,
+   0
+  ]
+ },
+ "6": {
+  "frames": 14001,
+  "sat": 3511,
+  "sat_low_speed": 3473,
+  "sat_big_angle": 3479,
+  "mean_abs_torque": 0.4152,
+  "max_abs_steer_rate": 568.0,
+  "lane_departure_lr": [
+   0,
+   0
+  ]
+ },
+ "9": {
+  "frames": 13970,
+  "sat": 512,
+  "sat_low_speed": 326,
+  "sat_big_angle": 512,
+  "mean_abs_torque": 0.2054,
+  "max_abs_steer_rate": 120.0,
+  "lane_departure_lr": [
+   0,
+   0
+  ]
+ },
+ "10": {
+  "frames": 14044,
+  "sat": 1503,
+  "sat_low_speed": 1453,
+  "sat_big_angle": 1503,
+  "mean_abs_torque": 0.2158,
+  "max_abs_steer_rate": 344.0,
+  "lane_departure_lr": [
+   0,
+   0
+  ]
+ },
+ "11": {
+  "frames": 13994,
+  "sat": 746,
+  "sat_low_speed": 746,
+  "sat_big_angle": 719,
+  "mean_abs_torque": 0.1726,
+  "max_abs_steer_rate": 460.0,
+  "lane_departure_lr": [
+   0,
+   0
+  ]
+ }
+}

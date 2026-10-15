@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 新图标（2026-09-21 自定）：深底圆角 + 青绿波形（诊断/数据）+ 白色车头轮廓 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <path android:fillColor="#0E1116"
+        android:pathData="M22,6 h64 a16,16 0 0 1 16,16 v64 a16,16 0 0 1 -16,16 h-64 a16,16 0 0 1 -16,-16 v-64 a16,16 0 0 1 16,-16 z"/>
+    <!-- 波形：三条不同幅度的线，青绿渐变感（用不同透明度模拟） -->
+    <path android:strokeColor="#43E97B" android:strokeWidth="4" android:strokeLineCap="round"
+        android:pathData="M18,62 L30,62 L38,44 L48,78 L58,52 L68,62 L90,62"/>
+    <path android:strokeColor="#2FB6E6" android:strokeWidth="3" android:strokeLineCap="round"
+        android:pathData="M18,76 L34,76 L42,66 L52,86 L64,70 L74,76 L90,76"/>
+    <!-- 车头轮廓（白色小圆角矩形 + 两个车轮示意） -->
+    <path android:fillColor="#EAF1FB"
+        android:pathData="M34,24 h40 a6,6 0 0 1 6,6 v12 a6,6 0 0 1 -6,6 h-40 a6,6 0 0 1 -6,-6 v-12 a6,6 0 0 1 6,-6 z"/>
+    <path android:fillColor="#0E1116" android:pathData="M38,32 h12 v6 h-12 z"/>
+    <path android:fillColor="#0E1116" android:pathData="M58,32 h12 v6 h-12 z"/>
+</vector>

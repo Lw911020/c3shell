@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>C3 行车画面</title>
+<style>
+  html,body{margin:0;padding:0;background:#05070a;overflow:hidden;height:100%}
+  #img{width:100%;height:100%;object-fit:contain;display:block;background:#05070a}
+  /* 2026-09-24 R91（用户要求）：息屏按钮放右上角 ✓ */
+  #topbar{position:fixed;right:4px;top:2px;z-index:12;display:flex;gap:6px;align-items:center}
+  #pwr{border:1px solid #3b6fb8;background:#132133;color:#cfe3ff;font-size:11px;padding:3px 9px;border-radius:999px}
+  #pwr.off{background:#2a1517;border-color:#a33;color:#ffd0d0}
+  #tip{position:fixed;left:6px;bottom:3px;font-size:10px;color:#9EC1FF;opacity:.85;font-family:sans-serif}
+  #err{position:fixed;left:0;top:0;right:0;padding:6px;font-size:11px;color:#ffb4b4;background:#200;display:none;font-family:sans-serif}
+  #dot{position:fixed;width:16px;height:16px;margin:-8px 0 0 -8px;border:2px solid #ff4757;border-radius:50%;display:none;pointer-events:none;z-index:9}
+</style>
+</head>
+<body>
+<img id="img" alt="C3 行车画面">
+<div id="topbar"><button id="pwr">C3 熄屏</button></div>
+<div id="tip"></div>
+<div id="err"></div>
+<div id="dot"></div>
+<script>
+(function(){
+  var host = '', img = document.getElementById('img'), tip = document.getElementById('tip'),
+      err = document.getElementById('err'), dot = document.getElementById('dot'), pwr = document.getElementById('pwr');
+  var dir = 2;
+  /* 2026-09-24：方向按设备记（全局 key 会把上一套系统的方向带过来 ✗）——拿到 host 后再读 */
+  var BL = '/sys/class/backlight/panel0-backlight/brightness';
+  function showErr(s){ err.style.display='block'; err.textContent=s; }
+  function toPanel(lx, ly){
+    lx = Math.max(0, Math.min(2160, lx)); ly = Math.max(0, Math.min(1080, ly));
+    if (dir === 1) return [ly, lx];
+    if (dir === 2) return [1080 - ly, lx];
+    if (dir === 3) return [ly, 2160 - lx];
+    return [1080 - ly, 2160 - lx];
+  }
+  function imgRect(){
+    var r = img.getBoundingClientRect(), nw = img.naturalWidth || 16, nh = img.naturalHeight || 9;
+    var s = Math.min(r.width / nw, r.height / nh), w = nw * s, h = nh * s;
+    return { left: r.left + (r.width - w) / 2, top: r.top + (r.height - h) / 2, width: w, height: h };
+  }
+  var busy = false, lastT = 0, SX = 0, SY = 0, down = false;
+  function send(mode, nx, ny, nx2, ny2){
+    if (busy) return; var now = Date.now(); if (now - lastT < 120) return; lastT = now; busy = true;
+    var p1 = toPanel(nx * 2160, ny * 1080);
+    try{
+      var u = 'http://' + host + ':8091/' + (mode === 'swipe'
+        ? ('swipe?x1=' + Math.round(p1[0]) + '&y1=' + Math.round(p1[1]) + '&x2=' + Math.round(p2[0]) + '&y2=' + Math.round(p2[1]) + '&ms=260')
+        : ('tap?x=' + Math.round(p1[0]) + '&y=' + Math.round(p1[1])));
+      if (window.__tdOK !== false) { new Image().src = u + '&t=' + Date.now(); busy = false; return; }
+    }catch(x){}
+    var cmd = 'timeout 8 /usr/local/venv/bin/python3 /data/openpilot/.dsh/touch.py ' + mode + ' ' + Math.round(p1[0]) + ' ' + Math.round(p1[1]);
+    var p2 = toPanel((nx2||0) * 2160, (ny2||0) * 1080);
+    if (mode === 'swipe') { cmd += ' ' + Math.round(p2[0]) + ' ' + Math.round(p2[1]) + ' 260'; }
+    cmd += ' 2>&1 | tail -1';
+    tip.textContent = '已' + (mode === 'tap' ? '点' : '滑动') + ' → 面板(' + Math.round(p1[0]) + ',' + Math.round(p1[1]) + ') ✓';
+    fetch('/api/ssh/exec', { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({ command: cmd }) })
+      .then(function(r){ return r.json(); })
+      .catch(function(){})
+      .then(function(){ busy = false; });
+  }
+  /* C3 熄屏 / 亮屏（写背光节点；直接写通常就行，不行再 sudo ✓）
+     2026-09-24 R96（用户报「熄屏跟亮屏按钮没用」）真因是两个 bug：
+       ① 原来 screenOn 写死 true、**不读真实状态** → 屏幕本来就黑时按一下还是走"熄屏"，
+          于是把当前值 0 存进了备份文件 ✗（浮窗每次重建都要重载本页，这个坑被放大 ✗）
+       ② "亮屏"是从备份文件恢复亮度，而备份里是 0 → 恢复回 0 = **永远亮不起来** ✗
+     现在：进页面先读真实亮度定状态；备份只在 V>0 时才写；亮屏时备份无效就用 511（约半亮）✓ */
+  var screenOn = true, DEF_BRIGHT = 511;
+  function paintPwr(on){
+    screenOn = on;
+    if (on) { pwr.textContent = 'C3 熄屏'; pwr.className = ''; }
+    else { pwr.textContent = 'C3 亮屏'; pwr.className = 'off'; }
+  }
+  function readBright(cb){
+    fetch('/api/ssh/exec', { method:'POST', headers:{'content-type':'application/json'},
+      body: JSON.stringify({ command: 'cat ' + BL }) })
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        var v = parseInt(String((((j || {}).result) || {}).stdout || '').trim(), 10);
+        if (!isNaN(v)) cb(v);
+      }).catch(function(){});
+  }
+  /* 进页面就读一次真实状态（浮窗每次重建都会重载本页 ✓）*/
+  readBright(function(v){ paintPwr(v > 0); tip.textContent = (v > 0) ? 'C3 当前亮屏 ✓' : 'C3 当前熄屏 ✓'; });
+  pwr.onclick = function(e){
+    e.preventDefault(); e.stopPropagation();
+    var on = screenOn, cmd;
+    if (on) {
+      /* 熄屏：只在当前亮度 >0 时才更新备份（绝不能把 0 存进去 ✗）*/
+      cmd = 'V=$(cat ' + BL + '); case "$V" in ""|0) ;; *) echo $V > /dev/shm/c3-bright.bak ;; esac; '
+          + '(echo 0 > ' + BL + ') 2>/dev/null || sudo sh -c "echo 0 > ' + BL + '"; cat ' + BL;
+    } else {
+      /* 亮屏：备份无效（空 或 0）就用默认值 ✓ */
+      cmd = 'V=$(cat /dev/shm/c3-bright.bak 2>/dev/null); '
+          + 'case "$V" in ""|0) V=' + DEF_BRIGHT + ' ;; esac; '
+          + '(echo $V > ' + BL + ') 2>/dev/null || sudo sh -c "echo $V > ' + BL + '"; cat ' + BL;
+    }
+    tip.textContent = '正在' + (on ? '熄屏' : '亮屏') + '…';
+    fetch('/api/ssh/exec', { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({ command: cmd }) })
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        var out = (((j || {}).result) || {}).stdout || '';
+        var v = parseInt(String(out).trim(), 10);
+        if (isNaN(v)) { tip.textContent = '操作失败（读不到亮度）'; return; }
+        paintPwr(v > 0);
+        tip.textContent = (v > 0) ? 'C3 已亮屏 ✓' : 'C3 已熄屏 ✓';
+      })
+      .catch(function(e){ tip.textContent = '操作失败：' + e.message; });
+  };
+  document.body.addEventListener('pointerdown', function(ev){ if (!busy) { down = true; SX = ev.clientX; SY = ev.clientY; } });
+  document.body.addEventListener('pointerup', function(ev){
+    if (!down) return; down = false;
+    if (ev.target === pwr) return;
+    var r = imgRect(); if (!r.width) return;
+    var nx = Math.max(0, Math.min(1, (ev.clientX - r.left) / r.width));
+    var ny = Math.max(0, Math.min(1, (ev.clientY - r.top) / r.height));
+    dot.style.left = ev.clientX + 'px'; dot.style.top = ev.clientY + 'px'; dot.style.display = 'block';
+    setTimeout(function(){ dot.style.display = 'none'; }, 900);
+    var dx = Math.abs(ev.clientX - SX), dy = Math.abs(ev.clientY - SY);
+    if (dx > 60 || dy > 60) {
+      var r2 = imgRect();
+      var nx2 = Math.max(0, Math.min(1, (SX - r2.left) / r2.width)), ny2 = Math.max(0, Math.min(1, (SY - r2.top) / r2.height));
+      send('swipe', nx2, ny2, nx, ny);
+    } else {
+      send('tap', nx, ny);
+    }
+    ev.preventDefault();
+  });
+  /* 2026-09-24 修：浮窗黑屏真因 —— 原来取 hosts[0]，
+     默认主机不是列表第一个时（本机就是：第一个是热点地址 192.168.0.66 ✗）
+     浮窗就把 <img> 指向连不上的地址 → 一直黑屏。
+     现在：默认主机优先 + 逐个候选探测（一个连不上自动试下一个）✓ */
+  function startService(cb){
+    fetch('/api/cast/status',{method:'POST',headers:{'content-type':'application/json'},body:'{}'})
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        var out = String((((j||{}).result)||{}).out || '');
+        if (out.indexOf('running') >= 0) { cb(); return; }
+        tip.textContent = '正在启动设备投屏服务…';
+        fetch('/api/cast/start',{method:'POST',headers:{'content-type':'application/json'},body:'{}'})
+          .then(function(){ setTimeout(cb, 1600); })
+          .catch(function(){ setTimeout(cb, 1600); });
+      }).catch(function(){ cb(); });
+  }
+  /* 2026-09-24 R96：浮窗也改成「拉最新帧」（和主页面一致）——
+     MJPEG 是服务器推：解码只要比 C3 产出慢一点，积压就一直涨（实测能到 6 秒延迟 ✗）
+     拉帧每次只要"当前这一帧"→ 解码慢就自动跳帧，**延迟恒定** ✓；失败自动退回 MJPEG */
+  var PULL_IV = 66;                                     /* ≈15fps */
+  var PULL = { on:false, timer:null, obj:null, n:0, err:0, ctl:null, label:'', t0:0, lastAt:0 };
+  function pullStop(){ PULL.on = false; if (PULL.timer) { clearTimeout(PULL.timer); PULL.timer = null; } try { if (PULL.ctl) PULL.ctl.abort(); } catch (x) {} }
+  function mjpegAttach(){ try { img.src = 'http://' + host + ':8090/?t=' + Date.now(); } catch (x) {} }
+  /* MJPEG 兜底时每 20s 重挂一次，冲掉积压（延迟封顶）✓ */
+  setInterval(function(){ try{ if(!PULL.on && host && img) mjpegAttach(); }catch(x){} }, 20000);
+  function pullStep(){
+    if (!PULL.on || !host) return;
+    var t = Date.now(), opt = { cache:'no-store' };
+    try { PULL.ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null; if (PULL.ctl) opt.signal = PULL.ctl.signal; } catch (x) { PULL.ctl = null; }
+    fetch('http://' + host + ':8090/frame.jpg?t=' + t, opt)
+      .then(function(r){ if (!r.ok) throw new Error('http ' + r.status); return r.blob(); })
+      .then(function(b){
+        var u = URL.createObjectURL(b), old = PULL.obj; PULL.obj = u;
+        img.src = u; PULL.n++; PULL.lastAt = Date.now();
+        if (old) { try { URL.revokeObjectURL(old); } catch (x) {} }
+      })
+      .catch(function(){
+        PULL.err++;
+        if (PULL.err >= 10 && (Date.now() - (PULL.lastAt || PULL.t0 || 0)) > 8000) {
+          pullStop(); tip.textContent = '拉帧失败 → 退回 MJPEG（30 秒后自动再试 ✓）'; mjpegAttach();
+          if (!window.__pullRetry) { window.__pullRetry = setInterval(function(){ try{
+            fetch('http://' + host + ':8090/frame.jpg?t=' + Date.now(), { cache:'no-store' })
+              .then(function(r){ if (!r.ok) throw new Error('x'); return r.blob(); })
+              .then(function(b){ clearInterval(window.__pullRetry); window.__pullRetry = null;
+                var u = URL.createObjectURL(b); PULL.obj = u; img.src = u; PULL.n = 1;
+                tip.textContent = '已切回低延迟拉帧 ✓'; PULL.on = true; PULL.err = 0; PULL.t0 = Date.now();
+                PULL.timer = setTimeout(pullStep, PULL_IV); })
+              .catch(function(){});
+          }catch(x){} }, 30000); }
+        } })
+      .then(function(){ if (!PULL.on) return; var dt = Date.now() - t, w = PULL_IV - dt; PULL.timer = setTimeout(pullStep, w > 0 ? w : 0); });
+  }
+  function tryHosts(list){
+    if (!list.length) { showErr('所有主机都取不到画面（设备投屏服务没起来？或不在同一网络）'); return; }
+    var h = list.shift(); host = h.host || '';
+    try { var sd = localStorage.getItem('c3castdir3:' + host); if (sd) dir = parseInt(sd, 10) || 2
+          else { var lg = localStorage.getItem('c3castdir3'); if (lg === '2') dir = 2; } } catch (x) {}
+    if (!host) { tryHosts(list); return; }
+    var done = false;
+    tip.textContent = '正在连接 ' + (h.label || host) + '…';
+    /* 探测也用单帧接口：只要 1 张 jpeg，比开一条 MJPEG 连接轻得多 ✓ */
+    fetch('http://' + host + ':8090/frame.jpg?t=' + Date.now(), { cache:'no-store' })
+      .then(function(r){ if (!r.ok) throw new Error('http ' + r.status); return r.blob(); })
+      .then(function(b){
+        if (done) return; done = true;
+        PULL.label = h.label || host;
+        var u = URL.createObjectURL(b); PULL.obj = u; img.src = u; PULL.n = 1;
+        tip.textContent = '来自 ' + PULL.label + ' ✓';
+        PULL.on = true; PULL.err = 0; PULL.timer = setTimeout(pullStep, PULL_IV);
+      })
+      .catch(function(){ if (done) return; done = true; tip.textContent = (h.label || host) + ' 没画面，试下一个…'; tryHosts(list); });
+    setTimeout(function(){ if (!done) { done = true; tip.textContent = (h.label || host) + ' 超时，试下一个…'; tryHosts(list); } }, 4000);
+  }
+  fetch('/api/ssh/hosts').then(function(r){return r.json()}).then(function(j){
+    var list = (j.hosts || []).slice();
+    if (!list.length) { showErr('没有配置主机'); return; }
+    var def = j.defaultHostId || '';
+    list.sort(function(a,b){ return (b.id===def?1:0) - (a.id===def?1:0); });
+    startService(function(){ tryHosts(list); });
+  }).catch(function(e){ showErr('读取主机失败：' + e.message); });
+})();
+</script>
+</body>
+</html>
+

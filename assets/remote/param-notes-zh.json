@@ -1,0 +1,3227 @@
+{
+"AccMadsCombo": {
+"desc": "用方向盘 ACC 按键组合控制 MADS 的开关方式【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "MADS 组合键"
+},
+"AccelPersonality": {
+"desc": "纵向加速风格（与原车按键联动）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "加速个性"
+},
+"AccessToken": {
+"desc": "comma connect/athena 的访问令牌，自动写入【内部】",
+"kind": "internal",
+"title": "访问令牌"
+},
+"ActivateCruiseAfterBrake": {
+"desc": "踩刹车解除后再自动恢复巡航【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "刹车后恢复巡航"
+},
+"ActiveModelName": {
+"desc": "界面/日志显示的驾驶模型名【CP 放飞版】",
+"kind": "internal",
+"title": "当前模型名"
+},
+"AdbEnabled": {
+"desc": "打开后设备可用 adb 调试（USB/网络）【官方】",
+"kind": "user",
+"title": "ADB 调试"
+},
+"AdjustCurveOffset": {
+"desc": "弯道内横向偏移补偿【CP 放飞版】",
+"kind": "user",
+"title": "弯道偏移调整"
+},
+"AdjustLaneOffset": {
+"desc": "手动调整车道内横向位置【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "车道内偏移"
+},
+"AlphaLongitudinalEnabled": {
+"desc": "强制使用 openpilot 自己的加减速（官方标 development-only，适配版常用）【官方】",
+"kind": "user",
+"title": "实验性纵向(Alpha)"
+},
+"AlwaysOnDM": {
+"desc": "即使没接管也一直监测驾驶员分心【官方】",
+"kind": "user",
+"title": "驾驶员监控常开"
+},
+"AmapKey1": {
+"desc": "高德地图 API KEY（导航用）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "高德 KEY"
+},
+"AmapKey2": {
+"desc": "高德地图「安全密钥」配对值【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "高德安全密钥"
+},
+"ApiCache_Device": {
+"desc": "设备 API 返回缓存【内部】",
+"kind": "internal",
+"title": "设备缓存"
+},
+"ApiCache_DriveStats": {
+"desc": "行程统计缓存【内部】",
+"kind": "internal",
+"title": "行程统计缓存"
+},
+"ApiCache_FirehoseStats": {
+"desc": "上传(firehose)统计缓存【内部】",
+"kind": "internal",
+"title": "上传统计缓存"
+},
+"ApiCache_NavDestinations": {
+"desc": "导航目的地的接口缓存【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "导航目的地缓存"
+},
+"AssistNowToken": {
+"desc": "u-blox AssistNow 星历辅助数据令牌【内部】",
+"kind": "internal",
+"title": "GPS 辅助令牌"
+},
+"AthenadPid": {
+"desc": "athena 上传守护进程号【内部】",
+"kind": "internal",
+"title": "上传守护 PID"
+},
+"AthenadRecentlyViewedRoutes": {
+"desc": "最近查看过的路线列表【内部】",
+"kind": "internal",
+"title": "最近查看路线"
+},
+"AthenadUploadQueue": {
+"desc": "待上传文件队列【内部】",
+"kind": "internal",
+"title": "上传队列"
+},
+"AutoCruiseControl": {
+"desc": "按道路/限速自动调整巡航速度【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "自动巡航控制"
+},
+"AutoCurveSpeedAggressiveness": {
+"desc": "弯道降速的积极程度【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "弯道降速·激进度"
+},
+"AutoCurveSpeedAggressivenessH": {
+"desc": "高速档(H)弯道降速的积极程度【CP 放飞版】",
+"kind": "user",
+"title": "弯道降速·高速激进度"
+},
+"AutoCurveSpeedFactor": {
+"desc": "弯道目标速度的缩放系数【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "弯道降速系数"
+},
+"AutoCurveSpeedFactorH": {
+"desc": "高速档弯道目标速度系数【CP 放飞版】",
+"kind": "user",
+"title": "弯道降速系数·高速"
+},
+"AutoCurveSpeedLowerLimit": {
+"desc": "弯道降速的最低速度【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "弯道降速下限"
+},
+"AutoDoForkBlinkerDist": {
+"desc": "距叉口多远开始打转向灯【CP 放飞版】",
+"kind": "user",
+"title": "自动叉口·打灯距离"
+},
+"AutoDoForkBlinkerDistH": {
+"desc": "高速档【CP 放飞版】",
+"kind": "user",
+"title": "自动叉口·打灯距离(高速)"
+},
+"AutoDoForkCheckDist": {
+"desc": "开始检测叉口的距离【CP 放飞版】",
+"kind": "user",
+"title": "自动叉口·检测距离"
+},
+"AutoDoForkCheckDistH": {
+"desc": "高速档【CP 放飞版】",
+"kind": "user",
+"title": "自动叉口·检测距离(高速)"
+},
+"AutoDoForkDecalDist": {
+"desc": "开始减速的距离【CP 放飞版】",
+"kind": "user",
+"title": "自动叉口·减速距离"
+},
+"AutoDoForkDecalDistH": {
+"desc": "高速档【CP 放飞版】",
+"kind": "user",
+"title": "自动叉口·减速距离(高速)"
+},
+"AutoDoForkNavDist": {
+"desc": "按导航数据触发叉口的距离【CP 放飞版】",
+"kind": "user",
+"title": "自动叉口·导航距离"
+},
+"AutoDoForkNavDistH": {
+"desc": "高速档【CP 放飞版】",
+"kind": "user",
+"title": "自动叉口·导航距离(高速)"
+},
+"AutoEnTurnNewLaneTime": {
+"desc": "变道后等待多久再转弯【CP 放飞版】",
+"kind": "user",
+"title": "自动转弯·入新车道的等待"
+},
+"AutoEnTurnNewLaneTimeH": {
+"desc": "高速档【CP 放飞版】",
+"kind": "user",
+"title": "自动转弯·入新车道等待(高速)"
+},
+"AutoEngage": {
+"desc": "满足条件时自动启用辅助驾驶【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "自动接管"
+},
+"AutoForkDecalRate": {
+"desc": "接近叉口的减速度【CP 放飞版】",
+"kind": "user",
+"title": "自动叉口·减速率"
+},
+"AutoForkDecalRateH": {
+"desc": "高速档【CP 放飞版】",
+"kind": "user",
+"title": "自动叉口·减速率(高速)"
+},
+"AutoForkDistOffset": {
+"desc": "触发距离的偏移量【CP 放飞版】",
+"kind": "user",
+"title": "自动叉口·距离偏移"
+},
+"AutoForkDistOffsetH": {
+"desc": "高速档【CP 放飞版】",
+"kind": "user",
+"title": "自动叉口·距离偏移(高速)"
+},
+"AutoForkSpeedMin": {
+"desc": "低于此速度不自动走叉口【CP 放飞版】",
+"kind": "user",
+"title": "自动叉口·最低速度"
+},
+"AutoForkSpeedMinH": {
+"desc": "高速档【CP 放飞版】",
+"kind": "user",
+"title": "自动叉口·最低速度(高速)"
+},
+"AutoGasSyncSpeed": {
+"desc": "按原车油门同步的车速【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "自动油门同步速度"
+},
+"AutoGasTokSpeed": {
+"desc": "触发原车油门的车速【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "自动油门触发速度"
+},
+"AutoKeepForkSpeed": {
+"desc": "过叉口时保持当前速度【CP 放飞版】",
+"kind": "user",
+"title": "自动叉口·保持速度"
+},
+"AutoKeepForkSpeedH": {
+"desc": "高速档【CP 放飞版】",
+"kind": "user",
+"title": "自动叉口·保持速度(高速)"
+},
+"AutoLaneChangeBsmDelay": {
+"desc": "打灯后等多久再检查盲区（秒）【SP】",
+"kind": "user",
+"title": "自动变道·盲区延迟"
+},
+"AutoLaneChangeMinSpeed": {
+"desc": "低于此速度不自动变道【CP 放飞版】",
+"kind": "user",
+"title": "自动变道最低速度"
+},
+"AutoLaneChangeTimer": {
+"desc": "打转向灯后等待多少秒开始自动变道【SP】",
+"kind": "user",
+"title": "自动变道·等待时间"
+},
+"AutoNaviCountDownMode": {
+"desc": "高德导航倒计时/读秒播报【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "高德·倒计时模式"
+},
+"AutoNaviSpeedBumpSpeed": {
+"desc": "过减速带的目标速度【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "高德·减速带速度"
+},
+"AutoNaviSpeedBumpTime": {
+"desc": "提前多久开始减速（秒）【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "高德·减速带提前量"
+},
+"AutoNaviSpeedCtrlEnd": {
+"desc": "限速控制提前结束的距离【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "高德·限速结束距离"
+},
+"AutoNaviSpeedCtrlMode": {
+"desc": "用高德数据控速的方式【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "高德·限速控制模式"
+},
+"AutoNaviSpeedDecelRate": {
+"desc": "按高德限速减速的减速度【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "高德·减速率"
+},
+"AutoNaviSpeedSafetyFactor": {
+"desc": "限速目标的安全系数【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "高德·限速安全系数"
+},
+"AutoOvertakeConfig": {
+"desc": "自动超越慢车的行为配置【CP 放飞版】",
+"kind": "user",
+"title": "自动超车配置"
+},
+"AutoRoadSpeedAdjust": {
+"desc": "按道路类型自动调整速度【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "按道路自动调速"
+},
+"AutoRoadSpeedLimitOffset": {
+"desc": "道路限速上的加减量【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "道路限速偏移"
+},
+"AutoSpeedUptoRoadSpeedLimit": {
+"desc": "巡航速度自动顶到道路限速【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "顶到道路限速"
+},
+"AutoTurnControl": {
+"desc": "路口/转弯自动转向辅助【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "自动转弯控制"
+},
+"AutoTurnControlSpeedTurn": {
+"desc": "自动转弯时的目标速度【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "自动转弯·转弯速度"
+},
+"AutoTurnControlTurnEnd": {
+"desc": "何时结束自动转弯【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "自动转弯·结束条件"
+},
+"AutoTurnDistOffset": {
+"desc": "转弯触发距离偏移【CP 放飞版】",
+"kind": "user",
+"title": "自动转弯·距离偏移"
+},
+"AutoTurnInNotRoadEdge": {
+"desc": "非路缘也允许自动转弯【CP 放飞版】",
+"kind": "user",
+"title": "自动转弯·非路缘场景"
+},
+"AutoTurnLeft": {
+"desc": "允许自动左转【CP 放飞版】",
+"kind": "user",
+"title": "自动左转"
+},
+"AutoTurnMapChange": {
+"desc": "按地图数据触发自动转弯【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "自动转弯·按地图"
+},
+"AutoUpHighwayRoadLimit": {
+"desc": "高速时把巡航顶到道路限速【CP 放飞版】",
+"kind": "user",
+"title": "高速上顶到道路限速"
+},
+"AutoUpHighwayRoadLimit40KMH": {
+"desc": "低速段档位【CP 放飞版】",
+"kind": "user",
+"title": "高速顶限速(<40km/h档)"
+},
+"AutoUpRoadLimit": {
+"desc": "把巡航顶到道路限速【CP 放飞版】",
+"kind": "user",
+"title": "按道路限速顶速"
+},
+"AutoUpRoadLimit40KMH": {
+"desc": "低速段档位【CP 放飞版】",
+"kind": "user",
+"title": "按道路限速顶速(<40km/h档)"
+},
+"BYDAngleControlOffset": {
+"desc": "BYD 角度控制的零点偏移（推断）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "BYD·角度控制偏移"
+},
+"BYDEnableRadarMeas": {
+"desc": "使用原车毫米波雷达的测量值（推断）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "BYD·启用雷达测量"
+},
+"BYDForceLowTorqueFactor": {
+"desc": "强制使用较小扭矩系数（推断）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "BYD·强制小扭矩系数"
+},
+"BYDForceTorqueFix": {
+"desc": "强制启用扭矩修正补丁（推断）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "BYD·强制扭矩修正"
+},
+"BYDHandsoffFix": {
+"desc": "规避原车「请握方向盘」误报（推断）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "BYD·离手检测修复"
+},
+"BYDReverseAccCAN": {
+"desc": "倒车时加速度来自原车 CAN（推断）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "BYD·倒车加速度报文"
+},
+"BYDReverseBsmCAN": {
+"desc": "倒车时盲区信息来自原车 CAN（推断）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "BYD·倒车盲区报文"
+},
+"BYDSnG": {
+"desc": "BYD 车型停车/起步(Stop and Go)支持（推断）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "BYD·启停支持"
+},
+"BackupManager_CreateBackup": {
+"desc": "写入即触发一次参数备份【SP】",
+"kind": "danger",
+"title": "备份参数(动作)"
+},
+"BackupManager_RestoreVersion": {
+"desc": "写入即恢复到指定版本的参数备份【SP】",
+"kind": "danger",
+"title": "恢复备份(动作)"
+},
+"BelowSpeedPause": {
+"desc": "低于设定速度时暂停方向盘控制【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "低速暂停横向"
+},
+"BlindSpot": {
+"desc": "车侧来车提醒（盲区有车时不给变道）【SP】",
+"kind": "user",
+"title": "盲区监测"
+},
+"BlinkerMinLateralControlSpeed": {
+"desc": "打转向灯暂停横向控制的最低车速（km/h）【SP】",
+"kind": "user",
+"title": "打灯暂停·速度阈值"
+},
+"BlinkerMode": {
+"desc": "转向灯控制方式（原车/自动）【CP 放飞版】",
+"kind": "user",
+"title": "转向灯模式"
+},
+"BlinkerPauseLateralControl": {
+"desc": "打灯时暂时松开方向盘控制，方便自己变道【SP】",
+"kind": "user",
+"title": "打灯暂停横向控制"
+},
+"BootCount": {
+"desc": "设备累计开机次数【内部】",
+"kind": "internal",
+"title": "开机次数"
+},
+"BrakeLights": {
+"desc": "在界面上显示刹车灯状态【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "刹车灯提示"
+},
+"Brightness": {
+"desc": "设备屏幕亮度【官方】",
+"kind": "user",
+"title": "屏幕亮度"
+},
+"BrightnessControl": {
+"desc": "是否允许按环境光自动调节屏幕亮度【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "亮度控制"
+},
+"BsdDelayTime": {
+"desc": "变道前等多久检测盲区（秒）【CP 放飞版】",
+"kind": "user",
+"title": "盲区检测延迟"
+},
+"ButtonAutoHide": {
+"desc": "界面按钮在一段时间后自动隐藏【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "按钮自动隐藏"
+},
+"BydFollowStockResume": {
+"desc": "跟车恢复跟随时使用原车逻辑（推断）【BYD】",
+"kind": "user",
+"title": "BYD·跟车恢复用原车"
+},
+"BydHandsoffFix": {
+"desc": "规避原车“请握方向盘”误报（推断）【BYD】",
+"kind": "user",
+"title": "BYD·离手检测修复"
+},
+"BydNonLinearTorqueParams_a": {
+"desc": "非线性扭矩模型标定系数 a（推断）【BYD】",
+"kind": "user",
+"title": "BYD·非线性扭矩系数a"
+},
+"BydNonLinearTorqueParams_b": {
+"desc": "非线性扭矩模型标定系数 b（推断）【BYD】",
+"kind": "user",
+"title": "BYD·非线性扭矩系数b"
+},
+"BydNonLinearTorqueParams_c": {
+"desc": "非线性扭矩模型标定系数 c（推断）【BYD】",
+"kind": "user",
+"title": "BYD·非线性扭矩系数c"
+},
+"BydStockAccelStartSpeed": {
+"desc": "从该车速起改用原车加速度（推断）【BYD】",
+"kind": "user",
+"title": "BYD·原车加速度起始车速"
+},
+"BydStockEmergencyBrakePriority": {
+"desc": "紧急制动优先交还原车（推断）【BYD】",
+"kind": "user",
+"title": "BYD·原车紧急制动优先"
+},
+"BydUseNonLinearTorque": {
+"desc": "启用非线性扭矩模型，更贴近原车手感（推断）【BYD】",
+"kind": "user",
+"title": "BYD·用非线性扭矩"
+},
+"BydUseStockAccel": {
+"desc": "加速时使用原车(stock)加速度指令（推断）【BYD】",
+"kind": "user",
+"title": "BYD·用原车加速度"
+},
+"CalibrationParams": {
+"desc": "相机标定结果（系统写）【内部】",
+"kind": "internal",
+"title": "相机标定参数"
+},
+"CameraControl": {
+"desc": "相机参数控制开关【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "相机控制"
+},
+"CameraControlToggle": {
+"desc": "相机控制的总开关【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "相机控制开关"
+},
+"CameraDebugExpGain": {
+"desc": "相机调试用曝光增益【内部】",
+"kind": "internal",
+"title": "相机调试·曝光增益"
+},
+"CameraDebugExpTime": {
+"desc": "相机调试用曝光时间【内部】",
+"kind": "internal",
+"title": "相机调试·曝光时间"
+},
+"CameraOffset": {
+"desc": "相机安装位置相对挡风玻璃的偏移（-10~10cm）【官方】",
+"kind": "user",
+"title": "相机安装偏移"
+},
+"CanParserResult": {
+"desc": "CAN 报文解析结果（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "CAN 解析结果"
+},
+"CancelButtonMode": {
+"desc": "方向盘取消键的行为【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "取消键模式"
+},
+"CanfdDebug": {
+"desc": "CAN-FD 调试开关【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "CAN-FD 调试"
+},
+"CanfdHDA2": {
+"desc": "现代/起亚 HDA2 的 CAN-FD 支持【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "CAN-FD HDA2"
+},
+"CarBatteryCapacity": {
+"desc": "混动/电动车的电池容量，用于能耗估算【官方】",
+"kind": "user",
+"title": "动力电池容量"
+},
+"CarModel": {
+"desc": "当前车辆型号名称（可用于模型/适配选择）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "车型名"
+},
+"CarModelText": {
+"desc": "界面上显示的车型文字【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "车型显示名"
+},
+"CarName": {
+"desc": "识别到的车型名称【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "车型名(内部)"
+},
+"CarParams": {
+"desc": "车辆识别结果（车型指纹/转向比等），系统写【内部】",
+"kind": "internal",
+"title": "车辆参数"
+},
+"CarParamsCache": {
+"desc": "车辆参数缓存【内部】",
+"kind": "internal",
+"title": "车辆参数缓存"
+},
+"CarParamsPersistent": {
+"desc": "持久保存的车辆参数【内部】",
+"kind": "internal",
+"title": "车辆参数(持久)"
+},
+"CarParamsPrevRoute": {
+"desc": "上一段行程的车辆参数【内部】",
+"kind": "internal",
+"title": "上段行程车辆参数"
+},
+"CarParamsSP": {
+"desc": "SunnyPilot 侧的车辆参数【内部】",
+"kind": "internal",
+"title": "车辆参数(SP)"
+},
+"CarParamsSPCache": {
+"desc": "SunnyPilot 车辆参数缓存【内部】",
+"kind": "internal",
+"title": "车辆参数(SP)缓存"
+},
+"CarParamsSPPersistent": {
+"desc": "持久化的 SunnyPilot 车辆参数【内部】",
+"kind": "internal",
+"title": "车辆参数(SP)持久"
+},
+"CarPlatformBundle": {
+"desc": "SP 的车型配置包（按键/灯光等适配）【SP】",
+"kind": "user",
+"title": "车型平台包"
+},
+"CarSelected3": {
+"desc": "车型选择列表第三组【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "选中车型(内部)"
+},
+"CarVin": {
+"desc": "车辆 VIN【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "车架号"
+},
+"CarrotCruiseAtcDecel": {
+"desc": "Carrot ATC 的减速度【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "Carrot·ATC 减速"
+},
+"CarrotCruiseDecel": {
+"desc": "Carrot 巡航时的减速度【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "Carrot·巡航减速"
+},
+"CarrotException": {
+"desc": "Carrot 模块异常标志【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "Carrot 异常标记"
+},
+"ChevronInfo": {
+"desc": "画面上的路径箭头/领航提示【官方】",
+"kind": "user",
+"title": "箭头提示"
+},
+"ComfortBrake": {
+"desc": "更柔和的刹车曲线【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "舒适刹车"
+},
+"CommaLongAcc": {
+"desc": "纵向使用 comma 计算出的加速度【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "用 comma 纵向加速度"
+},
+"CompletedTrainingVersion": {
+"desc": "已完成的新手引导版本号【内部】",
+"kind": "internal",
+"title": "新手引导版本"
+},
+"ContinuousLaneChange": {
+"desc": "允许连续多次变道【CP 放飞版】",
+"kind": "user",
+"title": "连续变道"
+},
+"ContinuousLaneChangeCnt": {
+"desc": "最多连续变几次【CP 放飞版】",
+"kind": "user",
+"title": "连续变道次数"
+},
+"ContinuousLaneChangeInterval": {
+"desc": "两次变道之间的间隔（秒）【CP 放飞版】",
+"kind": "user",
+"title": "连续变道间隔"
+},
+"ControlsReady": {
+"desc": "控制系统就绪标志【内部】",
+"kind": "internal",
+"title": "控制就绪"
+},
+"CruiseButtonMode": {
+"desc": "原车巡航按键的用法【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "巡航按键模式"
+},
+"CruiseButtonTest1": {
+"desc": "按键测试值（配对用）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "巡航按键测试1"
+},
+"CruiseButtonTest2": {
+"desc": "按键测试值（配对用）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "巡航按键测试2"
+},
+"CruiseButtonTest3": {
+"desc": "按键测试值（配对用）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "巡航按键测试3"
+},
+"CruiseEcoControl": {
+"desc": "巡航时的节能策略【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "巡航节能控制"
+},
+"CruiseMaxVals0": {
+"desc": "按键可调速度上限（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "巡航上限值0"
+},
+"CruiseMaxVals1": {
+"desc": "按键可调速度上限（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "巡航上限值1"
+},
+"CruiseMaxVals2": {
+"desc": "按键可调速度上限（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "巡航上限值2"
+},
+"CruiseMaxVals3": {
+"desc": "按键可调速度上限（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "巡航上限值3"
+},
+"CruiseMaxVals4": {
+"desc": "按键可调速度上限（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "巡航上限值4"
+},
+"CruiseMaxVals5": {
+"desc": "按键可调速度上限（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "巡航上限值5"
+},
+"CruiseMaxVals6": {
+"desc": "按键可调速度上限（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "巡航上限值6"
+},
+"CruiseOnDist": {
+"desc": "低于该距离才允许开启巡航【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "开启巡航距离"
+},
+"CruiseSpeed1": {
+"desc": "按键记忆的巡航速度【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "巡航速度档1"
+},
+"CruiseSpeed2": {
+"desc": "按键记忆的巡航速度【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "巡航速度档2"
+},
+"CruiseSpeed3": {
+"desc": "按键记忆的巡航速度【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "巡航速度档3"
+},
+"CruiseSpeed4": {
+"desc": "按键记忆的巡航速度【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "巡航速度档4"
+},
+"CruiseSpeed5": {
+"desc": "按键记忆的巡航速度【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "巡航速度档5"
+},
+"CruiseSpeedUnit": {
+"desc": "按键调节的速度单位【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "巡航速度单位"
+},
+"CruiseSpeedUnitBasic": {
+"desc": "速度单位的基准值【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "巡航速度基础单位"
+},
+"CurrentBootlog": {
+"desc": "本次启动的日志文件路径【内部】",
+"kind": "internal",
+"title": "本次启动日志"
+},
+"CurrentRoute": {
+"desc": "当前正在记录的路线名【内部】",
+"kind": "internal",
+"title": "当前路线"
+},
+"CurveEscapeStrength": {
+"desc": "弯道里往外让的力度（防压内线）【CP 放飞版】",
+"kind": "user",
+"title": "弯道逃逸强度"
+},
+"CurveSpeedAlgo": {
+"desc": "用哪套算法计算弯道安全速度【CP 放飞版】",
+"kind": "user",
+"title": "弯速算法"
+},
+"CustomAccIncrementsEnabled": {
+"desc": "用方向盘按键调速度时按自定义步长增减【SP】",
+"kind": "user",
+"title": "自定义 ACC 步长"
+},
+"CustomAccLongPressIncrement": {
+"desc": "长按按键的增减步长（如 5 km/h）【SP】",
+"kind": "user",
+"title": "ACC 长按步长"
+},
+"CustomAccShortPressIncrement": {
+"desc": "短按按键的增减步长（如 1 km/h）【SP】",
+"kind": "user",
+"title": "ACC 短按步长"
+},
+"CustomBootScreen": {
+"desc": "自定义启动画面开关【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "自定义开机画面"
+},
+"CustomDrivingModel": {
+"desc": "使用自定义的驾驶模型【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "自定义驾驶模型"
+},
+"CustomMapboxTokenPk": {
+"desc": "自定义 Mapbox token（公开）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "Mapbox 公钥"
+},
+"CustomMapboxTokenSk": {
+"desc": "自定义 Mapbox token（私密）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "Mapbox 私钥"
+},
+"CustomOffsets": {
+"desc": "自定义相机/位置偏移【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "自定义偏移"
+},
+"CustomSR": {
+"desc": "手动指定转向比【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "自定义转向比"
+},
+"CustomSteerDeltaDown": {
+"desc": "方向盘向下微调量【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "自定义转角增量·下"
+},
+"CustomSteerDeltaDownLC": {
+"desc": "变道时的向下微调量【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "自定义转角增量·下(变道)"
+},
+"CustomSteerDeltaUp": {
+"desc": "方向盘向上微调量【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "自定义转角增量·上"
+},
+"CustomSteerDeltaUpLC": {
+"desc": "变道时的向上微调量【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "自定义转角增量·上(变道)"
+},
+"CustomSteerMax": {
+"desc": "限制最大方向盘转角【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "自定义最大转角"
+},
+"CustomSteerOffset": {
+"desc": "方向盘零点偏移【CP 放飞版】",
+"kind": "user",
+"title": "自定义转角偏移"
+},
+"CustomStockLong": {
+"desc": "在原车纵向基础上做自定义微调【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "自定义原车纵向"
+},
+"CustomTorqueLateral": {
+"desc": "自定义扭矩横向控制参数【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "自定义扭矩横向"
+},
+"CustomTorqueParams": {
+"desc": "自定义扭矩标定参数【SP】",
+"kind": "user",
+"title": "自定义扭矩参数"
+},
+"DebugPlotEnabled": {
+"desc": "显示设备端调试图表【SP】",
+"kind": "user",
+"title": "调试曲线开关"
+},
+"DebugPlotFusionMode": {
+"desc": "调试图表的融合模式【内部】",
+"kind": "internal",
+"title": "调试曲线·融合模式"
+},
+"DebugPlotMode": {
+"desc": "调试图表显示模式【内部】",
+"kind": "internal",
+"title": "调试曲线模式"
+},
+"DecelLimitAEgoMax": {
+"desc": "纵向加速度上限【CP 放飞版】",
+"kind": "user",
+"title": "减速限制·加速度上限"
+},
+"DecelLimitAEgoMin": {
+"desc": "纵向加速度下限【CP 放飞版】",
+"kind": "user",
+"title": "减速限制·加速度下限"
+},
+"DecelLimitVEgoMax": {
+"desc": "触发上限的车速【CP 放飞版】",
+"kind": "user",
+"title": "减速限制·高速阈值"
+},
+"DecelLimitVEgoMin": {
+"desc": "触发下限的车速【CP 放飞版】",
+"kind": "user",
+"title": "减速限制·低速阈值"
+},
+"DevUIInfo": {
+"desc": "开发版界面信息【内部】",
+"kind": "internal",
+"title": "开发界面信息"
+},
+"DeviceBootMode": {
+"desc": "设备启动模式【内部】",
+"kind": "internal",
+"title": "启动模式"
+},
+"DevicePosition": {
+"desc": "设备在车上的安装位置【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "设备安装位置"
+},
+"DisableDM": {
+"desc": "不检测驾驶员注意力【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "关闭驾驶员监控"
+},
+"DisableLogging": {
+"desc": "不记录行车数据（不下发 rlog）【官方】",
+"kind": "user",
+"title": "关闭行车记录"
+},
+"DisableMADS": {
+"desc": "关闭 MADS（模块化辅助驾驶）【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "关闭 MADS"
+},
+"DisableMinSteerSpeed": {
+"desc": "低于该速度也允许转向控制【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "关闭最低转向速度"
+},
+"DisableNoGPSWarn": {
+"desc": "没有 GPS 信号时不弹提示【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "不提示无 GPS"
+},
+"DisableOnroadUploads": {
+"desc": "行车过程中不上传数据（省流量）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "禁止行车上传"
+},
+"DisablePowerDown": {
+"desc": "熄火后不自动断电（会持续耗电）【官方】",
+"kind": "user",
+"title": "禁止自动下电"
+},
+"DisableSidebarAutoHide": {
+"desc": "界面侧栏保持常显【SP】",
+"kind": "user",
+"title": "侧栏不自动隐藏"
+},
+"DisableUpdates": {
+"desc": "不再自动检查/安装更新【官方】",
+"kind": "user",
+"title": "关闭自动更新"
+},
+"DisengageLateralOnBrake": {
+"desc": "踩刹车时解除方向盘控制【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "踩刹车解除横向"
+},
+"DisengageOnAccelerator": {
+"desc": "踩下油门踏板即解除接管【官方】",
+"kind": "user",
+"title": "踩油门解除"
+},
+"DmModelInitialized": {
+"desc": "驾驶员监控模型初始化标志【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "驾驶员模型已初始化"
+},
+"DoConsole": {
+"desc": "写入即切到设备控制台【内部】",
+"kind": "danger",
+"title": "切控制台(动作)"
+},
+"DoReboot": {
+"desc": "写入后设备立刻重启！【官方】",
+"kind": "danger",
+"title": "重启设备(危险动作)"
+},
+"DoShutdown": {
+"desc": "写入后设备立刻关机！【官方】",
+"kind": "danger",
+"title": "关机(危险动作)"
+},
+"DoSoftReboot": {
+"desc": "重启 openpilot 进程（不重启系统）【SP】",
+"kind": "danger",
+"title": "软重启(危险动作)"
+},
+"DoUninstall": {
+"desc": "写入后卸载 openpilot！【官方】",
+"kind": "danger",
+"title": "卸载 openpilot(危险动作)"
+},
+"DongleId": {
+"desc": "设备唯一标识（comma 账号绑定用）【内部】",
+"kind": "internal",
+"title": "设备 ID"
+},
+"DriverCameraHardwareMissing": {
+"desc": "检测不到驾驶员摄像头硬件【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "缺驾驶员摄像头"
+},
+"DriverTooDistracted": {
+"desc": "驾驶员分心状态【内部】",
+"kind": "internal",
+"title": "分心标志"
+},
+"DrivingModelGeneration": {
+"desc": "当前驾驶模型的代次标识【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "驾驶模型代次"
+},
+"DrivingModelMetadataText": {
+"desc": "驾驶模型的元信息文本【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "模型元信息"
+},
+"DrivingModelName": {
+"desc": "当前使用的驾驶模型名称【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "驾驶模型名"
+},
+"DrivingModelText": {
+"desc": "界面上显示的模型名【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "模型显示名"
+},
+"DrivingModelUrl": {
+"desc": "驾驶模型文件的下载地址【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "模型下载地址"
+},
+"DynamicExperimentalControl": {
+"desc": "按路况自动在普通/实验模式间切换【SP】",
+"kind": "user",
+"title": "动态实验模式(DEC)"
+},
+"DynamicLaneProfile": {
+"desc": "按路况动态调整车道内横向位置【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "动态车道剖面"
+},
+"DynamicPersonality": {
+"desc": "按速度/路况自动调整跟车风格【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "动态驾驶风格"
+},
+"DynamicTFollow": {
+"desc": "按速度动态调整跟车时距【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "动态跟车时距"
+},
+"DynamicTFollowLC": {
+"desc": "变道时的跟车时距【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "动态跟车时距(变道)"
+},
+"EVTable": {
+"desc": "EV/HEV 车型参数表（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "混动/电动参数表"
+},
+"EnableAmap": {
+"desc": "使用高德地图导航数据【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "启用高德导航"
+},
+"EnableConnect": {
+"desc": "与 comma connect 相关功能【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "启用 Connect"
+},
+"EnableCopyparty": {
+"desc": "在设备上开文件共享服务【SP】",
+"kind": "user",
+"title": "启用 Copyparty"
+},
+"EnableCornerRadar": {
+"desc": "使用车侧角雷达【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "启用角雷达"
+},
+"EnableDriverCamera": {
+"desc": "打开驾驶员监控摄像头【官方】",
+"kind": "user",
+"title": "启用驾驶员摄像头"
+},
+"EnableEscc": {
+"desc": "增强智能巡航开关【CP 放飞版】",
+"kind": "user",
+"title": "启用增强巡航(ESCC)"
+},
+"EnableGithubRunner": {
+"desc": "用设备跑 GitHub CI（官方开发功能，耗资源）【官方】",
+"kind": "user",
+"title": "启用 GitHub Runner"
+},
+"EnableGmap": {
+"desc": "使用谷歌地图数据【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "启用谷歌地图"
+},
+"EnableLogging": {
+"desc": "记录行车数据（rlog）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "启用行车记录"
+},
+"EnableMads": {
+"desc": "MADS 模块化辅助驾驶总开关（横向/纵向可分开接管）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "启用 MADS"
+},
+"EnableRadarTracks": {
+"desc": "使用毫米波雷达的目标跟踪【官方】",
+"kind": "user",
+"title": "启用雷达目标"
+},
+"EnableRadarTracksResult": {
+"desc": "雷达目标启用结果（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "雷达启用结果"
+},
+"EnableSlc": {
+"desc": "SunnyLink Connect / 速度限制控制相关开关【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "启用 SLC"
+},
+"EnableSunnylinkUploader": {
+"desc": "允许把数据上传到 sunnylink 云端【SP】",
+"kind": "user",
+"title": "允许 sunnylink 上传"
+},
+"EndToEndLongAlertLead": {
+"desc": "端到端纵向的前车相关告警【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "端到端·前车告警"
+},
+"EndToEndLongAlertLight": {
+"desc": "端到端纵向的红绿灯相关告警【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "端到端·灯光告警"
+},
+"EndToEndLongAlertUI": {
+"desc": "端到端纵向的界面提示【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "端到端·界面告警"
+},
+"EndToEndLongToggle": {
+"desc": "使用端到端模型做纵向控制【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "端到端纵向"
+},
+"EnforceTorqueControl": {
+"desc": "强制走扭矩控制路径（安全上限）【官方】",
+"kind": "user",
+"title": "强制扭矩控制"
+},
+"EnforceTorqueLateral": {
+"desc": "强制使用扭矩横向控制路径【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "强制扭矩横向"
+},
+"EnhancedScc": {
+"desc": "增强版智能巡航（按限速/地图调速）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "增强智能巡航"
+},
+"ExperimentalLongitudinalEnabled": {
+"desc": "启用实验性纵向控制【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "实验性纵向"
+},
+"ExperimentalMode": {
+"desc": "端到端/城市辅助（实验性功能）【官方】",
+"kind": "user",
+"title": "实验模式"
+},
+"ExperimentalModeConfirmed": {
+"desc": "已确认过实验模式的风险提示【内部】",
+"kind": "internal",
+"title": "实验模式已确认"
+},
+"ExtBlinkerCtrlTest": {
+"desc": "外部转向灯控制测试值【CP 放飞版】",
+"kind": "internal",
+"title": "转向灯控制测试"
+},
+"FeatureStatus": {
+"desc": "各功能可用状态汇总【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "功能状态"
+},
+"FingerPrints": {
+"desc": "车型识别指纹数据（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "车型指纹库"
+},
+"FirmwareQueryDone": {
+"desc": "panda 固件查询完成标志【内部】",
+"kind": "internal",
+"title": "固件查询完成"
+},
+"FleetManagerPin": {
+"desc": "Fleet Manager 网页的访问 PIN【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "车队管理 PIN"
+},
+"ForceOffroad": {
+"desc": "强制设备进入驻车状态（调试用）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "强制驻车态"
+},
+"ForcePowerDown": {
+"desc": "强制断电【内部】",
+"kind": "danger",
+"title": "强制下电(动作)"
+},
+"GMapKey": {
+"desc": "谷歌地图 API KEY【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "谷歌地图 KEY"
+},
+"GasSmoothTime": {
+"desc": "油门指令的平滑时间常数【CP 放飞版】",
+"kind": "user",
+"title": "油门平滑时间"
+},
+"GitBranch": {
+"desc": "当前运行的代码分支名【内部】",
+"kind": "internal",
+"title": "代码分支"
+},
+"GitCommit": {
+"desc": "当前代码提交号【内部】",
+"kind": "internal",
+"title": "提交号"
+},
+"GitCommitDate": {
+"desc": "当前代码提交日期【内部】",
+"kind": "internal",
+"title": "提交日期"
+},
+"GitDiff": {
+"desc": "本地未提交改动摘要【内部】",
+"kind": "internal",
+"title": "本地改动"
+},
+"GitRemote": {
+"desc": "代码远端仓库地址【内部】",
+"kind": "internal",
+"title": "远端仓库"
+},
+"GithubRunnerSufficientVoltage": {
+"desc": "电压是否够跑 GitHub Runner【内部】",
+"kind": "internal",
+"title": "电压足够(CI)"
+},
+"GithubSshKeys": {
+"desc": "用于 GitHub 的 SSH 私钥（敏感）【内部】",
+"kind": "internal",
+"title": "GitHub SSH 私钥"
+},
+"GithubUsername": {
+"desc": "GitHub 账号名【官方】",
+"kind": "user",
+"title": "GitHub 用户名"
+},
+"GmapKey": {
+"desc": "谷歌地图 API KEY【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "谷歌地图 KEY"
+},
+"GreenLightAlert": {
+"desc": "红灯变绿时提醒起步【SP】",
+"kind": "user",
+"title": "绿灯起步提醒"
+},
+"GsmApn": {
+"desc": "蜂窝网络接入点【官方】",
+"kind": "user",
+"title": "蜂窝 APN"
+},
+"GsmMetered": {
+"desc": "蜂窝网络视为计费网络（限制上传）【官方】",
+"kind": "user",
+"title": "蜂窝按流量计费"
+},
+"GsmRoaming": {
+"desc": "允许蜂窝漫游【官方】",
+"kind": "user",
+"title": "允许漫游"
+},
+"HDPuse": {
+"desc": "是否使用 HDP（原车高速辅助）【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "HDP 使用"
+},
+"HandsOnWheelMonitoring": {
+"desc": "监测手是否在方向盘上（离手提醒）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "方向盘握持监测"
+},
+"HapticFeedbackWhenSpeedCamera": {
+"desc": "经过测速摄像头时震动提醒【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "测速摄像头震动"
+},
+"HardwareC3xLite": {
+"desc": "是否为 C3X Lite 硬件【CP 放飞版】",
+"kind": "internal",
+"title": "C3X Lite 硬件"
+},
+"HardwareSerial": {
+"desc": "设备硬件序列号【内部】",
+"kind": "internal",
+"title": "硬件序列号"
+},
+"HasAcceptedTerms": {
+"desc": "是否已同意用户条款【内部】",
+"kind": "internal",
+"title": "已同意条款"
+},
+"HasAcceptedTermsSP": {
+"desc": "是否同意 SunnyPilot 的条款【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "已同意 SP 条款"
+},
+"HideVEgoUI": {
+"desc": "界面上不显示车速【SP】",
+"kind": "user",
+"title": "隐藏车速"
+},
+"HideVEgoUi": {
+"desc": "界面上不显示车速【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "隐藏车速 UI"
+},
+"HkgSmoothStop": {
+"desc": "日系(HKG)车型平顺停车优化【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "HKG 平顺停车"
+},
+"HotspotOnBoot": {
+"desc": "开机自动开启 Wi-Fi 热点【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "开机开热点"
+},
+"HotspotOnBootConfirmed": {
+"desc": "已确认过开机自动开热点【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "热点已确认"
+},
+"HyundaiCameraSCC": {
+"desc": "现代车用摄像头做 SCC【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "现代·摄像头 SCC"
+},
+"HyundaiLongitudinalTuning": {
+"desc": "现代/起亚车系纵向参数【官方】",
+"kind": "user",
+"title": "现代车纵向调参"
+},
+"IMEI": {
+"desc": "蜂窝模块 IMEI【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "设备 IMEI"
+},
+"InstallDate": {
+"desc": "openpilot 安装日期【内部】",
+"kind": "internal",
+"title": "安装日期"
+},
+"IntelligentCruiseButtonManagement": {
+"desc": "用原车巡航按键调速度/跟车距离【SP】",
+"kind": "user",
+"title": "智能巡航按键(ICBM)"
+},
+"InteractivityTimeout": {
+"desc": "多久无操作后屏幕变暗/熄屏【官方】",
+"kind": "user",
+"title": "交互超时"
+},
+"IsDevelopmentBranch": {
+"desc": "当前是否开发分支【内部】",
+"kind": "internal",
+"title": "开发分支"
+},
+"IsDriverViewEnabled": {
+"desc": "驾驶员视角显示模式【内部】",
+"kind": "internal",
+"title": "驾驶员视角"
+},
+"IsEngaged": {
+"desc": "当前是否在接管状态【内部】",
+"kind": "internal",
+"title": "已接管"
+},
+"IsExternalViewEnabled": {
+"desc": "使用外部视角显示模式【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "外部视角"
+},
+"IsLdwEnabled": {
+"desc": "压线未打灯时发出警告【官方】",
+"kind": "user",
+"title": "车道偏离警告"
+},
+"IsLdwsCar": {
+"desc": "本车是否支持车道偏离抑制【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "支持 LDWS"
+},
+"IsMetric": {
+"desc": "速度用 km/h（关=mph）【官方】",
+"kind": "user",
+"title": "公制单位"
+},
+"IsOffroad": {
+"desc": "当前处于驻车状态【内部】",
+"kind": "internal",
+"title": "驻车中"
+},
+"IsOnroad": {
+"desc": "当前处于行车状态【内部】",
+"kind": "internal",
+"title": "行车中"
+},
+"IsReleaseBranch": {
+"desc": "是否官方 release 分支【内部】",
+"kind": "internal",
+"title": "release 分支"
+},
+"IsReleaseSPBranch": {
+"desc": "是否 SunnyPilot release 分支【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "SP release 分支"
+},
+"IsReleaseSpBranch": {
+"desc": "是否 SunnyPilot release 分支【内部】",
+"kind": "internal",
+"title": "SP release 分支"
+},
+"IsRhdDetected": {
+"desc": "检测到右舵车辆【内部】",
+"kind": "internal",
+"title": "右舵车"
+},
+"IsTakingSnapshot": {
+"desc": "正在抓取快照【内部】",
+"kind": "internal",
+"title": "抓快照中"
+},
+"IsTestedBranch": {
+"desc": "是否标记为已测试分支【内部】",
+"kind": "internal",
+"title": "已测试分支"
+},
+"JLeadFactor3": {
+"desc": "加速度规划中的前车因子【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "前车加速度因子3"
+},
+"JerkFactor": {
+"desc": "加减速平顺度权重【CP 放飞版】",
+"kind": "user",
+"title": "加加速度因子"
+},
+"JoystickDebugMode": {
+"desc": "用游戏手柄控制调试【官方】",
+"kind": "user",
+"title": "手柄调试"
+},
+"LagVersion": {
+"desc": "横向延迟学习器版本【内部】",
+"kind": "internal",
+"title": "延迟学习版本"
+},
+"LagdToggle": {
+"desc": "自动学习转向执行延迟【官方】",
+"kind": "user",
+"title": "启用延迟学习"
+},
+"LagdToggleDelay": {
+"desc": "手动覆盖学习到的延迟【SP】",
+"kind": "user",
+"title": "延迟手动值"
+},
+"LagdValueCache": {
+"desc": "学习到的延迟值【内部】",
+"kind": "internal",
+"title": "延迟缓存"
+},
+"LaneChangeBsd": {
+"desc": "变道时检测盲区【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "变道盲区检测"
+},
+"LaneChangeDelay": {
+"desc": "打灯后延迟多久变道【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "变道延迟"
+},
+"LaneChangeNeedTorque": {
+"desc": "变道时是否要求手扶方向盘【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "变道需要扭矩"
+},
+"LaneStabTime": {
+"desc": "车道保持的稳定时间常数【CP 放飞版】",
+"kind": "user",
+"title": "车道稳定时间"
+},
+"LaneTurnDesire": {
+"desc": "车道级转向意图【内部】",
+"kind": "internal",
+"title": "车道转向意图"
+},
+"LaneTurnValue": {
+"desc": "车道级转向数值【内部】",
+"kind": "internal",
+"title": "车道转向值"
+},
+"LanguageSetting": {
+"desc": "设备界面语言【官方】",
+"kind": "user",
+"title": "界面语言"
+},
+"LastAthenaPingTime": {
+"desc": "上次与 athena 通信时间【内部】",
+"kind": "internal",
+"title": "上次云端通信"
+},
+"LastCarModel": {
+"desc": "上次识别到的车型【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "上次车型"
+},
+"LastGPSPosition": {
+"desc": "最后一次定位【内部】",
+"kind": "internal",
+"title": "最后 GPS 位置"
+},
+"LastGPSPositionLLK": {
+"desc": "来自位置滤波器的最后定位【内部】",
+"kind": "internal",
+"title": "最后定位(LLK)"
+},
+"LastManagerExitReason": {
+"desc": "进程管理器上次退出原因【内部】",
+"kind": "internal",
+"title": "上次退出原因"
+},
+"LastOffroadStatusPacket": {
+"desc": "上次驻车状态包【内部】",
+"kind": "internal",
+"title": "上次驻车状态"
+},
+"LastPowerDropDetected": {
+"desc": "上次检测到掉电的时间【内部】",
+"kind": "internal",
+"title": "上次掉电"
+},
+"LastSpeedLimitSignTap": {
+"desc": "上次点按限速标志的时间【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "上次点限速牌"
+},
+"LastSunnylinkPingTime": {
+"desc": "上次与 sunnylink 通信时间【内部】",
+"kind": "internal",
+"title": "上次 sunnylink 通信"
+},
+"LastUpdateException": {
+"desc": "上次更新失败原因【内部】",
+"kind": "internal",
+"title": "上次更新异常"
+},
+"LastUpdatePkg": {
+"desc": "上次使用的更新包名【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "上次更新包"
+},
+"LastUpdateRouteCount": {
+"desc": "上次更新时的路线数量【内部】",
+"kind": "internal",
+"title": "上次更新路线数"
+},
+"LastUpdateTime": {
+"desc": "上次执行更新的时间【内部】",
+"kind": "internal",
+"title": "上次更新时间"
+},
+"LastUpdateUptimeOnroad": {
+"desc": "上次更新时的累计行车时长【内部】",
+"kind": "internal",
+"title": "上次更新行车时长"
+},
+"LatMpcAccelCost": {
+"desc": "权重越大横向越平缓（费时）【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "横向MPC·加速度代价"
+},
+"LatMpcInputOffset": {
+"desc": "方向盘输入的零点偏移【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "横向MPC·输入偏移"
+},
+"LatMpcJerkCost": {
+"desc": "抑制转向抖动【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "横向MPC·抖动代价"
+},
+"LatMpcMotionCost": {
+"desc": "路径跟随的运动代价【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "横向MPC·运动代价"
+},
+"LatMpcPathCost": {
+"desc": "贴合路径的权重【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "横向MPC·路径代价"
+},
+"LatMpcSteeringRateCost": {
+"desc": "越大越抑制快速打方向【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "横向MPC·转向速率代价"
+},
+"LateralCalibrationCommand": {
+"desc": "触发横向标定【SP】",
+"kind": "danger",
+"title": "横向标定(动作)"
+},
+"LateralCalibrationStatus": {
+"desc": "横向标定进行状态【内部】",
+"kind": "internal",
+"title": "横向标定状态"
+},
+"LateralPIDLearnedParams": {
+"desc": "横向 PID 自学习结果【SP】",
+"kind": "user",
+"title": "横向 PID 学习值"
+},
+"LateralPIDOffsets": {
+"desc": "横向 PID 手动偏移【SP】",
+"kind": "user",
+"title": "横向 PID 偏移"
+},
+"LateralRulePlannerEnabled": {
+"desc": "用规则规划器替代默认横向规划【SP】",
+"kind": "user",
+"title": "规则横向规划器"
+},
+"LateralTorqueAccelFactor": {
+"desc": "扭矩控制的横向加速度系数【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "扭矩·加速度系数"
+},
+"LateralTorqueCustom": {
+"desc": "启用自定义扭矩参数【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "扭矩·自定义"
+},
+"LateralTorqueFriction": {
+"desc": "方向盘摩擦补偿【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "扭矩·摩擦"
+},
+"LateralTorqueKd": {
+"desc": "扭矩 PID 微分项【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "扭矩·Kd"
+},
+"LateralTorqueKf": {
+"desc": "扭矩前馈系数【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "扭矩·Kf"
+},
+"LateralTorqueKiV": {
+"desc": "扭矩 PID 积分项（随速度）【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "扭矩·KiV"
+},
+"LateralTorqueKpV": {
+"desc": "扭矩 PID 比例项（随速度）【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "扭矩·KpV"
+},
+"LateralTuningStats": {
+"desc": "横向调参统计【内部】",
+"kind": "internal",
+"title": "横向调参统计"
+},
+"LeadDepartAlert": {
+"desc": "前车起步时提醒【SP】",
+"kind": "user",
+"title": "前车起步提醒"
+},
+"LfaButtonMode": {
+"desc": "车道保持按键的用法【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "LFA 按键模式"
+},
+"LiveDelay": {
+"desc": "学习到的实际执行延迟【内部】",
+"kind": "internal",
+"title": "实测延迟"
+},
+"LiveParameters": {
+"desc": "实时学习的车辆参数（转向比/刚性等）【内部】",
+"kind": "internal",
+"title": "实车参数"
+},
+"LiveParametersV2": {
+"desc": "实时车辆参数（新版）【内部】",
+"kind": "internal",
+"title": "实车参数 v2"
+},
+"LiveTorque": {
+"desc": "启用扭矩参数实时学习【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "扭矩实时学习"
+},
+"LiveTorqueParameters": {
+"desc": "实时学习的扭矩标定结果【内部】",
+"kind": "internal",
+"title": "扭矩标定值"
+},
+"LiveTorqueParametersRaw": {
+"desc": "未滤波的扭矩标定学习结果【CP 放飞版】",
+"kind": "internal",
+"title": "扭矩标定原始值"
+},
+"LiveTorqueParamsRelaxedToggle": {
+"desc": "放宽扭矩标定学习条件【SP】",
+"kind": "user",
+"title": "扭矩标定放宽"
+},
+"LiveTorqueParamsToggle": {
+"desc": "开/关扭矩参数实时学习【SP】",
+"kind": "user",
+"title": "扭矩实时学习"
+},
+"LiveTorqueRelaxed": {
+"desc": "放宽扭矩学习条件【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "扭矩学习放宽"
+},
+"LkasToggle": {
+"desc": "车道保持(LKAS)开关状态【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "LKAS 开关"
+},
+"LocationFilterInitialState": {
+"desc": "定位滤波器初始状态【内部】",
+"kind": "internal",
+"title": "定位滤波初值"
+},
+"LongActuatorDelay": {
+"desc": "纵向指令到执行的延迟【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "纵向执行延迟"
+},
+"LongPitch": {
+"desc": "坡度对加减速的补偿【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "纵向坡度补偿"
+},
+"LongTuningKf": {
+"desc": "纵向 PID 前馈【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "纵向·Kf"
+},
+"LongTuningKiV": {
+"desc": "纵向 PID 积分项【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "纵向·KiV"
+},
+"LongTuningKpV": {
+"desc": "纵向 PID 比例项【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "纵向·KpV"
+},
+"LongitudinalManeuverMode": {
+"desc": "调试用纵向机动【官方】",
+"kind": "user",
+"title": "纵向机动模式"
+},
+"LongitudinalPersonality": {
+"desc": "0 激进 / 1 标准 / 2 温和【官方】",
+"kind": "user",
+"title": "驾驶风格"
+},
+"LongitudinalPersonalityMax": {
+"desc": "允许选择的风格上限【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "驾驶风格上限"
+},
+"LowSpeedTorqueAmp0": {
+"desc": "0 速度档的扭矩增益【CP 放飞版】",
+"kind": "user",
+"title": "低速扭矩幅度·0km/h"
+},
+"LowSpeedTorqueAmp108": {
+"desc": "108 速度档的扭矩增益【CP 放飞版】",
+"kind": "user",
+"title": "低速扭矩幅度·108km/h"
+},
+"LowSpeedTorqueAmp10_8": {
+"desc": "10.8 速度档的扭矩增益【CP 放飞版】",
+"kind": "user",
+"title": "低速扭矩幅度·10.8km/h"
+},
+"LowSpeedTorqueAmp18": {
+"desc": "18 速度档的扭矩增益【CP 放飞版】",
+"kind": "user",
+"title": "低速扭矩幅度·18km/h"
+},
+"LowSpeedTorqueAmp36": {
+"desc": "36 速度档的扭矩增益【CP 放飞版】",
+"kind": "user",
+"title": "低速扭矩幅度·36km/h"
+},
+"LowSpeedTorqueAmp54": {
+"desc": "54 速度档的扭矩增益【CP 放飞版】",
+"kind": "user",
+"title": "低速扭矩幅度·54km/h"
+},
+"LowSpeedTorqueAmp72": {
+"desc": "72 速度档的扭矩增益【CP 放飞版】",
+"kind": "user",
+"title": "低速扭矩幅度·72km/h"
+},
+"LqrLearningEnabled": {
+"desc": "启用 LQR 横向控制器学习【SP】",
+"kind": "user",
+"title": "LQR 学习"
+},
+"LqrModelParams": {
+"desc": "LQR 模型参数【内部】",
+"kind": "internal",
+"title": "LQR 模型参数"
+},
+"LqrPidParams": {
+"desc": "LQR 与 PID 参数【内部】",
+"kind": "internal",
+"title": "LQR/PID 参数"
+},
+"Mads": {
+"desc": "模块化辅助驾驶：允许横向/纵向分开接管【SP】",
+"kind": "user",
+"title": "MADS 总开关"
+},
+"MadsCruiseMain": {
+"desc": "允许用主巡航键激活 MADS 转向辅助【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "MADS·主巡航键"
+},
+"MadsIconToggle": {
+"desc": "界面上显示 MADS 状态图标【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "MADS 图标"
+},
+"MadsMainCruiseAllowed": {
+"desc": "按方向盘主巡航键即可激活转向辅助【SP】",
+"kind": "user",
+"title": "MADS·主巡航键激活"
+},
+"MadsSteeringMode": {
+"desc": "MADS 的转向激活方式（按键/常开等）【SP】",
+"kind": "user",
+"title": "MADS·转向模式"
+},
+"MadsUnifiedEngagementMode": {
+"desc": "一键同时接管横向与纵向【SP】",
+"kind": "user",
+"title": "MADS·一键统一接管"
+},
+"Map3DBuildings": {
+"desc": "导航地图显示 3D 建筑【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "地图 3D 建筑"
+},
+"MapAdvisorySpeedLimit": {
+"desc": "地图给出的建议限速【SP】",
+"kind": "user",
+"title": "地图建议限速"
+},
+"MapSpeedLimit": {
+"desc": "地图数据中的限速值【SP】",
+"kind": "user",
+"title": "地图限速"
+},
+"MapTargetVelocities": {
+"desc": "按路段预设的目标速度【SP】",
+"kind": "user",
+"title": "地图目标速度"
+},
+"MapTurnSpeedFactor": {
+"desc": "按地图转弯降速的系数【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "地图转弯速度系数"
+},
+"MapboxFullScreen": {
+"desc": "Mapbox 导航全屏显示【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "Mapbox 全屏"
+},
+"MapboxPublicKey": {
+"desc": "自定义 Mapbox 公钥【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "Mapbox 公钥"
+},
+"MapboxSecretKey": {
+"desc": "自定义 Mapbox 私钥【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "Mapbox 私钥"
+},
+"MapboxStyle": {
+"desc": "地图样式 ID【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "Mapbox 样式"
+},
+"MapdVersion": {
+"desc": "mapd 地图守护版本【内部】",
+"kind": "internal",
+"title": "地图服务版本"
+},
+"MaxAngleFrames": {
+"desc": "角度估计的最大帧数（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "最大角度帧数"
+},
+"MaxTimeOffroad": {
+"desc": "驻车超过该时长自动关机省电（小时）【官方】",
+"kind": "user",
+"title": "驻车最长停留"
+},
+"MaxTimeOffroadMin": {
+"desc": "驻车超过该分钟数自动关机【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "驻车最长时长(分)"
+},
+"ModelManager_ActiveBundle": {
+"desc": "正在使用的驾驶模型包【SP】",
+"kind": "user",
+"title": "当前模型包"
+},
+"ModelManager_ClearCache": {
+"desc": "清除模型下载缓存【SP】",
+"kind": "danger",
+"title": "清模型缓存(动作)"
+},
+"ModelManager_DownloadIndex": {
+"desc": "模型下载源索引【内部】",
+"kind": "internal",
+"title": "模型下载索引"
+},
+"ModelManager_Favs": {
+"desc": "收藏的模型列表【SP】",
+"kind": "user",
+"title": "收藏的模型"
+},
+"ModelManager_LastSyncTime": {
+"desc": "上次同步模型清单的时间【内部】",
+"kind": "internal",
+"title": "模型同步时间"
+},
+"ModelManager_ModelsCache": {
+"desc": "模型清单缓存【内部】",
+"kind": "internal",
+"title": "模型清单缓存"
+},
+"ModelRunnerTypeCache": {
+"desc": "模型运行器类型缓存【内部】",
+"kind": "internal",
+"title": "模型运行器缓存"
+},
+"MuteDoor": {
+"desc": "车门未关时不播报【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "静音车门提醒"
+},
+"MuteSeatbelt": {
+"desc": "安全带未系时不播报【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "静音安全带提醒"
+},
+"MyDrivingMode": {
+"desc": "自定义驾驶模式【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "我的驾驶模式"
+},
+"MyDrivingModeAuto": {
+"desc": "自动切换自定义模式【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "我的驾驶模式·自动"
+},
+"NNFF": {
+"desc": "用神经网络前馈改善横向控制【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "神经网络前馈"
+},
+"NNFFCarModel": {
+"desc": "NNFF 使用的车型模型【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "NNFF 车型"
+},
+"NNFFLite": {
+"desc": "轻量版神经网络前馈【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "轻量 NNFF"
+},
+"NNFFModelName": {
+"desc": "神经网络模型名称（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "NNFF 模型名"
+},
+"NavDestination": {
+"desc": "当前导航目的地【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "导航目的地"
+},
+"NavDestinationWaypoints": {
+"desc": "导航途经点列表【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "导航途经点"
+},
+"NavModelText": {
+"desc": "导航模型的显示名【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "导航模型名"
+},
+"NavModelUrl": {
+"desc": "导航模型下载地址【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "导航模型地址"
+},
+"NavPastDestinations": {
+"desc": "过去去过的目的地【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "历史目的地"
+},
+"NavSettingLeftSide": {
+"desc": "导航面板放在左侧【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "导航靠左显示"
+},
+"NavSettingTime24h": {
+"desc": "导航时间用 24 小时制【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "导航 24 小时制"
+},
+"NetworkAddress": {
+"desc": "设备网络地址（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "网络地址"
+},
+"NetworkMetered": {
+"desc": "当前网络按流量计费【官方】",
+"kind": "user",
+"title": "网络计费"
+},
+"NeuralNetworkLateralControl": {
+"desc": "用神经网络前馈做横向控制【SP】",
+"kind": "user",
+"title": "神经网络横向(NNFF)"
+},
+"NewLaneWidthDiff": {
+"desc": "变道后车道宽差阈值【CP 放飞版】",
+"kind": "user",
+"title": "新车道宽度差"
+},
+"NextMapSpeedLimit": {
+"desc": "前方下一段的限速【内部】",
+"kind": "internal",
+"title": "下一段限速"
+},
+"NonLTCorrection": {
+"desc": "没有车道线时的横向修正【CP 放飞版】",
+"kind": "user",
+"title": "无车道线修正"
+},
+"OSMDownloadBounds": {
+"desc": "离线地图下载的经纬度范围【官方】",
+"kind": "user",
+"title": "OSM 下载范围"
+},
+"OSMDownloadLocations": {
+"desc": "待下载的离线地图地点【官方】",
+"kind": "user",
+"title": "OSM 下载地点"
+},
+"OSMDownloadProgress": {
+"desc": "离线地图下载进度【内部】",
+"kind": "internal",
+"title": "OSM 下载进度"
+},
+"ObdMultiplexingChanged": {
+"desc": "OBD 多路复用配置已变更【内部】",
+"kind": "internal",
+"title": "OBD 复用已变更"
+},
+"ObdMultiplexingEnabled": {
+"desc": "同时监听多路 CAN（需要专用线束）【官方】",
+"kind": "user",
+"title": "OBD 多路复用"
+},
+"OffroadMode": {
+"desc": "驻车界面模式【内部】",
+"kind": "internal",
+"title": "驻车模式"
+},
+"Offroad_BadNvme": {
+"desc": "NVMe 存储异常【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "驻车·磁盘异常"
+},
+"Offroad_CarUnrecognized": {
+"desc": "车辆指纹未识别时的提示状态【内部】",
+"kind": "internal",
+"title": "驻车·车型未识别"
+},
+"Offroad_ConnectivityNeeded": {
+"desc": "需要联网才能继续的状态标志【内部】",
+"kind": "internal",
+"title": "驻车·需要联网"
+},
+"Offroad_ConnectivityNeededPrompt": {
+"desc": "联网提示是否已展示【内部】",
+"kind": "internal",
+"title": "驻车·联网提示"
+},
+"Offroad_ExcessiveActuation": {
+"desc": "检测到执行器动作过多【内部】",
+"kind": "internal",
+"title": "驻车·执行器异常"
+},
+"Offroad_ForceStatus": {
+"desc": "被强制进入的状态提示【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "驻车·强制状态"
+},
+"Offroad_IsTakingSnapshot": {
+"desc": "正在抓取标定快照【内部】",
+"kind": "internal",
+"title": "驻车·抓快照中"
+},
+"Offroad_NeosUpdate": {
+"desc": "系统(AGNOS)需要更新【内部】",
+"kind": "internal",
+"title": "驻车·系统更新"
+},
+"Offroad_NoFirmware": {
+"desc": "panda 固件缺失/需刷写【内部】",
+"kind": "internal",
+"title": "驻车·缺固件"
+},
+"Offroad_OSMUpdateRequired": {
+"desc": "离线地图需要更新【内部】",
+"kind": "internal",
+"title": "驻车·需更新地图"
+},
+"Offroad_Recalibration": {
+"desc": "需要重新做相机标定【内部】",
+"kind": "internal",
+"title": "驻车·需重新标定"
+},
+"Offroad_StorageMissing": {
+"desc": "未检测到存储设备【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "驻车·缺存储"
+},
+"Offroad_SupersededUpdate": {
+"desc": "有更新被更新的版本取代【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "驻车·更新被替代"
+},
+"Offroad_TemperatureTooHigh": {
+"desc": "设备温度过高【内部】",
+"kind": "internal",
+"title": "驻车·温度过高"
+},
+"Offroad_TiciSupport": {
+"desc": "硬件支持相关提示【内部】",
+"kind": "internal",
+"title": "驻车·硬件支持"
+},
+"Offroad_UnofficialHardware": {
+"desc": "检测到非官方硬件【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "驻车·非官方硬件"
+},
+"Offroad_UnregisteredHardware": {
+"desc": "设备未注册【内部】",
+"kind": "internal",
+"title": "驻车·硬件未注册"
+},
+"Offroad_UpdateFailed": {
+"desc": "上次更新失败【内部】",
+"kind": "internal",
+"title": "驻车·更新失败"
+},
+"OnroadCycleRequested": {
+"desc": "请求重启行车循环【内部】",
+"kind": "danger",
+"title": "请求重启循环(动作)"
+},
+"OnroadScreenOff": {
+"desc": "行车时是否允许熄屏【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "行车熄屏"
+},
+"OnroadScreenOffBrightness": {
+"desc": "行车时熄屏的亮度（0=全黑）【官方】",
+"kind": "user",
+"title": "行车熄屏亮度"
+},
+"OnroadScreenOffControl": {
+"desc": "行车时多久无操作自动熄屏【官方】",
+"kind": "user",
+"title": "行车熄屏控制"
+},
+"OnroadScreenOffEvent": {
+"desc": "触发熄屏的事件标志【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "行车熄屏事件"
+},
+"OnroadScreenOffTimer": {
+"desc": "行车熄屏倒计时（秒）【官方】",
+"kind": "user",
+"title": "行车熄屏计时"
+},
+"OnroadSettings": {
+"desc": "行车时可用的设置项集合【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "行车设置"
+},
+"OnroadUploads": {
+"desc": "行车时上传数据（耗流量）【官方】",
+"kind": "user",
+"title": "行车数据上传"
+},
+"OpenpilotEnabledToggle": {
+"desc": "辅助驾驶总开关【官方】",
+"kind": "user",
+"title": "openpilot 总开关"
+},
+"OsmDbUpdatesCheck": {
+"desc": "触发离线地图数据库更新检查【官方】",
+"kind": "user",
+"title": "检查地图更新"
+},
+"OsmDownloadedDate": {
+"desc": "离线地图下载日期【内部】",
+"kind": "internal",
+"title": "地图下载日期"
+},
+"OsmLocal": {
+"desc": "本地离线地图信息【内部】",
+"kind": "internal",
+"title": "本地地图"
+},
+"OsmLocationName": {
+"desc": "所选地图地点名称【内部】",
+"kind": "internal",
+"title": "地图地点名"
+},
+"OsmLocationTitle": {
+"desc": "所选地图地点标题【内部】",
+"kind": "internal",
+"title": "地图地点标题"
+},
+"OsmLocationUrl": {
+"desc": "所选地点的地图链接【内部】",
+"kind": "internal",
+"title": "地图地点链接"
+},
+"OsmStateName": {
+"desc": "所选州/省代码【内部】",
+"kind": "internal",
+"title": "地图州/省"
+},
+"OsmStateTitle": {
+"desc": "所选州/省名称【内部】",
+"kind": "internal",
+"title": "地图州/省标题"
+},
+"OsmWayTest": {
+"desc": "路网数据测试标志【内部】",
+"kind": "internal",
+"title": "地图路网测试"
+},
+"PDDumpBuffer": {
+"desc": "panda 报文转储缓冲【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "panda dump 缓冲"
+},
+"PaddleMode": {
+"desc": "换挡拨片的行为定义【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "拨片模式"
+},
+"PandaHeartbeatLost": {
+"desc": "panda 心跳丢失次数【内部】",
+"kind": "internal",
+"title": "panda 心跳丢失"
+},
+"PandaSignatures": {
+"desc": "panda 固件签名信息【内部】",
+"kind": "internal",
+"title": "panda 签名"
+},
+"PandaSomResetTriggered": {
+"desc": "panda 触发复位标志【内部】",
+"kind": "internal",
+"title": "panda 复位触发"
+},
+"ParamLearningEnabled": {
+"desc": "自动学习并微调车辆参数【SP】",
+"kind": "user",
+"title": "参数自学习"
+},
+"ParamLearningHistory": {
+"desc": "参数学习历史记录【内部】",
+"kind": "internal",
+"title": "参数学习历史"
+},
+"ParamLearningState": {
+"desc": "参数学习当前状态【内部】",
+"kind": "internal",
+"title": "参数学习状态"
+},
+"PathOffset": {
+"desc": "横向路径的固定偏移量【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "路径偏移"
+},
+"PauseLateralSpeed": {
+"desc": "低于该速度暂停方向盘控制（km/h）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "横向暂停速度"
+},
+"PersonalitySetByUser": {
+"desc": "用户是否手动设置过驾驶风格【内部】",
+"kind": "internal",
+"title": "风格已手改"
+},
+"PlanplusControl": {
+"desc": "日系车纵向控制适配【官方】",
+"kind": "user",
+"title": "Planplus 控制"
+},
+"PrimeType": {
+"desc": "comma Prime 订阅类型【内部】",
+"kind": "internal",
+"title": "Prime 订阅"
+},
+"QuickBootToggle": {
+"desc": "缩短启动时间（实验性）【官方】",
+"kind": "user",
+"title": "快速启动"
+},
+"QuietDrive": {
+"desc": "减少提示音/语音【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "安静模式"
+},
+"QuietMode": {
+"desc": "关闭语音/提示音【官方】",
+"kind": "user",
+"title": "静音模式"
+},
+"RadarLatFactor": {
+"desc": "雷达横向位置补偿【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "雷达横向因子"
+},
+"RadarReactionFactor": {
+"desc": "雷达前车反应的灵敏度【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "雷达反应因子"
+},
+"RadarTracksActive": {
+"desc": "雷达目标跟踪是否生效【内部】",
+"kind": "internal",
+"title": "雷达跟踪生效"
+},
+"RainbowMode": {
+"desc": "彩色界面装饰效果【SP】",
+"kind": "user",
+"title": "彩虹模式"
+},
+"RecordAudio": {
+"desc": "录制车内麦克风音频【官方】",
+"kind": "user",
+"title": "录制麦克风"
+},
+"RecordAudioFeedback": {
+"desc": "录制语音反馈【官方】",
+"kind": "user",
+"title": "录制语音反馈"
+},
+"RecordFront": {
+"desc": "录制驾驶员摄像头视频【官方】",
+"kind": "user",
+"title": "录制驾驶员摄像头"
+},
+"RecordFrontLock": {
+"desc": "强制保持驾驶员摄像头录制【官方】",
+"kind": "user",
+"title": "锁定驾驶员录制"
+},
+"RecordHighRes": {
+"desc": "录制更高分辨率的视频【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "高清录制"
+},
+"RecordRoadCam": {
+"desc": "录制道路摄像头视频【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "录制前视摄像头"
+},
+"RecordRouteData": {
+"desc": "保存路线原始数据【CP 放飞版】",
+"kind": "user",
+"title": "记录路线数据"
+},
+"RedLightDistOffset": {
+"desc": "停车线前的距离偏移【CP 放飞版】",
+"kind": "user",
+"title": "红灯距离偏移"
+},
+"ReplayControlsState": {
+"desc": "路线回放时的控制状态【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "回放控制状态"
+},
+"ReverseAccChange": {
+"desc": "倒车时切换加速度来源【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "倒车加速度切换"
+},
+"ReverseDmCam": {
+"desc": "倒车时切换摄像头用途【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "倒车用驾驶员摄像头"
+},
+"RoadEdge": {
+"desc": "检测道路边缘（路沿）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "路缘检测"
+},
+"RoadName": {
+"desc": "当前所在道路名称【内部】",
+"kind": "internal",
+"title": "当前道路名"
+},
+"RoadNameToggle": {
+"desc": "界面上显示当前道路名【SP】",
+"kind": "user",
+"title": "显示道路名"
+},
+"RoadType": {
+"desc": "当前道路类型（内部识别）【CP 放飞版】",
+"kind": "internal",
+"title": "道路类型"
+},
+"RocketFuel": {
+"desc": "SP 的性能/加速彩蛋【SP】",
+"kind": "user",
+"title": "火箭燃料"
+},
+"RouteCount": {
+"desc": "已记录的路线总数【内部】",
+"kind": "internal",
+"title": "路线总数"
+},
+"SameSpiCamFilter": {
+"desc": "摄像头滤波参数【CP 放飞版】",
+"kind": "internal",
+"title": "摄像头滤波"
+},
+"ScreenRecorder": {
+"desc": "启用设备屏幕录制【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "屏幕录制"
+},
+"SearchInput": {
+"desc": "界面搜索框内容（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "搜索输入(内部)"
+},
+"SecOCKey": {
+"desc": "车载安全通信密钥（敏感）【内部】",
+"kind": "internal",
+"title": "SecOC 密钥"
+},
+"ShowAdvancedControls": {
+"desc": "显示高级设置项【SP】",
+"kind": "user",
+"title": "显示高级控件"
+},
+"ShowCpuTemp": {
+"desc": "界面上显示 CPU 温度【SP】",
+"kind": "user",
+"title": "显示 CPU 温度"
+},
+"ShowCustomBrightness": {
+"desc": "界面显示自定义亮度档【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "显示自定义亮度"
+},
+"ShowDateTime": {
+"desc": "界面显示日期与时间【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "显示日期时间"
+},
+"ShowDebugLog": {
+"desc": "界面上显示调试日志【CP 放飞版】",
+"kind": "user",
+"title": "显示调试日志"
+},
+"ShowDebugUI": {
+"desc": "界面上显示调试面板【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "显示调试界面"
+},
+"ShowDeviceState": {
+"desc": "界面显示设备运行状态【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "显示设备状态"
+},
+"ShowLaneInfo": {
+"desc": "界面显示车道线信息【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "显示车道信息"
+},
+"ShowLearnedParams": {
+"desc": "显示自学习到的参数值【SP】",
+"kind": "user",
+"title": "显示学习参数"
+},
+"ShowPathColor": {
+"desc": "路径颜色随状态变化【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "显示路径配色"
+},
+"ShowPathColorCruiseOff": {
+"desc": "巡航关闭时的路径颜色【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "路径配色·巡航关"
+},
+"ShowPathColorLane": {
+"desc": "按车道显示路径颜色【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "路径配色·车道"
+},
+"ShowPathEnd": {
+"desc": "显示路径终点标记【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "显示路径终点"
+},
+"ShowPathMode": {
+"desc": "路径显示方式【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "路径显示模式"
+},
+"ShowPathModeLane": {
+"desc": "按车道的路径显示【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "路径显示模式·车道"
+},
+"ShowPathWidth": {
+"desc": "显示路径带宽【CP 放飞版】",
+"kind": "user",
+"title": "显示路径宽度"
+},
+"ShowPlotMode": {
+"desc": "显示调试图表模式【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "显示曲线模式"
+},
+"ShowRadarInfo": {
+"desc": "界面显示雷达目标【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "显示雷达信息"
+},
+"ShowRouteInfo": {
+"desc": "界面显示路线信息【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "显示路线信息"
+},
+"ShowTimeDisplay": {
+"desc": "界面上显示当前时间【SP】",
+"kind": "user",
+"title": "显示时间"
+},
+"ShowTpms": {
+"desc": "界面显示胎压【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "显示胎压"
+},
+"ShowTurnSignals": {
+"desc": "界面上显示转向灯状态【SP】",
+"kind": "user",
+"title": "显示转向灯"
+},
+"SideBsdDelayTime": {
+"desc": "侧向盲区检测延迟【CP 放飞版】",
+"kind": "user",
+"title": "侧向盲区延迟"
+},
+"SideRadarMinDist": {
+"desc": "侧向雷达报警的最小距离【CP 放飞版】",
+"kind": "user",
+"title": "侧向雷达最小距离"
+},
+"SideRelDistTime": {
+"desc": "侧向距离的时间判定【CP 放飞版】",
+"kind": "user",
+"title": "侧向距离判定时间"
+},
+"SidebarTemperatureOptions": {
+"desc": "侧栏显示的温度项选择【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "侧栏温度选项"
+},
+"SidevRelDistTime": {
+"desc": "侧向相对速度的时间判定【CP 放飞版】",
+"kind": "user",
+"title": "侧向相对速度判定时间"
+},
+"SmartCruiseControlMap": {
+"desc": "用地图数据自动调整巡航速度【SP】",
+"kind": "user",
+"title": "智能巡航·地图限速"
+},
+"SmartCruiseControlVision": {
+"desc": "用视觉识别的限速牌自动调速【SP】",
+"kind": "user",
+"title": "智能巡航·视觉限速"
+},
+"SmoothStopMode": {
+"desc": "停车曲线更柔和【CP 放飞版】",
+"kind": "user",
+"title": "平顺停车模式"
+},
+"SnoozeUpdate": {
+"desc": "暂时不提示更新【官方】",
+"kind": "user",
+"title": "推迟更新"
+},
+"SoftHoldMode": {
+"desc": "停车时的柔和保持策略【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "软保持模式"
+},
+"SoftRestartTriggered": {
+"desc": "软重启标志（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "软重启已触发"
+},
+"SoftwareMenu": {
+"desc": "软件菜单显示项【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "软件菜单"
+},
+"SoundVolumeAdjust": {
+"desc": "按车速调整音量【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "音量随车速"
+},
+"SoundVolumeAdjustEngage": {
+"desc": "接管时调整音量【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "音量随接管"
+},
+"SpeedFromPCM": {
+"desc": "车速取原车 PCM 值【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "车速来自原车"
+},
+"SpeedLimitControlPolicy": {
+"desc": "按限速自动调速的策略【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "限速控制策略"
+},
+"SpeedLimitEngageType": {
+"desc": "限速辅助生效方式（提醒/自动）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "限速生效方式"
+},
+"SpeedLimitMode": {
+"desc": "关闭/仅显示/提醒/自动调速【SP】",
+"kind": "user",
+"title": "限速辅助模式"
+},
+"SpeedLimitOffsetType": {
+"desc": "按固定值还是百分比偏移【SP】",
+"kind": "user",
+"title": "限速偏移类型"
+},
+"SpeedLimitPolicy": {
+"desc": "相对车速还是绝对限速【SP】",
+"kind": "user",
+"title": "限速策略"
+},
+"SpeedLimitValueOffset": {
+"desc": "在限速上加/减多少（如 +5 km/h）【SP】",
+"kind": "user",
+"title": "限速偏移量"
+},
+"SpeedLimitWarningFlash": {
+"desc": "超速时闪烁提醒【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "限速告警闪烁"
+},
+"SpeedLimitWarningOffsetType": {
+"desc": "告警阈值的偏移类型（固定/百分比）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "限速告警偏移类型"
+},
+"SpeedLimitWarningType": {
+"desc": "超速告警方式（视觉/声音）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "限速告警类型"
+},
+"SpeedLimitWarningValueOffset": {
+"desc": "告警阈值偏移量（如 +5）【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "限速告警偏移值"
+},
+"SshEnabled": {
+"desc": "设备 SSH 服务开关【官方】",
+"kind": "user",
+"title": "SSH 服务"
+},
+"StandStillTimer": {
+"desc": "停车持续时间【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "停车计时"
+},
+"StandstillTimer": {
+"desc": "停车持续时间【内部】",
+"kind": "internal",
+"title": "停车计时"
+},
+"StartAccel": {
+"desc": "静止起步的目标加速度【CP 放飞版】",
+"kind": "user",
+"title": "起步加速度"
+},
+"SteerActuatorDelay": {
+"desc": "方向盘指令的延迟（秒）【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "转向执行延迟"
+},
+"SteerAngleOffset": {
+"desc": "方向盘零点偏移【CP 放飞版】",
+"kind": "user",
+"title": "方向盘角零点"
+},
+"SteerDeltaLearnedParams": {
+"desc": "转向角差自学习结果【内部】",
+"kind": "internal",
+"title": "转向角差学习值"
+},
+"SteerRatioCurve": {
+"desc": "方向盘角与曲率的映射曲线【内部】",
+"kind": "internal",
+"title": "转向比曲线"
+},
+"SteerRatioRate": {
+"desc": "转向比随速度变化率【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "转向比变化率"
+},
+"StockBlinkerCtrl": {
+"desc": "用原车逻辑控制转向灯【CP 放飞版】",
+"kind": "user",
+"title": "原车转向灯控制"
+},
+"StockLongToyota": {
+"desc": "丰田使用原车纵向控制【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "丰田原车纵向"
+},
+"StopDistanceCarrot": {
+"desc": "停车时保留的固定距离（cm）【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "Carrot·停车距离"
+},
+"StoppingAccel": {
+"desc": "停车时的目标减速度【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "停车减速度"
+},
+"StoppingDecelRate": {
+"desc": "停车段的减速度【CP 放飞版】",
+"kind": "user",
+"title": "停车减速率"
+},
+"SubaruManualParkingBrakeSng": {
+"desc": "斯巴鲁手动手刹下的启停【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "斯巴鲁手刹启停"
+},
+"SubaruStopAndGo": {
+"desc": "斯巴鲁车系启停支持【官方】",
+"kind": "user",
+"title": "斯巴鲁启停"
+},
+"SubaruStopAndGoManualParkingBrake": {
+"desc": "斯巴鲁手动手刹下的启停【官方】",
+"kind": "user",
+"title": "斯巴鲁手刹启停"
+},
+"SunnylinkCache_Roles": {
+"desc": "sunnylink 角色缓存【内部】",
+"kind": "internal",
+"title": "sunnylink 角色缓存"
+},
+"SunnylinkCache_Users": {
+"desc": "sunnylink 用户缓存【内部】",
+"kind": "internal",
+"title": "sunnylink 用户缓存"
+},
+"SunnylinkDongleId": {
+"desc": "sunnylink 绑定的设备 ID【内部】",
+"kind": "internal",
+"title": "sunnylink 设备 ID"
+},
+"SunnylinkEnabled": {
+"desc": "sunnylink 云服务（备份/恢复/远程配置/赞助）【SP】",
+"kind": "user",
+"title": "sunnylink 总开关"
+},
+"SunnylinkTempFault": {
+"desc": "sunnylink 临时故障标志【内部】",
+"kind": "internal",
+"title": "sunnylink 临时故障"
+},
+"SunnylinkdPid": {
+"desc": "sunnylink 守护进程号【内部】",
+"kind": "internal",
+"title": "sunnylink 守护 PID"
+},
+"SupportedCars": {
+"desc": "支持的车型清单（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "支持车型列表"
+},
+"SupportedCars_byd": {
+"desc": "BYD 支持车型清单（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "支持车型·BYD"
+},
+"SupportedCars_gm": {
+"desc": "通用汽车支持清单（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "支持车型·通用"
+},
+"SupportedCars_honda": {
+"desc": "内置车型清单【CP 放飞版】",
+"kind": "internal",
+"title": "支持车型·本田"
+},
+"SupportedCars_mazda": {
+"desc": "内置车型清单【CP 放飞版】",
+"kind": "internal",
+"title": "支持车型·马自达"
+},
+"SupportedCars_tesla": {
+"desc": "内置车型清单【CP 放飞版】",
+"kind": "internal",
+"title": "支持车型·特斯拉"
+},
+"SupportedCars_toyota": {
+"desc": "内置车型清单【CP 放飞版】",
+"kind": "internal",
+"title": "支持车型·丰田"
+},
+"SupportedCars_volkswagen": {
+"desc": "内置车型清单【CP 放飞版】",
+"kind": "internal",
+"title": "支持车型·大众"
+},
+"TFollowGap1": {
+"desc": "跟车距离档1（一般 0.8s）【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "跟车时距1"
+},
+"TFollowGap2": {
+"desc": "跟车距离档2（一般 1.2s）【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "跟车时距2"
+},
+"TFollowGap3": {
+"desc": "跟车距离档3（一般 1.6s）【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "跟车时距3"
+},
+"TFollowGap4": {
+"desc": "跟车距离档4（一般 2.0s）【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "跟车时距4"
+},
+"TermsVersion": {
+"desc": "已同意的用户条款版本【内部】",
+"kind": "internal",
+"title": "条款版本"
+},
+"TermsVersionSunnypilot": {
+"desc": "已同意的 SunnyPilot 条款版本【老镜像 SP 0.9.8】",
+"kind": "internal",
+"title": "SP 条款版本"
+},
+"TeslaCoopSteering": {
+"desc": "特斯拉协作转向支持【官方】",
+"kind": "user",
+"title": "特斯拉协作转向"
+},
+"TorqueAsymComp": {
+"desc": "左右打舵力度不对称的补偿【CP 放飞版】",
+"kind": "user",
+"title": "扭矩非对称补偿"
+},
+"TorqueBar": {
+"desc": "界面上显示扭矩输出条【SP】",
+"kind": "user",
+"title": "扭矩条"
+},
+"TorqueBarInactive": {
+"desc": "未接管时也显示扭矩条【SP】",
+"kind": "user",
+"title": "扭矩条(未激活)"
+},
+"TorqueDeadzoneDeg": {
+"desc": "转向扭矩的死区角度【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "扭矩死区(度)"
+},
+"TorqueFriction": {
+"desc": "扭矩模型的摩擦系数【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "扭矩摩擦"
+},
+"TorqueMaxLatAccel": {
+"desc": "扭矩控制允许的最大横向加速度【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "扭矩最大横向加速度"
+},
+"TorqueParamsOverrideEnabled": {
+"desc": "手动覆盖自动学习的扭矩参数【SP】",
+"kind": "user",
+"title": "扭矩参数覆盖"
+},
+"TorqueParamsOverrideFriction": {
+"desc": "覆盖摩擦系数【SP】",
+"kind": "user",
+"title": "扭矩覆盖·摩擦"
+},
+"TorqueParamsOverrideLatAccelFactor": {
+"desc": "覆盖横向加速度系数【SP】",
+"kind": "user",
+"title": "扭矩覆盖·横向加速度系数"
+},
+"TorqueParamsOverrideLatAccelOffset": {
+"desc": "覆盖横向加速度偏移【SP】",
+"kind": "user",
+"title": "扭矩覆盖·横向加速度偏移"
+},
+"TorqueParamsOverrideSteerActuatorDelay": {
+"desc": "覆盖转向执行延迟（秒）【SP】",
+"kind": "user",
+"title": "扭矩覆盖·执行延迟"
+},
+"TorquedOverride": {
+"desc": "手动覆盖扭矩标定值【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "扭矩标定覆盖"
+},
+"ToyotaAutoHold": {
+"desc": "丰田自动驻车支持【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "丰田自动驻车"
+},
+"ToyotaAutoLockBySpeed": {
+"desc": "按车速自动落锁【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "丰田按速落锁"
+},
+"ToyotaAutoUnlockByShifter": {
+"desc": "挂 P 挡自动解锁【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "丰田换挡解锁"
+},
+"ToyotaEnhancedBsm": {
+"desc": "丰田增强盲区监测【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "丰田增强盲区"
+},
+"ToyotaSnG": {
+"desc": "丰田停车/起步支持【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "丰田启停"
+},
+"ToyotaTSS2Long": {
+"desc": "丰田 TSS2 车型纵向控制【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "丰田 TSS2 纵向"
+},
+"TrafficLightDetectMode": {
+"desc": "红绿灯识别的方式【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "红绿灯检测模式"
+},
+"TrainingVersion": {
+"desc": "新手引导版本号【内部】",
+"kind": "internal",
+"title": "新手引导"
+},
+"TrueVEgoUI": {
+"desc": "显示来自定位的真实车速【SP】",
+"kind": "user",
+"title": "显示真实车速"
+},
+"TrueVEgoUi": {
+"desc": "显示来自定位的真实车速【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "显示真实车速"
+},
+"TurnSpeedControl": {
+"desc": "按弯道自动降速【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "弯道速度控制"
+},
+"TurnSpeedControlMode": {
+"desc": "按弯道降速的策略【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "弯道速度控制模式"
+},
+"TurnVisionControl": {
+"desc": "用视觉识别弯道并降速【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "视觉弯道控制"
+},
+"UbloxAvailable": {
+"desc": "设备是否有 u-blox 模块【内部】",
+"kind": "internal",
+"title": "有 u-blox GPS"
+},
+"Ui2026Style": {
+"desc": "使用 2026 版界面风格【SP】",
+"kind": "user",
+"title": "2026 新界面"
+},
+"UpdateAvailable": {
+"desc": "是否存在可用更新【内部】",
+"kind": "internal",
+"title": "有可用更新"
+},
+"UpdateFailedCount": {
+"desc": "连续更新失败次数【内部】",
+"kind": "internal",
+"title": "更新失败次数"
+},
+"UpdateMode": {
+"desc": "自动 / 手动 / 仅提示【官方】",
+"kind": "user",
+"title": "更新方式"
+},
+"UpdaterAvailableBranches": {
+"desc": "可切换的代码分支列表【内部】",
+"kind": "internal",
+"title": "可选分支"
+},
+"UpdaterCurrentDescription": {
+"desc": "当前版本说明【内部】",
+"kind": "internal",
+"title": "当前版本描述"
+},
+"UpdaterCurrentReleaseNotes": {
+"desc": "当前版本 release notes【内部】",
+"kind": "internal",
+"title": "当前版本更新说明"
+},
+"UpdaterFetchAvailable": {
+"desc": "可以检查更新标志【内部】",
+"kind": "internal",
+"title": "可检查更新"
+},
+"UpdaterLastFetchTime": {
+"desc": "上次检查更新时间【内部】",
+"kind": "internal",
+"title": "上次检查更新"
+},
+"UpdaterNewDescription": {
+"desc": "可更新版本的说明【内部】",
+"kind": "internal",
+"title": "新版本描述"
+},
+"UpdaterNewReleaseNotes": {
+"desc": "可更新版本的 release notes【内部】",
+"kind": "internal",
+"title": "新版本更新说明"
+},
+"UpdaterState": {
+"desc": "更新器当前状态【内部】",
+"kind": "internal",
+"title": "更新器状态"
+},
+"UpdaterTargetBranch": {
+"desc": "更新目标分支【官方】",
+"kind": "user",
+"title": "目标分支"
+},
+"UptimeOffroad": {
+"desc": "累计驻车时长【内部】",
+"kind": "internal",
+"title": "驻车累计时长"
+},
+"UptimeOnroad": {
+"desc": "累计行车时长【内部】",
+"kind": "internal",
+"title": "行车累计时长"
+},
+"UseLaneLineCurveSpeed": {
+"desc": "用车道线曲率计算弯道速度【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "用车道线算弯速"
+},
+"UseLaneLineSpeed": {
+"desc": "用车道线信息限制速度【CP Carrot 0.9.9】",
+"kind": "user",
+"title": "用车道线限速"
+},
+"UserResver": {
+"desc": "用户自定义保留参数【内部】",
+"kind": "internal",
+"title": "用户保留位"
+},
+"VEgoStopping": {
+"desc": "车速归零判定标志（内部）【CP Carrot 0.9.9】",
+"kind": "internal",
+"title": "停车判定"
+},
+"Version": {
+"desc": "openpilot 版本号【内部】",
+"kind": "internal",
+"title": "版本号"
+},
+"VisionCurveLaneless": {
+"desc": "无车道线时也用视觉识别弯道【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "视觉弯道(无车道线)"
+},
+"VwAccType": {
+"desc": "大众车型 ACC 类型选择【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "大众 ACC 类型"
+},
+"VwCCOnly": {
+"desc": "大众车型只做巡航控制【老镜像 SP 0.9.8】",
+"kind": "user",
+"title": "大众仅巡航"
+},
+"WdCamSwOffSpeed": {
+"desc": "低于此速度关宽动态【CP 放飞版】",
+"kind": "user",
+"title": "宽动态摄像头·关闭速度"
+},
+"WdCamSwOnSpeed": {
+"desc": "高于此速度开宽动态【CP 放飞版】",
+"kind": "user",
+"title": "宽动态摄像头·开启速度"
+},
+"device_go_off_road": {
+"desc": "让设备切回驻车状态【CP 放飞版】",
+"kind": "user",
+"title": "设备转驻车"
+},
+"modelid": {
+"desc": "当前模型编号【CP 放飞版】",
+"kind": "internal",
+"title": "模型 ID"
+}
+}

@@ -1,0 +1,46 @@
+# === 绝对不能上传（SSH 私钥 / 构建工具链）===
+keys/
+*/keys/
+.assets_stage/
+.apktc/
+*.p12
+*.jks
+*.keystore
+*.pk8
+*.ppk
+k1
+k2
+k3
+k4
+k5
+k6
+k7
+k8
+
+# === 体积太大 / 产物 ===
+releases/
+dist/
+_attic/
+tmp-adb-x/
+*.apk
+*.idsig
+*.mapping.txt
+libs/android.jar
+screenshots/
+
+# === 临时/日志/本地状态 ===
+*.log
+*.bak*
+.tmp-*
+*.tmp
+.last-rollback-ts
+.assets_stage
+node_modules/
+
+# === 2026-10-05 补（上传前安全收尾）===
+__pycache__/
+*.pyc
+server/data/
+*.log.*
+_prev*.jsonl*
+_sess_now*

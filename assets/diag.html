@@ -1,0 +1,2137 @@
+<!DOCTYPE html>
+<html lang="zh" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__ · DSH C3 控制台</title>
+<style>
+:root{
+  --bg:#0f1115; --bg2:#161a21; --bg3:#1d222b; --card:#161a21; --line:#2a3140;
+  --fg:#e6edf3; --dim:#9aa4b2; --acc:#4b8cf7;
+  --y:#e8c400; --g:#3fb950; --o:#ff9f43; --r:#f85149; --b:#4b8cf7;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:14px/1.5 -apple-system,system-ui,"Segoe UI",Roboto,"PingFang SC","Noto Sans CJK SC",sans-serif;
+  -webkit-text-size-adjust:100%}
+header{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#131820,#10141a);
+  border-bottom:1px solid var(--line);padding:8px 10px}
+.row1{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+header b.brand{color:var(--fg);font-weight:650;letter-spacing:.2px}
+.sp{flex:1}
+.pill{padding:3px 10px;border-radius:999px;background:var(--bg3);border:1px solid var(--line);
+  font-size:12.5px;color:var(--dim);white-space:nowrap}
+.pill.on{color:#0b0f14;background:var(--g);border-color:var(--g);font-weight:600}
+button,input,select,textarea{background:var(--bg3);color:var(--fg);border:1px solid var(--line);
+  border-radius:9px;padding:6px 11px;font:inherit;outline:none}
+button{cursor:pointer}
+button:active{transform:translateY(1px)}
+button.pri{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+button.dg{background:#7d2020;border-color:#a03030}
+button.gh{background:transparent;color:var(--dim)}
+button.gh:hover{color:var(--fg);border-color:var(--acc)}
+a{color:var(--acc);text-decoration:none}
+#st{font-size:12.5px}
+#st.pill{color:var(--dim)}
+#st.pill.on{color:#0b0f14;background:var(--g);border-color:var(--g);font-weight:600}
+.tabs{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+/* 2026-09-24 R104（用户反馈：平板手机模式下菜单没改）：「参数」已提升为一级菜单（原生顶栏「参数设置」✓）→ 手机/平板模式下二级页签里不再重复显示 ✓
+   车机模式由侧边栏的过滤逻辑处理 ✓ */
+html[data-layout="tablet"] .tab[data-p="p3"],html[data-layout="phone"] .tab[data-p="p3"]{display:none !important}
+.tab{padding:7px 14px;border-radius:9px 9px 0 0;background:transparent;border:1px solid transparent;
+  border-bottom:none;cursor:pointer;color:var(--dim);font-size:13.5px}
+.tab:hover{color:var(--fg)}
+.tab.on{background:var(--bg);color:var(--fg);border-color:var(--line);font-weight:600;
+  box-shadow:inset 0 2px 0 var(--acc)}
+.pane{display:none;padding:12px}
+.pane.on{display:block;animation:c3PaneIn .2s cubic-bezier(.25,.8,.3,1) both}   /* 2026-10-05：页内切页签也要柔和，别瞬切 ✓ */
+.wrap{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}   /* 2026-10-04 用户要求：默认两列（两张卡片宽）*/
+.wrap>.card:only-child{grid-column:1/-1}   /* 2026-10-05 用户要求：只剩一张卡片时，它要占满整行（两卡宽）✓ */
+@media(max-width:900px){.wrap{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;
+  box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.card h4{margin:0 0 8px;font-size:13.5px;font-weight:600;color:#d7dee8;letter-spacing:.2px}
+.card h4 span{color:var(--dim);font-weight:400;font-size:12.5px}
+  /* 2026-10-04 用户要求：点卡片 → 放大占满其它卡片的位置；再点一次收起 ✓ */
+  .card{cursor:zoom-in}
+  .card.solo{grid-column:1/-1;order:-1;cursor:zoom-out}
+  .card.solo canvas{height:68vh !important;max-height:620px !important}   /* 2026-10-05 修：min() 车机 Chromium74 不支持 → 整条被丢弃，放大后画布还是 110px，铺不满 ✗ */
+  .card.solo h4::after{content:"　（再点一次收起）";font-size:12px;font-weight:400;color:var(--dim)}
+  body.c3solo .wrap .card:not(.solo){display:none}
+  body.c3solo .wrap{grid-template-columns:1fr !important}
+  body.c3solo .card.solo{width:100%;max-width:none;box-sizing:border-box}
+  body.c3solo .card.solo canvas{width:100% !important}
+canvas{width:100%;height:180px;display:block;background:#0b0f14;border-radius:9px;border:1px solid #1b2129}
+.vals{display:flex;gap:8px;margin-top:8px;font-size:13.5px;font-variant-numeric:tabular-nums;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;
+  background:var(--bg3);border:1px solid var(--line);cursor:pointer;user-select:none;line-height:1.45}
+.chip .sw{width:9px;height:9px;border-radius:3px;background:currentColor;display:inline-block}
+.chip .nm{font-style:normal;color:var(--dim);font-size:12.5px}
+.chip b{font-weight:600;color:var(--fg)}
+.chip.off{opacity:.35;text-decoration:line-through}
+.chip.y{color:var(--y)} .chip.g{color:var(--g)} .chip.o{color:var(--o)}
+.y{color:var(--y)} .g{color:var(--g)} .o{color:var(--o)} .rd{color:var(--r)} .bl{color:var(--b)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{border-top:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:middle}
+th{color:var(--dim);font-weight:500}
+tr:hover{background:#1b2129}
+.mrow{display:flex;gap:10px;flex-wrap:wrap}
+.mbox{flex:1;min-width:170px;background:#0b0f14;border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+.mbox .k{color:var(--dim);font-size:12px}
+.mbox .v{font-size:20px;font-variant-numeric:tabular-nums;font-weight:600;line-height:1.35}
+.ok{color:var(--g)} .warn{color:var(--y)} .bad{color:var(--r)} .na{color:var(--dim)}
+pre{background:#0b0f14;border:1px solid var(--line);border-radius:9px;padding:10px;max-height:240px;
+  overflow:auto;color:var(--dim);font-size:12.5px;margin:8px 0 0;white-space:pre-wrap}
+.prow{display:flex;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.prow .nm{width:230px;color:#d7dee8;word-break:break-all}
+.prow .ds{flex:1;color:var(--dim);font-size:12px;min-width:150px}
+.prow input{width:92px}
+.cur{display:flex;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.cur .nm{width:230px;word-break:break-all}
+.cur .vv{color:var(--o);font-variant-numeric:tabular-nums}
+label{color:var(--dim);font-size:12.5px}
+/* 页面内确认弹窗（2026-09-20）：APP 的 WebView 默认不实现 confirm()，原生弹窗会被静默取消 */
+#askMask{position:fixed;inset:0;background:rgba(0,0,0,.62);display:none;align-items:center;justify-content:center;z-index:99;padding:12px}
+#askMask.on{display:flex}
+#askBox{background:var(--card);border:1px solid var(--line);border-radius:12px;max-width:640px;width:min(640px,96vw);
+  box-shadow:0 16px 48px rgba(0,0,0,.5);overflow:hidden}
+#askMsg{padding:14px 16px;white-space:pre-wrap;font-size:13.5px;line-height:1.6;max-height:56dvh;overflow:auto}
+#askBtns{display:flex;gap:8px;justify-content:flex-end;padding:10px 14px;border-top:1px solid var(--line)}
+#askBtns button{min-width:84px}
+
+/* ── 参数表（2026-09-20 用户反馈：没有标题行、备注被挤成 3 行）── */
+.phead{display:grid;gap:6px 8px;grid-template-columns:150px 1fr 104px 44px 74px;
+  position:sticky;top:0;z-index:3;background:#131820;border-bottom:1px solid var(--line);
+  padding:7px 0 6px;color:var(--dim);font-size:11.5px;font-weight:600}
+.phead span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prow{display:grid !important;gap:2px 8px;align-items:center;padding:7px 0;
+  grid-template-columns:150px 1fr 104px 44px 74px;
+  grid-template-areas:"k zh v w d" "n n n n n"}
+.prow .nm{grid-area:k;width:auto !important;font-family:var(--mono);font-size:12px}
+.prow .zh{grid-area:zh;width:auto !important;max-width:none;border-bottom:1px dotted var(--line)}
+.prow input{grid-area:v;width:104px !important}
+.prow .pwt{grid-area:w}
+.prow .pill{grid-area:d;justify-self:start;white-space:nowrap}
+.prow .ds{grid-area:n;color:var(--dim);font-size:12px;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;cursor:pointer;min-width:0}
+.prow.open .ds{white-space:normal;overflow:visible}
+.prow .nm,.prow .zh{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:620px){
+  .phead{grid-template-columns:1fr 96px 44px}
+  .phead .h-d{display:none}
+  .prow{grid-template-columns:1fr 96px 44px;grid-template-areas:"k zh v" "w d d" "n n n"}
+  .prow .pwt{grid-area:w}
+}
+.zh{color:#c9d1d9;font-size:12.5px;flex:0 0 auto;max-width:200px;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;border-bottom:1px dotted var(--line)}
+.pcat{margin:10px 0 4px;padding:5px 8px;background:rgba(75,140,247,.08);border-left:3px solid var(--acc);
+  border-radius:6px;font-size:13px;font-weight:600}
+.chipq{transition:background .12s,border-color .12s,transform .12s,box-shadow .12s}
+.chipq:active{transform:scale(.94)}
+/* 选中：同色系但对比明显（灰底深一档 + 深色内描边 + 加粗 + ✓ 前缀）；主题里 chipq 有 !important ✗ 故同时覆盖浅色 ✓ */
+.chipq.on{background:var(--line);border-color:var(--fg);color:var(--fg);font-weight:700;box-shadow:inset 0 0 0 1px var(--fg)}
+.chipq.on::before{content:'✓ ';font-weight:700}
+.chipq:hover{border-color:var(--dim)}
+html[data-theme="light"] .chipq.on{background:var(--line) !important;border-color:var(--fg) !important;color:var(--fg) !important}
+.prow input{width:120px}
+/* 数据可用性/上电状态（2026-09-20）：让「没上电」和「坏了」一眼可分 */
+.banner{display:flex;gap:10px;align-items:center;padding:8px 12px;font-size:13px;
+  background:#3a2a12;border-bottom:1px solid #7a5a20;color:#f0d9a8}
+.banner b{white-space:nowrap}
+.banner .x{margin-left:auto;opacity:.7;cursor:pointer}
+.flag{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:9px;
+  background:#0b0f14;border:1px solid var(--line);font-size:12.5px;color:var(--dim)}
+.flag .dot{width:9px;height:9px;border-radius:50%;background:#5c6675}
+.flag.on{color:var(--fg)} .flag.on .dot{background:var(--g);box-shadow:0 0 0 3px rgba(63,185,80,.18)}
+.flag.off{color:#f0b8b4} .flag.off .dot{background:var(--r);box-shadow:0 0 0 3px rgba(248,81,73,.18)}
+
+}
+
+/* 手机适配 v2（2026-09-21 用户截图反馈）：换行紧凑布局，写按钮不再拉满整行 */
+/* 参数行：换行布局（默认生效，不再依赖媒体查询） */
+
+  .phead{display:none}
+  .prow{display:flex !important;flex-wrap:wrap;gap:6px 8px;align-items:center;
+        padding:8px 0;border-top:1px solid var(--line)}
+  .prow .nm{flex:1 1 100%;font-family:var(--mono);font-size:12px;color:var(--fg)}
+  .prow .zh{flex:1 1 auto;max-width:58%;font-size:12px;color:var(--dim);
+        overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-bottom:none}
+  .prow input{flex:0 0 84px !important;width:84px !important}
+  .prow .pwt{flex:0 0 auto;padding:4px 12px}
+  .prow .pill{flex:0 0 auto}
+  .prow .ds{flex:1 1 100%;font-size:11.5px;color:var(--dim);white-space:nowrap;
+        overflow:hidden;text-overflow:ellipsis}
+  .prow.open .ds{white-space:normal;overflow:visible}
+  .pcat{margin:10px 0 2px;padding:6px 8px}
+
+/* 参数行三行式（2026-09-21 用户指定）：1英文+中文 / 2默认·当前·写 / 3说明 */
+.prow{display:flex !important;flex-direction:column;gap:5px;padding:9px 0;border-top:1px solid var(--line)}
+.phead{display:none !important}
+.prow .ln1{display:flex;align-items:baseline;gap:8px;min-width:0}
+.prow .ln1 .nm{flex:0 0 auto;font-family:var(--mono);font-size:12.5px;color:var(--fg);white-space:nowrap}
+.prow .ln1 .zh{flex:1 1 auto;min-width:0;font-size:12px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prow .ln2{display:flex;align-items:center;gap:8px;min-width:0}
+.prow .ln2 .pill{flex:0 0 auto}
+.prow .ln2 .lb{flex:0 0 auto;font-size:11.5px;color:var(--dim)}
+.prow .ln2 input{flex:1 1 auto;min-width:0;width:auto !important;font-size:12.5px;padding:5px 8px}
+.prow .ln2 .pwt{flex:0 0 auto;padding:5px 14px}
+.prow .ds{font-size:11.5px;color:var(--dim);white-space:normal;line-height:1.45;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.prow.open .ds{-webkit-line-clamp:unset}
+
+/* 左对齐（2026-09-21 用户要求）：参数行及其子元素一律靠左，禁止居中/右偏 */
+.prow,.prow *{text-align:left !important}
+.prow{align-items:flex-start !important}
+.prow .ln1,.prow .ln2{justify-content:flex-start !important;width:100%}
+.prow .ln2 input{text-align:left !important}
+.prow .ds{direction:ltr !important;unicode-bidi:normal !important;text-indent:0 !important}
+.card,.wrap,.pcat,.phead{text-align:left !important}
+
+/* 2026-09-23 修「图例圆点全是黑的」✗：.sw 没设颜色 → 补上主题色 + 主题取不到时用兜底色 ✓ */
+.sw{display:inline-block !important;width:9px !important;height:9px !important;border-radius:50% !important;
+    margin-right:4px;vertical-align:middle;background:currentColor}
+.chip.y .sw,.chip.y>i.sw{background:var(--y,#e8c400) !important}
+.chip.g .sw,.chip.g>i.sw{background:var(--g,#3fb950) !important}
+.chip.o .sw,.chip.o>i.sw{background:var(--o,#ff9f43) !important}
+.chip.y .nm{color:var(--fg) !important} .chip.g .nm{color:var(--fg) !important} .chip.o .nm{color:var(--fg) !important}
+
+/* 2026-09-23 v1.7 #7：顶部页签横向丝滑滑动 ✓ */
+nav.tabs{overflow-x:auto !important;overflow-y:hidden !important;flex-wrap:nowrap !important;
+  -webkit-overflow-scrolling:touch;scroll-behavior:smooth;scrollbar-width:none;scroll-snap-type:x proximity}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{flex:0 0 auto !important;scroll-snap-align:center}
+</style>
+<link rel="stylesheet" href="/theme.css?v=0">
+<!-- 布局模式：手机/平板 = 1.97 原始布局（菜单在最上面，默认）；车机 = 左栏 html[data-layout="car"] -->
+<script>(function(){try{var m=/[?&]layout=(phone|tablet|car)/i.exec(location.search);var L=m?m[1].toLowerCase():(localStorage.getItem("c3layout")||"tablet");if(m)localStorage.setItem("c3layout",L);document.documentElement.setAttribute("data-layout",L);if(/[?&]inapp=1/i.test(location.search))window.__C3APP=true;}catch(e){}})();</script>
+<script>/* 2026-10-05 换页过渡 v2（用户反馈「v1 切投屏会白屏一段时间」）：
+   v1 是"藏住正文直到 DOMContentLoaded"→ 车机加载慢时，藏多久就白屏多久 ✗
+   v2 改成**时间有界**的淡入：这里只加一个 c3-entering（复用既有动画），固定 .22s 就结束，
+   跟页面加载多慢完全无关；**绝不藏内容** ✓ */
+(function(){try{ if(sessionStorage.getItem('c3nav')==='1'){ sessionStorage.removeItem('c3nav');
+  var r=document.documentElement; r.className+=' c3-entering';
+  setTimeout(function(){ r.className=r.className.replace(/\s*c3-entering/g,' '); },620);
+} }catch(e){}})();</script>
+<script>/* 2026-09-22 过渡动画：模式变了 → 落地时淡入/滑入 ✓ */
+(function(){try{var r=document.documentElement;var lay=r.getAttribute('data-layout')||'tablet';
+var prev=localStorage.getItem('c3layoutSeen')||'';
+if(prev&&prev!==lay){r.classList.add('c3-entering');setTimeout(function(){r.classList.remove('c3-entering');},620);}
+localStorage.setItem('c3layoutSeen',lay);}catch(e){}})();</script>
+</head>
+<body>
+<header>
+  <div class="row1" id="sampBar">
+    <b class="brand">C3 诊断台</b>
+    <span id="st" class="pill">未连接</span>
+    <select id="hostSel" title="采样/诊断的目标主机（换 Wi-Fi 后热点地址常失效，切局域网地址）"></select>
+    <button id="testHost" class="gh">测试</button>
+    <button id="bs" class="pri">开始采样</button>
+    <button id="bx" class="gh">停止</button>
+    <label>hz <input id="hz" type="number" value="10" min="2" max="100" style="width:64px"></label>
+    <label>时间窗 <select id="win" title="横轴显示最近多少秒；线太密就调大">
+      <option value="5">5 秒</option>
+      <option value="10">10 秒</option>
+      <option value="20" selected>20 秒</option>
+      <option value="40">40 秒</option>
+      <option value="80">80 秒</option>
+    </select></label>
+    <label>重放 <select id="routeSel" title="C3 设备上最近的路线分段（自动列出，选中即填入）"><option value="">路线…</option></select>
+      <button id="routeRef" class="gh" title="重新拉取路线列表" style="padding:4px 9px">⟳</button></label>
+    <label style="display:inline-flex;align-items:center;gap:5px"><input id="fa" type="checkbox" checked style="width:auto;margin:0;vertical-align:middle">快放</label>
+    <button id="snap" class="gh">快照 CSV</button>
+    <button id="anBtn" class="gh">分析本次采样</button>
+    <span class="sp"></span>
+  </div>
+  <div class="tabs">
+    <div class="tab on" data-p="p1">调试图表</div>
+    <div class="tab" data-p="p2">横向诊断</div>
+    <div class="tab" data-p="p3">参数</div>
+    <div class="tab" data-p="p4">设备状态</div>
+  </div>
+</header>
+
+<div id="banner" class="banner" style="display:none">
+  <b id="bannerTitle">—</b><span id="bannerText" style="flex:1"></span>
+  <span class="x" id="bannerX" title="收起">✕</span>
+</div>
+
+<div class="pane on" id="p1">
+<div class="wrap" id="wrap"></div></div>
+
+<div class="pane" id="p2">
+  <div id="anBox" style="display:none;margin:6px 0 10px"></div>
+  <div class="card" style="margin-bottom:10px"><h4>实时指标 <span>（服务端按 30s 窗口计算，含判据）</span></h4>
+    <div class="mrow" id="metrics"></div>
+  </div>
+  <div class="wrap" id="wrap2"></div>
+</div>
+
+<div class="pane" id="p3">
+  <div class="card" style="margin-bottom:10px">
+    <h4>参数总览</h4>
+    <div class="row1">
+      <input id="pq" placeholder="过滤：参数名或说明，如 弯道 / Lat / Steer" style="flex:1;min-width:210px">
+      <label class="note" style="display:flex;align-items:center;gap:4px"><input type="checkbox" id="pOnlySet" style="width:auto"> 只看已写入</label>
+      <label class="note" style="display:flex;align-items:center;gap:4px" title="只显示「当前值 ≠ 默认值」的参数"><input type="checkbox" id="pDiffOnly" style="width:auto"> 与默认值不同</label>
+      <label class="note" style="display:flex;align-items:center;gap:4px" title="默认只显示常用可调参数（内部状态 / Cache / Git 之类要点开才看）"><input type="checkbox" id="pUserOnly" checked style="width:auto"> 只看常用</label>
+      <button id="pall">刷新全部</button>
+      <button id="pcsv" title="导出 CSV / 选择导出目录 / 导入并写入，都在这一个按钮里">CSV 导入/导出…</button>
+    </div>
+    <div class="row1" id="pcatbar" style="margin-top:8px"><span id="pStat" class="note">—</span></div>
+    <div id="plist" style="margin-top:8px"><div class="empty">点「刷新全部」从 C3 设备读取…</div></div>
+  </div>
+
+  <div class="card" style="margin-bottom:10px">
+    <h4>参数档案 <span>（A–H 存参数快照 · <b>Z=固定备份档</b>（建议先把初始参数存一次）· 存到机器并镜像到 C3 设备）</span></h4>
+    <div class="row1" id="profSlots"></div>
+    <div class="row1" style="margin-top:8px">
+      <input id="profNote" placeholder="备注，如：原厂 / 试探A / 高速更稳" style="flex:1;min-width:200px">
+      <button id="profSaveBtn" class="pri">保存</button>
+      <button id="profDelBtn" class="gh">删除</button>
+      <button id="profApplyBtn" class="pri">应用</button>
+      <button id="dab" class="pri">对比</button>
+      <label class="note" style="display:flex;align-items:center;gap:4px" title="「未在设备界面中」的参数（设备设置界面看不到，如 HasAcceptedTerms）默认不存档、也不写回 ✓"><input type="checkbox" id="profAll" style="width:auto"> 含未在界面中的项</label>
+      <span class="grow"></span><span id="profInfo" class="note"></span>
+    </div>
+    <pre id="ab">点字母选中档案（可多选）；「保存」把当前设备参数存进所选档，「应用」把所选档写回设备，「对比」看差异。</pre>
+  </div>
+
+  <pre id="pout">就绪。</pre>
+</div>
+
+<div class="pane" id="p4">
+  <div class="card" style="margin-bottom:10px"><h4>设备状态</h4>
+    <div class="mrow" id="liveflags" style="margin-bottom:8px"></div>
+    <!-- 2026-10-05 修（用户报「设备状态的内容好像重叠了」）：statusHtml() 吐的是**一行行竖排**的
+         「标签 + 值」，但这里原来挂了 class="mrow"（横向 flex）→ 行被横向挤压、78px 定宽标签溢出，
+         文字互相盖住 ✗ 改成竖排容器 ✓ -->
+    <div id="devst" style="display:block"></div>
+    <div class="row1" style="margin-top:8px">
+      <button id="dref" class="pri">刷新</button>
+      <button id="dcard">重启 card 进程</button>
+      <button id="dbsm">应用 BSM 计数器补丁(--apply)</button>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:10px"><h4>告警</h4><div id="alerts" style="color:var(--dim)">（无）</div></div>
+  <div class="card"><h4>后台任务</h4><div id="jobs" style="color:var(--dim)">—</div></div>
+</div>
+
+<script>
+var TOKEN='__TOKEN__', API='__API__', HOST='c3';
+// 主机绑定（2026-09-20）：原来 HOST 写死成 'c3'，换 Wi-Fi 后热点地址失效 →
+// 每次「开始采样」都是 10s 后 exit 255，页面表现为「连接中→断开」死循环。
+(function(){
+  var saved=null; try{ saved=stGet('host'); }catch(e){}
+  get('/state',function(j){
+    var hs=(j&&j.hosts)||[], sel=document.getElementById('hostSel');
+    hs.forEach(function(h){ if(h.mode==='local') return;
+      var o=document.createElement('option'); o.value=h.id;
+      o.textContent=(h.label||h.id)+'  '+(h.target||h.host||''); sel.appendChild(o); });
+    /* 2026-09-24 R99（用户：诊断台应该和主控台是一起的）：
+       ① 主机以**后端默认主机**为准 —— 主控台切主机会写它，两边就始终一致 ✓
+          （原来这里"本页 localStorage 优先"，主控台换了主机诊断台还在打旧的 ✗）
+       ② 本页切主机也写回后端默认 → 主控台跟着变 ✓（原来只写本页 ✗）
+       ③ 进页面自动测一次连接 → 状态栏直接显示真实情况，不再停在"未连接" ✓ */
+    var def=(j&&j.defaultHostId)||'';
+    if(def && hs.some(function(h){ return h.id===def; })) HOST=def;
+    else if(saved && hs.some(function(h){ return h.id===saved; })) HOST=saved;
+    sel.value=HOST;
+    sel.onchange=function(){ HOST=this.value; stSet('host',HOST);
+      try{ post('/hosts',{hostId:HOST,action:'default',id:HOST},function(){ setSt('已切到 '+HOST+'（主控台同步 ✓）'); }); }
+      catch(e){ setSt('已切到 '+HOST); }
+      try{ readCurated(); }catch(e){}
+      testHostNow();                       /* 切完立刻测一次 ✓ */ };
+    // ?replay=<路线路径>：直接填进回放框（配合 auto=1 就能一键看某段路的曲线）
+    var _rm=/[?&]replay=([^&]+)/.exec(location.search);
+    if(_rm){ try{ var _rp=document.getElementById('rp'); if(_rp) _rp.value=decodeURIComponent(_rm[1]); }catch(e){} }
+    if(/[?&]auto=1/.test(location.search)){ setTimeout(function(){ try{ start(); }catch(e){} },400); }
+    try{ loadRoutes(); }catch(e){}
+    var _rs=document.getElementById('routeSel');
+    if(_rs) _rs.onchange=function(){ if(this.value){  stSet('replay',this.value); } };
+    var _rr=document.getElementById('routeRef'); if(_rr) _rr.onclick=loadRoutes;
+  });
+  function testHostNow(verbose){
+    setSt('测试…');
+    post('/test',{hostId:HOST},function(j){
+      var r=(j&&j.result)||{};
+      if(r.ok) setSt(verbose ? ('主机可用 '+HOST+'（'+((r.banner&&r.banner[1])||'')+' '+r.latencyMs+'ms）') : '已连接');
+      else setSt(verbose ? ('主机不可达 '+HOST+'：'+(r.error||'连接失败')) : '连接失败');
+    });
+  }
+  /* 2026-09-24 R100（用户：连接就行了，不要显示那么多内容）：
+     自动测只显示「已连接 / 连接失败」—— 是哪台设备右边主机下拉框已经写着，别重复 ✗
+     想看详情（主机名 + 延迟）就点「测试」按钮 ✓ */
+  document.getElementById('testHost').onclick=function(){ testHostNow(true); };
+  testHostNow(false);
+})();
+var PY='/usr/local/venv/bin/python3 /data/openpilot/dsh-params.py';
+var DEV='/data/openpilot';
+var C1=[
+ {t:'1 加速度  实际/规划/输出', k:['ae','pa','oa'], s:[1,1,1]},
+ {t:'2 速度  规划/当前/自车加速度', k:['ps','v','ae'], s:[1,1,1]},
+ {t:'3 模型序列  位置x[32]/速度x[32]/速度x[0]', k:['mx','mv32','mv0'], s:[1,1,1]},
+ {t:'4 雷达前车  规划加速度/前车加速度/aLeadK', k:['pa','ra','rak'], s:[1,1,1]},
+ {t:'5 视觉前车  自车加速度/前车加速度/jLead', k:['ae','ra','rj'], s:[1,1,1]},
+ {t:'6 转向力矩  实际x10/期望x10/内部输出x10', k:['ta','td','to'], s:[10,10,10]},
+ {t:'7 转向角度  实际/期望(由曲率估算)/偏移x10', k:['sa','sades','ao'], s:[1,1,10]},
+ {t:'8 曲率  指令x1e4/实测x1e4/输出x1e4', k:['dk','mk','curv'], s:[10000,10000,10000]}
+];
+var C2=[
+ {t:'9 车道参考  车道曲率x1e4/指令曲率x1e4/差异x1e4', k:['lkc','dk','ddev'], s:[10000,10000,10000]},
+ {t:'10 指令相对车道中心的前方30m偏移(米)', k:['dev30','loff30','x0'], s:[1,1,0]},
+ {t:'11 横向加速度 实际/期望/误差x10', k:['ta','td','lae'], s:[1,1,10]},
+ {t:'12 饱和与误差 饱和/误差x100/实际扭矩', k:['sat','lae','tq'], s:[1,100,1]},
+ {t:'13 车道与状态 车道参考/车道概率/横向激活', k:['ull','lp','lat'], s:[1,1,1]},
+ {t:'14 前车  距离m/相对速度/前车加速度', k:['rd','rv','ra'], s:[1,1,1]}
+];
+var PCAT=['横向控制','弯道','跟车/纵向','变道/避让','界面/交互','设备/系统','其它'];
+var PMETA={
+  'LatMpcJerkCost':['横向控制','回正阻尼（走廊模式唯一阻尼项，原 5）：调大→回正更黏更顿'],
+  'LatMpcSteeringRateCost':['横向控制','转向速率代价（上游默认 700，本车原 7 现 50）：调大→打舵更慢更稳'],
+  'LatMpcPathCost':['横向控制','路径跟踪权重（原 200）：调大→更贴路径但易抖'],
+  'LatMpcAccelCost':['横向控制','横向加速度代价（原 120）：调大→横向更柔但跟线变松'],
+  'LatMpcMotionCost':['横向控制','航向代价（原 7）：调大→更看重航向一致'],
+  'AutoCurveSpeedFactorH':['弯道','高速弯减速强度（高=更慢，原 90 现 110）：调大→过弯更慢更稳'],
+  'AutoCurveSpeedAggressivenessH':['弯道','高速弯允许横加（高=更快）：调大→过弯更快更激进'],
+  'AutoCurveSpeedLowerLimit':['弯道','弯道最低速度（原 15）：设太低→急弯可能过快'],
+  'CurveEscapeStrength':['弯道','弯道外延/避让幅度（0=最小）：调大→更靠外，可能压线'],
+  'SteerActuatorDelay':['横向控制','0=用在线学习的 liveDelay；填入固定值会关掉学习，慎改'],
+  'LateralTorqueCustom':['横向控制','0=用学习扭矩；1=启用自定义扭矩（配合下面几项）'],
+  'LaneStabTime':['横向控制','车道稳定时间：调小→更灵敏，调大→更稳但迟钝'],
+  'AutoEngage':['其它','是否自动进入辅助驾驶；改动会影响接管行为'],
+  'AutoCurveSpeedFactor':['弯道','低速弯减速强度（与 H 同族，作用于中低速）'],
+  'AutoCurveSpeedAggressiveness':['弯道','低速弯允许横加（与 H 同族）'],
+};
+function pcat(n){
+  // 设备自身的分类优先（settings.cc 的标签页归属），找不到才退到兜底组
+  if(PALL&&PALL.groups&&PALL.groups[n]) return PALL.groups[n];
+  return '未在设备界面中';
+}
+function pcatFallback(n){
+  if(PMETA[n]) return PMETA[n][0];
+  if(/^Lat|^Steer|Lane|Torque|Lateral/.test(n)) return '横向控制';
+  if(/Curve/.test(n)) return '弯道';
+  if(/^Long|Follow|Lead|Radar|Cruise/.test(n)) return '跟车/纵向';
+  if(/Fork|LaneChange|BlindSpot|Avoid/.test(n)) return '变道/避让';
+  if(/^Ui|Display|Sound|Volume/.test(n)) return '界面/交互';
+  if(/^Adb|^Api|^Ssh|Upload|Network|Github|Token|Wifi/.test(n)) return '设备/系统';
+  return '其它';
+}
+var ZHTOK={Curve:'弯道',Fork:'岔路',Nav:'导航',Blinker:'转向灯',Decal:'减速带',Dist:'距离',Distance:'距离',
+ Limit:'上限',UpRoad:'提高限速',Road:'道路',Gap:'车距',Trim:'微调',Lead:'前车',Pitch:'俯仰',EV:'电车',Table:'表',
+ Disengage:'退出',Accelerator:'油门',Training:'培训',Terms:'条款',Metered:'计费',Steering:'转向',Steer:'转向',
+ Angle:'角度',Offset:'偏移',Torque:'扭矩',Lat:'横向',Lateral:'横向',Long:'纵向',Longitudinal:'纵向',Speed:'速度',
+ Factor:'系数',Aggressiveness:'激进度',Lower:'下限',Delay:'延迟',Stiffness:'刚度',Camera:'摄像头',Radar:'雷达',
+ Model:'模型',Lane:'车道',Auto:'自动',Enable:'启用',Enabled:'启用',Time:'时间',Custom:'自定义',Strength:'强度',
+ Escape:'外扩',Record:'录制',Upload:'上传',Api:'接口',Cache:'缓存',Token:'令牌',Ssh:'SSH',Wifi:'无线',
+ Device:'设备',Stats:'统计',Firehose:'数据流',Log:'日志',Param:'参数',Version:'版本',Accepted:'已接受',
+ Onroad:'行驶中',Offroad:'驻车',Car:'车辆',State:'状态',Mode:'模式',High:'高速',Higher:'更高',Min:'最小',
+ Max:'最大',Ratio:'比例',Gain:'增益',Accel:'加速度',Decel:'减速度',Jerk:'加加速度',Brake:'刹车',Gas:'油门',
+ Engine:'引擎',Wheel:'车轮',Yaw:'横摆',Path:'路径',Cost:'代价',Weight:'权重',Smooth:'平滑',Filter:'滤波',
+ Vision:'视觉',Map:'地图',Route:'路线',Trip:'行程',Drive:'驾驶',Driver:'驾驶员',Alert:'告警',Sound:'声音',
+ Volume:'音量',Display:'显示',Bright:'亮度',Lang:'语言',Ui:'界面',Dev:'开发',Fingerprint:'指纹',User:'用户',
+ Home:'主目录',Testing:'测试',Ground:'地面',Truth:'真值',Type:'类型',Level:'等级',Count:'计数',Index:'索引',
+ Start:'开始',End:'结束',Stop:'停止',Go:'前进',Back:'后退',Front:'前',Rear:'后',Left:'左',Right:'右',
+ Turn:'转向',Lane:'车道',Change:'变更',Avoid:'避让',Blind:'盲区',Spot:'点',Warning:'警示',Beep:'提示音'};
+function camelTokens(n){ return String(n).replace(/([a-z0-9])([A-Z])/g,'$1 $2').split(/[\s_]+/).filter(Boolean); }
+/** 中文名：厂商标题 > 精选中文名 > 词根推断（推断的加 ≈ 前缀） */
+function pzh(name){
+  var m=(PALL&&PALL.meta&&PALL.meta[name])||null;
+  if(m&&m.title) return {label:m.title, exact:true};
+  if(PMETA[name]&&PMETA[name][2]) return {label:PMETA[name][2], exact:true};
+  var out=[], miss=0;
+  camelTokens(name).forEach(function(t){
+    var v=ZHTOK[t]||ZHTOK[t.replace(/s$/,'')]||ZHTOK[t.replace(/ed$/,'')];
+    if(v) out.push(v); else { miss++; out.push(t); }
+  });
+  return {label:out.join(''), exact:false, miss:miss};
+}
+/** 参数分层（词库给）：user=常用可调 · danger=动作型(写入即执行,危险) · internal=内部状态(不用手改) */
+function pkind(n){
+  var m=(PALL&&PALL.meta&&PALL.meta[n])||null;
+  return (m&&m.kind)||'';
+}
+function pnote(n){
+  var m=(PALL&&PALL.meta&&PALL.meta[n])||null;
+  if(m&&(m.title||m.desc)) return (m.title?('<b>'+m.title+'</b>：'):'')+(m.desc||'');
+  if(PMETA[n]&&PMETA[n][1]) return PMETA[n][1];
+  return '未标注（改动前先「存为档案」）';
+}
+
+var COL=['#e8c400','#3fb950','#ff9f43'], NAMES=['实际','期望/规划','控制器输出'];
+// 第三路在不同图里不是同一个量（加速度图=输出加速度；力矩图=内部输出；曲率图=输出曲率…），
+// 所以这里给按 key 的精确名；拿不到就回退「控制器输出」。
+var N3={oa:'输出加速度',to:'内部输出',curv:'输出曲率',ddev:'差异',ao:'角度偏移',x0:'横向偏移',
+        tq:'实际扭矩',lat:'横向激活',rak:'前车aLeadK',rj:'前车jLead',mv0:'速度x[0]',
+        ae:'自车加速度',ra:'前车加速度',lp:'车道概率'};
+function nameOf(g,j){ return j<2 ? NAMES[j] : (N3[g.k[2]]||'控制器输出'); }
+var MAX=6000, M2=600;         // MAX=缓冲上限（长时间跑不涨内存）；横轴窗口由 #win 决定
+var WIN_S=20;
+var buf=[],cvs=[],ctx=[],es=null,sid=null,lastDraw=0,samples=[],alertsSeen={},hiddenS={};
+// 第三路（控制器输出）默认隐藏
+C1.concat(C2).forEach(function(g,gi){ hiddenS[gi+'_2']=true; });
+function winN(){ var hz=Number((document.getElementById('hz')||{}).value)||10;
+  return Math.max(60, Math.min(MAX, Math.round(WIN_S*hz))); }
+function fmt(v){ var a=Math.abs(v);
+  if(a>=1000) return v.toFixed(0); if(a>=100) return v.toFixed(1);
+  if(a>=1) return v.toFixed(2); if(a===0) return '0'; return v.toFixed(3); }
+function mkCharts(list,wrapId,bufBase){
+  var w=document.getElementById(wrapId);
+  list.forEach(function(C,i){
+    var gi=bufBase+i;
+    var d=document.createElement('div'); d.className='card';
+    var h=document.createElement('h4'); h.textContent=C.t; d.appendChild(h);
+    var c=document.createElement('canvas'); d.appendChild(c);
+    var v=document.createElement('div'); v.className='vals';
+    ['y','g','o'].forEach(function(cl,j){
+      var sp=document.createElement('span'); sp.className='chip '+cl;
+      if(j===2) return;   // ★ 第三路（控制器输出）默认不显示：连名字和值一起省掉（forEach 回调里只能用 return，不能用 continue）
+      sp.innerHTML='<i class="sw"></i><i class="nm">'+NAMES[j]+'</i><b id="v'+gi+'_'+j+'">–</b>';
+      sp.title='点击可隐藏/显示这条线（同时画三条太乱时用）';
+      sp.onclick=function(){ hiddenS[gi+'_'+j]=!hiddenS[gi+'_'+j];
+        sp.classList.toggle('off',!!hiddenS[gi+'_'+j]); drawOne(gi); };
+      v.appendChild(sp);
+    });
+    d.appendChild(v); w.appendChild(d);
+    cvs[gi]=c; ctx[gi]=c.getContext('2d'); buf[gi]=[[],[],[]];
+  });
+}
+/** 按帧合并重绘（2026-09-21 用户反馈：诊断页闪烁）——
+ *  原来每来一个样本就把所有图表同步重画一遍（40Hz × N 图），改成每帧最多一次。 */
+var __rafPending=0;
+function scheduleDrawAll(){
+  if(__rafPending) return;
+  __rafPending=requestAnimationFrame(function(){
+    __rafPending=0;
+    try{ var all=C1.concat(C2); for(var q=0;q<all.length;q++) drawOne(q); }catch(e){}
+  });
+}
+/** 主题色读取（2026-09-21）：图表跟随主题，白底时画布变白、文字与曲线用浅底可读色 */
+var _tvCache={}, _tvKey=null;
+function cssVar(n, dflt){
+  try{
+    var th=document.documentElement.getAttribute('data-theme')||'';
+    if(th!==_tvKey){ _tvKey=th; _tvCache={}; }          // ★ 主题变了就重取（此前缓存了兜底值→画布一直黑）
+    if(n in _tvCache) return _tvCache[n];
+    var v=getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+    _tvCache[n]=v||dflt; return _tvCache[n];
+  }catch(e){ return dflt; }
+}
+// 主题切换时立刻重绘所有图表
+try{ new MutationObserver(function(){ _tvKey=null; try{ var all=C1.concat(C2); for(var q=0;q<all.length;q++) drawOne(q); }catch(e){} })
+      .observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']}); }catch(e){}
+function themeCols(){ return [cssVar('--y','#e8c400'),cssVar('--g','#3fb950'),cssVar('--o','#ff9f43')]; }
+
+function drawOne(gi){
+  var b=buf[gi]; if(!b) return;
+  var c=cvs[gi]; if(!c) return;
+  var x=ctx[gi], cw=c.clientWidth, ch=c.clientHeight;
+  if(!cw||!ch) return;                        // 窗格隐藏时不画
+  var dpr=Math.max(1,Math.min(3,window.devicePixelRatio||1));
+  if(c.width!==Math.round(cw*dpr)||c.height!==Math.round(ch*dpr)){
+    c.width=Math.round(cw*dpr); c.height=Math.round(ch*dpr); }
+  x.setTransform(dpr,0,0,dpr,0,0);            // 按 CSS 像素绘制 → 字号才是"看起来的大小"
+  x.clearRect(0,0,cw,ch);
+  x.fillStyle=cssVar('--chartbg','#0b0f14'); x.fillRect(0,0,cw,ch);   // 整块画布跟随主题（消除黑边）
+  var L=58,R=12,T=12,B=22, pw=Math.max(20,cw-L-R), ph=Math.max(20,ch-T-B);
+  x.fillStyle=cssVar('--chartbg','#0b0f14'); x.fillRect(L,T,pw,ph);
+  var N=winN(), len=Math.max(b[0].length,b[1].length,b[2].length);
+  var COL=themeCols();   // ★ 曲线颜色跟随主题
+  var shown=[]; for(var j=0;j<3;j++) if(!hiddenS[gi+'_'+j]) shown.push(j);
+  var lo=Infinity,hi=-Infinity,g=0;
+  shown.forEach(function(jj){ var a=b[jj], s=Math.max(0,a.length-N);
+    for(var t=s;t<a.length;t++){ var v=a[t]; if(v==null||!isFinite(v)) continue;
+      if(v<lo)lo=v; if(v>hi)hi=v; g++; } });
+  if(!g||!len){
+    x.fillStyle=cssVar('--dim','#39414f'); x.font='13px system-ui,sans-serif'; x.textBaseline='middle';
+    x.fillText('等待数据…',L+12,T+ph/2); return; }
+  if(hi-lo<1e-9){ hi+=0.5; lo-=0.5; }
+  var pad=(hi-lo)*0.1; lo-=pad; hi+=pad;
+  x.strokeStyle=cssVar('--line','#1c222b'); x.lineWidth=1; x.font='11.5px ui-monospace,monospace';
+  x.fillStyle=cssVar('--dim','#7d8798'); x.textAlign='right'; x.textBaseline='middle';
+  for(var k=0;k<=4;k++){ var yy=T+ph*(k/4);
+    x.beginPath(); x.moveTo(L,yy+0.5); x.lineTo(L+pw,yy+0.5); x.stroke();
+    x.fillText(fmt(hi-(hi-lo)*(k/4)), L-7, yy); }
+  x.textAlign='left'; x.textBaseline='alphabetic'; x.font='11.5px system-ui,sans-serif';
+  x.fillStyle=cssVar('--dim','#5c6675'); x.fillText('-'+(WIN_S>=60?(WIN_S/60).toFixed(0)+'min':WIN_S+'s'), L+2, ch-6);
+  x.textAlign='right'; x.fillText('现在', L+pw, ch-6); x.textAlign='left';
+  // 正宗折线（2026-09-21 用户要求）：直接用原始采样点连线，
+  // 不做 min/max 包络带、不做按列均值平滑——就是一条普通折线。
+  shown.forEach(function(j2){
+    var a=b[j2], col=COL[j2];
+    x.strokeStyle=col; x.lineWidth=1.6; x.lineJoin='round'; x.lineCap='round';
+    x.beginPath(); var pen=false;
+    for(var t2=Math.max(0,a.length-N); t2<a.length; t2++){
+      var v2=a[t2];
+      if(v2==null||!isFinite(v2)){ pen=false; continue; }
+      var X=L+pw*(1-(a.length-t2)/N), Y=T+ph-((v2-lo)/(hi-lo))*ph;
+      if(!pen){ x.moveTo(X,Y); pen=true; } else x.lineTo(X,Y);
+    }
+    x.stroke();
+    var last=null; for(var t3=a.length-1;t3>=0;t3--){ if(a[t3]!=null&&isFinite(a[t3])){ last=a[t3]; break; } }
+    if(last!==null){ var Y4=T+ph-((last-lo)/(hi-lo))*ph;
+      x.fillStyle=col; x.beginPath(); x.arc(L+pw-2,Y4,2.6,0,6.2832); x.fill(); }
+    var el=document.getElementById('v'+gi+'_'+j2);
+    if(el) el.textContent=(last===null)?'–':fmt(last);
+  });
+}
+// ── 数据可用性、上电状态、路线列表（2026-09-20）────────────────────────────
+var liveFlags={}, emptyRun=0, lastFlagPaint=0, bannerMuted=false;
+function paintFlags(nk){
+  var el=document.getElementById('liveflags'); if(!el) return;
+  var now=Date.now(); if(now-lastFlagPaint<400) return; lastFlagPaint=now;
+  function cls(v){ return v===1?' flag on':(v===0?' flag off':' flag'); }
+  function txt(v,on,off,na){ return v===1?on:(v===0?off:na); }
+  el.innerHTML=
+    '<span class="flag'+cls(liveFlags.started)+'"><i class="dot"></i>C3 '+txt(liveFlags.started,'已激活','未激活','未知')+'</span>'
+   +'<span class="flag'+cls(liveFlags.en)+'"><i class="dot"></i>辅助驾驶 '+txt(liveFlags.en,'已开启','未开启','未开启')+'</span>'
+   +'<span class="flag'+(nk>1?' flag on':' flag off')+'"><i class="dot"></i>行驶数据 '+(nk>1?('有（'+(nk-1)+' 路）'):'无')+'</span>';
+}
+function paintBanner(){
+  var b=document.getElementById('banner');
+  if(!b||bannerMuted){ if(b) b.style.display='none'; return; }
+  if(emptyRun<20){ b.style.display='none'; return; }
+  var t=document.getElementById('bannerTitle'), x=document.getElementById('bannerText');
+  if(liveFlags.started===0){
+    t.textContent='C3 未激活';
+    x.innerHTML='C3 设备在线，但 openpilot 未激活，行驶类话题没有数据。'
+      +'想看曲线：激活 C3（或直接开辅助驾驶），或用右边的「重放」回放已录路线（下拉里直接选）。';
+  }else if(liveFlags.en===0){
+    t.textContent='辅助驾驶未开启';
+    x.innerHTML='C3 已激活，但辅助驾驶没有开启，规划/控制类数据不会更新。'
+      +'开启辅助驾驶，或用「重放」回放已录路线。';
+  }else{
+    t.textContent='暂无行驶数据';
+    x.innerHTML='C3 已激活、辅助驾驶已开启，但当前没有行驶类话题。稍等片刻或点「测试」确认主机。';
+  }
+  b.style.display='flex';
+}
+function loadRoutes(attempt){
+  var sel=document.getElementById('routeSel'); if(!sel) return;
+  attempt=attempt||0;
+  if(attempt===0) sel.innerHTML='<option value="">加载路线…</option>';
+  get('/routes?hostId='+encodeURIComponent(HOST),function(j){
+    if(!j||!j.ok){
+      /* 2026-09-24 R100：车机忙时会瞬时超时 → 自动重试 2 次；仍失败才报错，并把原因显示出来 ✓ */
+      if(attempt<2){ setTimeout(function(){ loadRoutes(attempt+1); }, 1200); return; }
+      var why=((j&&j.error&&j.error.message)||'').slice(0,44);
+      sel.innerHTML='<option value="">（路线列表获取失败'+(why?('：'+why):'')+'，可手输路径）</option>';
+      return;
+    }
+    var _segN=0; (j.routes||[]).forEach(function(r){ _segN += (r.segments||[]).length; });
+    var opts=['<option value="">路线…（'+_segN+' 段）</option>'];
+    (j.routes||[]).forEach(function(r){
+      (r.segments||[]).forEach(function(sg){
+        var p=r.root.replace(/\/$/,'')+'/'+sg.dir;
+        var mb=(sg.bytes/1048576).toFixed(1);
+        var tm=sg.mtime?new Date(sg.mtime*1000).toLocaleString().slice(5,16):'';
+        opts.push('<option value="'+p+'">'+sg.dir+' · '+mb+'MB · '+tm+(sg.hasRlog?'':'（无 rlog）')+'</option>');
+      });
+    });
+    sel.innerHTML=opts.join('');
+  });
+}
+function push(d){
+  if(!d) return;
+  samples.push(d); if(samples.length>M2) samples.shift();
+  var sr=(typeof d.sr==='number'&&d.sr>0)?d.sr:19.5;
+  if(typeof d.dk==='number'){ d.sades=-d.dk*sr*57.2958;
+    if(typeof d.lkc==='number'){ d.ddev=d.dk-d.lkc; d.dev30=0.5*d.ddev*900; } }
+  d.x0=0;
+  var all=C1.concat(C2);
+  for(var i=0;i<all.length;i++){
+    var b=buf[i]; if(!b) continue;
+    for(var j=0;j<3;j++){
+      var raw=d[all[i].k[j]], val=null;
+      if(typeof raw==='number'&&isFinite(raw)) val=raw*(all[i].s[j]||1);
+      b[j].push(val); if(b[j].length>MAX) b[j].splice(0, b[j].length-MAX);
+    }
+  }
+  // 只统计「行驶类」字段：ign/started 是状态位，一直有，不能当数据看
+  // （2026-09-20 踩过：把它们算进去 → 横幅永远不出现）
+  var _nk=0; for(var _k in d){ if(_k!=='t'&&_k!=='ign'&&_k!=='started') _nk++; }
+  if(typeof d.ign==='number') liveFlags.ign=d.ign;            // 保留：底层点火位（仅诊断用）
+  if(typeof d.started==='number') liveFlags.started=d.started; // C3 是否已激活
+  if(typeof d.en==='number') liveFlags.en=d.en;                // 辅助驾驶是否开启
+  emptyRun = (_nk<=1)?(emptyRun+1):0;
+  paintFlags(_nk); paintBanner();
+  if(d.al){ alertsSeen[String(d.al)]=(alertsSeen[String(d.al)]||0)+1; paintAlerts(); }
+  var n=performance.now();
+  if(n-lastDraw>90){ lastDraw=n;
+    scheduleDrawAll(); }
+}
+function paintAlerts(){
+  var ks=Object.keys(alertsSeen);
+  if(!ks.length){ document.getElementById('alerts').textContent='（无）'; return; }
+  document.getElementById('alerts').innerHTML=ks.map(function(k){
+    return '<div>'+k+'  <span class="o">x'+alertsSeen[k]+'</span></div>'; }).join('');
+}
+var MET=[['latAccelErrP95','横向跟踪误差p95','m/s2'],['latAccelErrRelPct','占指令比','%'],
+ ['curvErrP95','曲率误差p95','1/m'],['loopLagLowMs','回路滞后 v<8','ms'],['loopLagMidMs','回路滞后 8-20','ms'],
+ ['exitOvershootPct','出弯过冲','%'],['exitFlips','出弯翻转',''],['laneRefPct','车道参考率','%'],
+ ['laneProbMean','车道线概率',''],['steerRatioDriftPct','转向比漂移','%'],['angleOffsetDriftDeg','角度偏移漂移','deg'],
+ ['speedMean','平均车速','m/s']];
+function paintMetrics(m){
+  if(!m) return;
+  var byv={}; (m.verdicts||[]).forEach(function(v){ byv[v.metric]=v.level; });
+  var vm={latAccelErrP95:'latAccelErrP95',latAccelErrRelPct:'latAccelErrRelPct',curvErrP95:'curvErrP95',
+    loopLagLowMs:'loopLagLowMs',loopLagMidMs:'loopLagMidMs',exitOvershootPct:'exitOvershootPct',
+    exitFlips:'exitFlips',laneRefPct:'laneRefPct',laneProbMean:'laneProbMean',
+    steerRatioDriftPct:'steerRatioDriftPct',angleOffsetDriftDeg:'angleOffsetDriftDeg'};
+  document.getElementById('metrics').innerHTML=MET.map(function(x){
+    var v=m[x[0]], lv=byv[vm[x[0]]]||'';
+    var txt=(v===null||v===undefined)?'—':(typeof v==='number'?v.toFixed(3):v);
+    return '<div class="mbox"><div class="k">'+x[1]+' '+(x[2]||'')+'</div><div class="v '+(lv||'')+'">'+txt+'</div></div>';
+  }).join('');
+}
+function start(){
+  var body={hostId:HOST,hz:Number(document.getElementById('hz').value)||20};
+  var rp=((document.getElementById('routeSel')||{}).value||'').trim();
+  if(rp){ body.replay=rp; body.fast=document.getElementById('fa').checked; }
+  setSt('启动中…'); setSamplingUI(true); samples=[]; alertsSeen={}; paintAlerts();
+  post('/live/start',body,function(j){
+    if(!j.ok||!j.session){ setSt('启动失败 '+JSON.stringify(j).slice(0,140)); setSamplingUI(false); return; }
+    sid=j.session.id; attach();
+  });
+}
+function attach(){
+  if(es) es.close();
+  es=new EventSource(API+'/live/stream?sessionId='+encodeURIComponent(sid)+'&token='+encodeURIComponent(TOKEN));
+  es.addEventListener('sample',function(ev){ try{ push(JSON.parse(ev.data)); }catch(e){} });
+  es.addEventListener('metrics',function(ev){ try{ paintMetrics(JSON.parse(ev.data)); }catch(e){} });
+  es.addEventListener('exit',function(){
+    // ★ 关键修复（2026-09-21 用户反馈：采样结束后会闪）：
+    //   不关流的话 EventSource 会每 3 秒自动重连，而重连又立刻收到 exit 并关闭 → 无限重连循环 = 视觉闪烁。
+    //   手动点「停止」那条路本来就关了流（bx 处理里有 es.close()），所以只有"自然结束"才闪。
+    try{ if(es){ es.close(); } es=null; }catch(e0){}
+    // 2026-09-20：把「为什么结束」显示出来（api-stop=有人点了停止；process-exit-N=C3 设备侧脚本退出）
+    setSt('已结束'); setSamplingUI(false);
+    get('/live/status',function(j){
+      var ss=(j.sessions||[]).filter(function(x){return x.id===sid;})[0];
+      if(ss&&ss.stopReason){
+        var tgt=(ss.target||''), bad=/exit-255/.test(ss.stopReason);
+        setSt('已结束（'+ss.stopReason+(ss.exitCode!=null?' exit='+ss.exitCode:'')+'）'
+          +(bad?(' 目标 '+tgt+' 不可达 → 顶部切主机（热点/局域网地址随网络变）'):''));
+      }
+    });
+  });
+  // 服务端在流开头先发一条无名 message：{backlog:[...],meta}；以前这里没接，
+  // 于是「重载/接回」后画面永远是空的（2026-09-20 实测抓到）。
+  es.onmessage=function(ev){ try{ var d=JSON.parse(ev.data);
+    if(d&&d.backlog&&d.backlog.length){ d.backlog.forEach(function(sm){ push(sm); }); }
+    if(d&&d.meta){ var m=d.meta; log('meta: '+(m.car||'')+' '+(m.route||'')+' '+(m.mode||'')); }
+  }catch(e){} };
+  es.onopen=function(){ setSt('采样中 · 已连接 '+String(sid).slice(0,8)); setSamplingUI(true); };
+  es.onerror=function(){ setSt('连接中断/重试'); };
+}
+function post(path,body,cb){
+  fetch(API+path,{method:'POST',headers:{'content-type':'application/json','x-dsh-ssh-token':TOKEN},
+    body:JSON.stringify(body)}).then(function(r){return r.json()}).then(cb)
+    .catch(function(e){ setSt('ERR '+e); });
+}
+function get(path,cb){
+  fetch(API+path,{headers:{'x-dsh-ssh-token':TOKEN}}).then(function(r){return r.json()}).then(cb)
+    .catch(function(e){ log('ERR '+e); });
+}
+function exec(cmd,cb){ post('/exec',{hostId:HOST,command:cmd},function(j){
+  var x=(j.result||{}); cb((x.stdout||'')+(x.stderr||'')); }); }
+function log(s){ var p=document.getElementById('pout'); p.textContent=s+'\n'+p.textContent; }
+/* 2026-09-22：诊断页自己的轻提示（导出/导入完成、失败都要看得见） */
+function toast(msg, kind){
+  try{
+    var d=document.getElementById('_c3toast');
+    if(!d){
+      d=document.createElement('div'); d.id='_c3toast';
+      d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:999;'
+        +'padding:9px 16px;border-radius:10px;font-size:13px;font-weight:600;max-width:86vw;text-align:center;'
+        +'box-shadow:0 6px 20px rgba(0,0,0,.25);border:1.5px solid transparent;background:#fff;display:none';
+      document.body.appendChild(d);
+    }
+    var col=(kind==='err')?'#c62828':(kind==='warn')?'#8a5a00':'#0f7b32';
+    d.style.color=col; d.style.borderColor=col; d.textContent=msg; d.style.display='block';
+    clearTimeout(window.__c3tt);
+    window.__c3tt=setTimeout(function(){ try{ d.style.display='none'; }catch(e){} }, 2800);
+  }catch(e){}
+}
+function setSt(s){ var e=document.getElementById('st'); e.textContent=s;
+  e.className='pill'+(/^(已连接|采样中|启动中)/.test(String(s))?' on':''); }
+/** 采样按钮的"已执行"反馈（2026-09-20 用户要求）：点了要看得出来在采样。 */
+function setSamplingUI(on){
+  var b=document.getElementById('bs'); if(!b) return;
+  b.textContent = on ? '采样中…' : '开始采样';
+  try{ b.disabled = !!on; }catch(e){}
+}
+// 存储兜底（2026-09-20）：文件面板的 HTML 预览跑在 sandbox 不透明源 iframe 里，
+// 访问 localStorage 会直接抛 SecurityError；这里降级到内存，功能不中断。
+var memStore={};
+function stGet(k){ try{ return localStorage.getItem(k); }catch(e){ return (k in memStore)?memStore[k]:null; } }
+function stSet(k,v){ memStore[k]=v; try{ localStorage.setItem(k,v); }catch(e){} }
+function stDel(k){ delete memStore[k]; try{ localStorage.removeItem(k); }catch(e){} }
+// 沙箱探测：文件面板的预览 iframe（sandbox="allow-scripts"，不透明源）里
+// localStorage 会抛异常、confirm 弹窗被静默禁用、下载被拦——这里探测出来并降级。
+var SANDBOXED=false; try{ localStorage.getItem('__probe__'); }catch(e){ SANDBOXED=true; }
+var pendingAsk=null;
+/** 二次确认：能用原生弹窗就用；沙箱里退回「再点一次」的页内确认。 */
+function ask(msg,onOk,onCancel){
+  // 统一走页面内弹窗：浏览器 / APP WebView / 沙箱预览三种环境都有效
+  // （APP 的 WebView 未实现 onJsConfirm，原生 confirm() 会被静默取消 → 以前"没有弹窗"）
+  var mask=document.getElementById('askMask');
+  if(!mask){ // 极端兜底：连弹窗 DOM 都没有时，退回原生 confirm
+    if(window.confirm(msg)){ if(onOk) onOk(); } else if(onCancel) onCancel();
+    return;
+  }
+  document.getElementById('askMsg').textContent=String(msg||'');
+  mask.classList.add('on');
+  var yes=document.getElementById('askYes'), no=document.getElementById('askNo');
+  var done=function(ok){
+    mask.classList.remove('on');
+    yes.onclick=null; no.onclick=null;
+    if(ok){ if(onOk) onOk(); } else if(onCancel) onCancel();
+  };
+  yes.onclick=function(){ done(true) };
+  no.onclick=function(){ done(false) };
+}
+/** 导出落盘：优先交给连接器写文件（自建 WebView 不支持 data:/blob: 下载，
+ *  沙箱 iframe 预览也被拦），失败才退回浏览器下载。2026-09-20 用户反馈「快照CSV没用」。 */
+function saveFile(href,name){
+  try{
+    if(/^data:text\/csv/i.test(href)){
+      var i=href.indexOf(',');
+      var txt=decodeURIComponent(href.slice(i+1));
+      post('/save',{filename:name,text:txt},function(j){
+        if(j&&j.ok){
+          log('已保存到 '+j.path+'（'+j.bytes+' 字节）'); setSt('CSV 已存盘');
+          toast('✓ 已导出：'+j.path+'（'+j.bytes+' 字节）','ok');          // 用户要求：要提示导出完成 ✓
+        }
+        else {
+          log('存盘失败：'+((j&&j.error&&j.error.message)||'未知')+' → 退回浏览器下载');
+          toast('✗ 导出失败：'+((j&&j.error&&j.error.message)||'未知'),'err');
+          clickDownload(href,name);
+        }
+      });
+      return;
+    }
+  }catch(e){}
+  clickDownload(href,name);
+}
+function clickDownload(href,name){
+  var a=document.createElement('a'); a.href=href; a.download=name; a.click();
+  if(SANDBOXED) log('沙箱预览拦下了下载（无 allow-downloads）——请用浏览器打开控制台再导出');
+}
+
+// ---------- 参数 ----------
+var PALL=null,PFILTER='',PSETONLY=false,PDIFFON=false,PUSERONLY=true,PCATON='调节',PLIMIT=80;   // PDIFFON=只看与默认值不同；PCATON 默认选中「调节」
+var SAVEDIR='下载';   // CSV 导出目录（只在菜单里显示）
+function mkParams(){ loadPAll(false); }
+function loadPAll(force){
+  var el=document.getElementById('plist');
+  if(el&&!PALL) el.innerHTML='<div class="empty"><span class="spin"></span> 正在读取 C3 设备上的全部参数…</div>';
+  get('/params/all'+(force?'?force=1':''),function(j){
+    if(!j||!j.ok){ if(el) el.innerHTML='<div class="empty">读取失败：'+((j&&j.error)||'未知')+'</div>'; return; }
+    PALL=j; renderParams(); log('参数：注册表 '+((j.counts||{}).registry||0)+' 项，有值 '+((j.counts||{}).values||0)+' 项');
+  });
+}
+function renderParams(){
+  if(!PALL) return;
+  var el=document.getElementById('plist'); if(!el) return;
+  var vals=PALL.values||{}, reg={}; (PALL.registry||[]).forEach(function(r){reg[r.name]=r.flags});
+  var names=Object.keys(vals).concat(Object.keys(reg).filter(function(k){return vals[k]===undefined})).sort();
+  var q=(PFILTER||'').toLowerCase();
+  var shown=names.filter(function(k){
+    if(PUSERONLY && pkind(k)==='internal') return false;   // 2026-09-24 用户要求：内部状态默认隐藏（开关可展开）
+    if(PCATON && pcat(k)!==PCATON) return false;
+    var has=(vals[k]!==undefined&&vals[k]!==null&&vals[k]!=='');
+    if(PSETONLY && !has) return false;
+    if(PDIFFON){                                   // 2026-09-22 用户要求：只看与默认值不同的 ✓
+      var _d=(PALL.defaults||{})[k];
+      if(!(_d!==undefined && String(_d)!==String(vals[k]))) return false;
+    }
+    if(!q) return true;
+    var zh=pzh(k);
+    return k.toLowerCase().indexOf(q)>=0 || String(zh.label).toLowerCase().indexOf(q)>=0 || pnote(k).toLowerCase().indexOf(q)>=0;
+  });
+  var by={},_shown=0; shown.forEach(function(k){ if(_shown>=PLIMIT) return; _shown++; (by[pcat(k)]=by[pcat(k)]||[]).push(k) });
+  var ORDER=((PALL.groupOrder||[]).slice()).concat(['未在设备界面中']);
+  Object.keys(by).forEach(function(c){ if(ORDER.indexOf(c)<0) ORDER.push(c); });
+  var h='';
+  ORDER.forEach(function(c){
+    var list=by[c]; if(!list||!list.length) return;
+    h+='<div class="pcat">'+c+' <span class="note">'+list.length+' 项</span></div>';
+    list.forEach(function(k){
+      var v=vals[k], has=(v!==undefined&&v!==null&&v!=='');
+      var dflt=(PALL.defaults||{})[k];
+      var diff=(dflt!==undefined && String(dflt)!==String(v));
+      var dchip='<span class="pill'+(diff?' busy':'')+'" title="'+(dflt!==undefined?'厂商/管理器默认值':'未收录默认值')+'">默认 '+(dflt!==undefined?dflt:'—')+'</span>';
+      var zh=pzh(k);
+      h+='<div class="prow">'
+       +'<span class="ln1"><span class="nm" title="'+k+'">'+k+'</span>'
+       +  '<span class="zh">'+(zh.exact?'':'≈')+zh.label+'</span></span>'
+       +'<span class="ln2"><span class="pill'+(diff?' busy':'')+'">默认 '+(dflt!==undefined?dflt:'—')+'</span>'
+       +  '<span class="lb">当前</span>'
+       +  '<input data-pk="'+k+'" value="'+(has?String(v).replace(/"/g,'&quot;'):'')+'" placeholder="未写入">'
+       +  '<button class="pwt pri" data-k="'+k+'">写入</button></span>'
+       +'<span class="ds" title="点一下展开/收起全文">说明：'+pnote(k)+'</span></div>';
+    });
+  });
+  var more='';
+  if(shown.length>_shown){
+    more='<div class="row1" style="margin:10px 0;justify-content:center">'
+       + '<button class="chipq" id="pMore">显示更多（还有 '+(shown.length-_shown)+' 项）</button>'
+       + '<span class="note" style="margin-left:8px">车机上一次性渲染太多会卡，故分批显示</span></div>';
+  }
+  // ★ 分片渲染（2026-09-21 修"切面板卡死"）：表头/按钮先出，参数行按分类块逐片插入，
+  //   每片之间用 setTimeout 让出主线程 → 车机 Chromium74 上不会再整块堵死
+  var _head='<div class="phead"><span>参数（英文键）</span><span>中文名</span><span>当前值</span><span>操作</span><span class="h-d">默认值</span></div>';
+  el.innerHTML=_head+(h?'':'<div class="empty">没有匹配的参数</div>')+'<div id="pbody"></div>'+more;
+  function _bindRows(){
+    var mb=document.getElementById('pMore');
+    if(mb) mb.onclick=function(){ PLIMIT+=40; renderParams(); };
+    el.querySelectorAll('.ds').forEach(function(d){ d.onclick=function(){ d.parentNode.classList.toggle('open'); }; });
+    el.querySelectorAll('.pwt').forEach(function(b){ b.onclick=function(){
+      var k=b.getAttribute('data-k'), inp=el.querySelector('input[data-pk="'+k+'"]'), val=inp.value.trim();
+      if(!val){ log('请输入 '+k+' 的值'); return; }
+      askConfirm('即将写入参数\n\n'+k+' = '+val+'\n\n参数会直接影响车辆行为（转向/纵向/接管相关尤其谨慎）。\n确定要写入设备吗？', function(){
+        b.disabled=true; b.textContent='…';
+        exec(PY+' set '+k+'='+val,function(r){
+          logParamSet(k,val,r);                       // 2026-09-22：翻成人话 ✓
+          b.disabled=false; b.textContent='写入';
+          if(PALL&&PALL.values) PALL.values[k]=val;
+        });
+      });
+    };});
+  }
+  (function(){
+    var body=document.getElementById('pbody');
+    var parts=h?h.split('<div class="pcat">').filter(function(x){ return !!x; }):[];
+    var i=0;
+    function step(){
+      if(i>=parts.length){ _bindRows(); return; }
+      try{ body.insertAdjacentHTML('beforeend','<div class="pcat">'+parts[i]); }catch(e){}
+      i++;
+      setTimeout(step,16);            // ★ 让出主线程
+    }
+    step();
+  })();
+  var st=document.getElementById('pStat');
+  if(st){
+    var mc=Object.keys((PALL.meta)||{}).length, dc=Object.keys((PALL.defaults)||{}).length;
+    st.textContent='显示 '+shown.length+' / '+names.length+' 项 · 厂商说明 '+mc+' 项 · 默认值 '+dc+' 项';
+  }
+  var bar=document.getElementById('pcatbar');
+  if(bar&&!bar._init){
+    bar._init=1;
+    var cats=(PALL.groupOrder||[]).concat(['未在设备界面中']);
+    if(PCATON && cats.indexOf(PCATON)<0) PCATON='';      // 默认类别不存在就退回「全部类别」
+    var all=document.createElement('button'); all.className='chipq'+(PCATON?'':' on'); all.textContent='全部类别';
+    all.onclick=function(){ PCATON=''; Array.prototype.forEach.call(bar.querySelectorAll('.chipq'),function(x){x.classList.remove('on')}); all.classList.add('on'); renderParams(); chipFeedback('全部类别'); };
+    bar.appendChild(all);
+    cats.forEach(function(c){
+      var b=document.createElement('button'); b.className='chipq'+(PCATON===c?' on':''); b.textContent=c;
+      b.onclick=function(){ PCATON=(PCATON===c?'':c);
+        Array.prototype.forEach.call(bar.querySelectorAll('.chipq'),function(x){x.classList.remove('on')});
+        (PCATON?b:all).classList.add('on'); renderParams();
+        chipFeedback(PCATON||'全部类别'); };
+      bar.appendChild(b);
+    });
+    var stx=document.getElementById('pStat');
+    if(stx) bar.appendChild(stx);          // 2026-09-22 用户要求：统计文字放到类别栏末尾 ✓
+  }
+}
+/* 2026-09-22 用户要求：点类别要有明确交互反馈（选中态 + 状态行 + 轻提示） */
+function chipFeedback(label){
+  try{
+    var st=document.getElementById('pStat'), m=st?/显示\s*(\d+)/.exec(st.textContent||''):null;
+    log('类别：'+label+(m?(' · '+m[1]+' 项'):''));          // 写日志（不能用 setSt ✗ 那是顶栏"已连接"胶囊）
+    toast('已选类别：'+label+(m?('（'+m[1]+' 项）'):''),'ok');
+  }catch(e){}
+}
+/* 2026-10-05 按需：内部调用一律走缓存（原来是 force=true → 每次 5 秒重扫 ✗）
+   要强制重读用「刷新全部」按钮（那个仍是 force ✓） */
+function readCurated(){ loadPAll(false); }
+function exportAll(){
+  /* 2026-09-22：原来也用 exec("list .") ✗（脏源）→ 改 /params/all，并导出更有用的列 ✓ */
+  get('/params/all?force=1', function(j){
+    var vals=(j&&j.values)||{}, dflt=(j&&j.defaults)||{}, reg={};
+    ((j&&j.registry)||[]).forEach(function(r){ reg[r.name]=r.flags||''; });
+    var names=Object.keys(vals).sort();
+    if(!names.length){ log('没读到参数，导出取消'); toast('没读到参数，导出取消','err'); return; }
+    function q2(x){ return '"'+String(x===undefined?'':x).replace(/"/g,'""')+'"'; }
+    var rows=['参数,当前值,默认值,类别,中文说明,标志'];
+    names.forEach(function(k){
+      var zh=pzh(k);
+      rows.push([q2(k),q2(vals[k]),(dflt[k]!==undefined?q2(dflt[k]):q2('')),q2(pcat(k)),q2(zh.label||''),q2(reg[k])].join(','));
+    });
+    var csv=rows.join(String.fromCharCode(10))+String.fromCharCode(10);
+    saveFile('data:text/csv;charset=utf-8,'+encodeURIComponent(csv), 'c3-params-'+Date.now()+'.csv');
+    log('已导出 '+names.length+' 项参数（含默认值/类别/说明）');
+  });
+}
+function importAll(file){                     // 兼容旧调用（浏览器里仍可用）
+  var rd=new FileReader();
+  rd.onload=function(){ importAllText(rd.result); };
+}
+function importAllText(text){
+  (function(){
+    var rows=String(text||'').split(/\r?\n/).filter(function(x){return x.indexOf(',')>0});
+    var pairs=[], n=0;
+    rows.forEach(function(L){
+      if(/^key,value/i.test(L)) return;
+      var i=L.indexOf(','); var k=L.slice(0,i).trim();
+      var v=L.slice(i+1).trim().replace(/^"|"$/g,'');
+      if(!k||v==='') return; pairs.push(k+'='+v); n++;
+    });
+    if(!pairs.length){ log('CSV 里没有可用的 key,value'); toast('CSV 里没有可用的 key,value','err'); return; }
+    toast('开始导入 '+n+' 项…','warn');                                     // 用户要求：导入也要提示 ✓
+    var CH=40, done=0;
+    (function batch(){
+      var part=pairs.slice(done,done+CH);
+      if(!part.length){ log('导入完成，共 '+n+' 项'); setSt('导入完成 '+n+' 项');
+        toast('✓ 导入完成，共 '+n+' 项','ok'); readCurated(); return; }
+      exec(PY+' set '+part.join(' '),function(r){ done+=part.length;
+        log('写入 '+done+'/'+n+' …'); setSt('导入中 '+done+'/'+n);
+        toast('导入中 '+done+'/'+n,'warn'); batch(); });
+    })();
+  })();
+}
+// ---------- 设备 ----------
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function devstat(){
+  // 2026-09-22 用户要求：设备状态要"人话"。同时去掉 dsh-params.py get（它会喷二进制/大段 JSON ✗ 变成乱码）
+  // 车型改用 params 文件 + tr 过滤可打印字符 ✓
+  var cmd='date "+%F %H:%M:%S"; uptime; echo "-----"; '
+   +'/usr/local/venv/bin/python3 '+DEV+'/dsh-status.py 2>&1 | head -8; echo "-----"; '
+   +'echo "model=$(cat /data/params/d/ActiveModelName 2>/dev/null | tr -cd \'[:print:]\' | tail -c 40)"; '
+   +'echo "proc manager=$(pgrep -fc manager.py) controlsd=$(pgrep -fc controlsd) card=$(pgrep -fc card.py)"';
+  exec(cmd,function(r){
+    var el=document.getElementById('devst'); if(el) el.innerHTML=statusHtml(r||'');
+  });
+}
+/* 把原始输出翻成"人话"面板：每行 = 标签 + 结论 + 颜色（绿=正常/黄=注意/红=异常），
+   原始文本折在 <details> 里，排查时仍可展开 ✓ */
+function statusHtml(raw){
+  var txt=String(raw||'').replace(/\u0000/g,'');
+  var L=txt.split('\n');
+  function find(re){ for(var i=0;i<L.length;i++) if(re.test(L[i])) return L[i]; return ''; }
+  function val(s,re){ var m=re.exec(s); return m?m[1]:''; }
+  var when=(L[0]||'').trim();
+  var up=find(/\bup\b/), upTxt='—';
+  if(up){ var m=up.match(/up\s+(.+?),\s+(\d+)\s+user/);
+    var ld=up.match(/load average:\s*([\d.,\s]+)/);
+    upTxt=(m?m[1]:up.trim())+(ld?('（负载 '+ld[1].trim()+'）'):''); }
+  var can=find(/canValid=/), veh=find(/vEgo=/), st=find(/steeringAngleDeg=/, st);
+  var sd=find(/enabled=/), pd=find(/panda controlsAllowed=/);
+  var noCar=/carState 未收到/.test(txt);
+  var model=(/model=([^\n]*)/.exec(txt)||[])[1]||'';
+  var pm=/proc manager=(\d+) controlsd=(\d+) card=(\d+)/.exec(txt);
+
+  var prob=[];
+  if(noCar) prob.push('没收到车辆数据（车没启动 / CAN 未通）');
+  if(/canTimeout=True/.test(can)) prob.push('CAN 有超时');
+  if(/canErrorCounter=(?!0\b)\d+/.test(can)) prob.push('CAN 有错误计数');
+  if(!noCar && pd && /controlsAllowed=False/.test(pd)) prob.push('panda 未放行控制');
+  if(pm && (pm[2]==='0'||pm[3]==='0')) prob.push('controlsd/card 进程缺失');
+
+  function row(label,valtxt,lvl){
+    var col=(lvl==='ok')?'var(--ok)':(lvl==='warn')?'var(--warn)':(lvl==='err')?'var(--err)':'var(--fg)';
+    return '<div style="display:flex;gap:8px;align-items:flex-start;padding:3px 0;border-bottom:1px dashed var(--line)">'
+      +'<b style="flex:0 0 78px;color:var(--dim);font-weight:600">'+label+'</b>'
+      +'<span style="flex:1;color:'+col+'">'+valtxt+'</span></div>';
+  }
+  var h='';
+  h+='<div style="padding:4px 0 6px;font-weight:600;color:'+(prob.length?'var(--warn)':'var(--ok)')+'">'
+    +(prob.length?('⚠️ 需要注意：'+esc(prob.join(' · '))):'✅ C3 一切正常')+'</div>';
+
+  h+=row('设备时间', esc(when||'—'), '');
+  h+=row('运行时长', esc(upTxt), '');
+  // CAN
+  if(can){
+    var cv=val(can,/canValid=(\w+)/), ct=val(can,/canTimeout=(\w+)/), ce=val(can,/canErrorCounter=(\d+)/);
+    var canOk=(cv==='True'&&ct!=='True'&&ce==='0');
+    h+=row('CAN 通信', (canOk?'✅ 正常':'⚠️ 异常')+' · 有效='+esc(cv)+' 超时='+esc(ct)+' 错误计数='+esc(ce), canOk?'ok':'warn');
+  } else if(noCar){ h+=row('CAN 通信','⚠️ 没收到车辆数据（车没启动时属正常）','warn'); }
+  // 车辆
+  if(veh){
+    var v=val(veh,/vEgo=([\d.]+)/), kmh=val(veh,/m\/s \((\d+) km\/h\)/), gear=val(veh,/gear=(\S+)/), still=val(veh,/standstill=(\w+)/);
+    h+=row('车辆状态', (still==='True'?'⏸ 静止':'▶ 行驶')+' · 车速 '+esc(kmh||v)+' km/h · 挡位 '+esc(gear), '');
+  }
+  // 转向/踏板
+  if(st){
+    var ang=val(st,/steeringAngleDeg=([-\d.]+)/), tq=val(st,/steeringTorque=([-\d.]+)/), br=val(st,/brakePressed=(\w+)/), ga=val(st,/gasPressed=(\w+)/);
+    h+=row('转向/踏板','转向角 '+esc(ang)+'° · 转向扭矩 '+esc(tq)+' · 刹车'+(br==='True'?'已踩':'未踩')+' · 油门'+(ga==='True'?'已踩':'未踩'), '');
+  }
+  // 辅助驾驶
+  if(sd){
+    var en=val(sd,/enabled=(\w+)/), ac=val(sd,/active=(\w+)/);
+    var a1=val(sd,/alert1=([^,]*,)/), a2=val(sd,/alert2=([^,]*)/);
+    a1=a1.replace(/^'/,'').replace(/',$/,'').replace(/^None$/,'—');
+    a2=a2.replace(/^'/,'').replace(/^None$/,'—');
+    var on=(en==='True');
+    h+=row('辅助驾驶', (on?(ac==='True'?'✅ 已开启并激活':'✅ 已开启（未激活）'):'⏹ 未开启')
+      + ((a1&&a1!=='—')?(' · 提示：'+esc(a1)):''), on?'ok':'');
+  }
+  // panda
+  if(pd){
+    var ca=val(pd,/controlsAllowed=(\w+)/), sm=val(pd,/safetyModel=(\S+)/), fl=val(pd,/faults=\[([^\]]*)\]/);
+    var ok=(ca==='True');
+    if(noCar){ h+=row('控制许可','• 车没启动，暂不判定 · 安全模型 '+esc(sm), ''); }
+    else { h+=row('控制许可', (ok?'✅ 允许控制':'⚠️ 不允许控制')+' · 安全模型 '+esc(sm)+(fl?(' · 故障 '+esc(fl)):''), ok?'ok':'warn'); }
+  }
+  if(model) h+=row('车型模型', esc(model.trim()), '');
+  // 进程
+  if(pm){
+    function pc(n){ return n>0 ? ('✅ '+n) : '⚠️ 0'; }
+    h+=row('关键进程','manager '+pc(+pm[1])+' · controlsd '+pc(+pm[2])+' · card '+pc(+pm[3]), (+pm[2]&&+pm[3])?'ok':'warn');
+  }
+  h+='<details style="margin-top:6px"><summary class="note" style="cursor:pointer">原始输出（排查时展开）</summary>'
+   +'<pre style="max-height:240px;overflow:auto;white-space:pre-wrap">'+esc(txt)+'</pre></details>';
+  return h;
+}
+function jobsList(){
+  get('/jobs',function(j){
+    var arr=(j.jobs||[]);
+    document.getElementById('jobs').innerHTML=arr.length?arr.slice(-12).map(function(x){
+      return '<div>'+x.id.slice(0,8)+' '+(x.status||'')+' '+String(x.label||x.kind||'').slice(0,60)+'</div>';
+    }).join(''):'（无）';
+  });
+}
+/* ======================================================================
+   2026-09-22 用户问："转向诊断数据曲线可以分析吧" → 对本次采样做真分析 ✓
+   字段语义取自设备侧 live_stream.py（不猜）：
+     sat=转向饱和 · lae=期望-实际横向加速度误差 · dce=期望-实际曲率误差
+     lat=横向激活(1/0) · lp=车道概率 · v=车速 · en=openpilot使能 · tq=实际扭矩
+   ====================================================================== */
+function st(arr){
+  var a=arr.filter(function(x){ return x!==null && x!==undefined && isFinite(x) });
+  if(!a.length) return null;
+  a=a.slice().sort(function(x,y){ return x-y });
+  function q(pp){ var i=Math.min(a.length-1,Math.max(0,Math.round(pp*(a.length-1)))); return a[i]; }
+  var sum=0; a.forEach(function(x){ sum+=x });
+  var mean=sum/a.length, sd=0; a.forEach(function(x){ sd+=(x-mean)*(x-mean) }); sd=Math.sqrt(sd/a.length);
+  return {n:a.length, mean:mean, sd:sd, min:a[0], p50:q(.5), p95:q(.95), max:a[a.length-1]};
+}
+function f2(x){ return (Math.abs(x)>=100?x.toFixed(0):x.toFixed(2)); }
+function analyzeSample(){
+  var box=document.getElementById('anBox'); if(!box) return;
+  if(!samples.length){ alert('还没有采样数据：先点「开始采样」跑一会儿再分析 ✓'); return; }
+  try{ showPane('p2'); }catch(e){}
+  var S=samples, NL=String.fromCharCode(10);
+  function col(k){ var o=[]; for(var i=0;i<S.length;i++){ var x=S[i]; var v=(x&&x[k]!==undefined)?Number(x[k]):NaN; if(isFinite(v)) o.push(v); } return o; }
+  var t0=(S[0]&&S[0].t)||0, t1=(S[S.length-1]&&S[S.length-1].t)||0, dur=Math.max(0,t1-t0);
+  var sr=dur>0?(S.length/dur):0;
+  var sat=col('sat'), lae=col('lae'), dce=col('dce'), lp=col('lp'), v=col('v'), en=col('en'), tq=col('tq');
+  var lat=[]; for(var i2=0;i2<S.length;i2++){ var x2=S[i2]; if(x2&&x2.lat!==undefined) lat.push(Number(x2.lat)); }
+  var absOf=function(a){ return a.map(function(x){ return Math.abs(x) }) };
+  var satN=0; sat.forEach(function(x){ if(x>0) satN++; });
+  var latOn=0; lat.forEach(function(x){ if(x===1) latOn++; });
+  function trans(a){ var c=0; for(var i=0;i<a.length;i++){ if(i&&a[i-1]!==a[i]) c++; } return c; }
+  var stLae=st(lae), stAbsLae=st(absOf(lae)), stDce=st(dce), stLp=st(lp), stV=st(v), stTq=st(tq);
+  var enPct=en.length?(100*(function(){var c=0;en.forEach(function(x){if(x>0)c++});return c})()/en.length):0;
+  var latPct=lat.length?(100*latOn/lat.length):0;
+  var h='<div class="card" style="margin:0 0 10px"><h4>采样分析报告 <span class="note">（本次 '+S.length+' 个样本）</span></h4><div class="body">';
+  h+='<pre style="white-space:pre-wrap;font-size:12.5px;margin:0">';
+  h+='样本 '+S.length+' 个 · 时长 '+dur.toFixed(1)+' s · 实际约 '+sr.toFixed(1)+' Hz'+NL;
+  if(stV) h+='车速：均 '+f2(stV.mean)+' m/s · 最大 '+f2(stV.max)+' m/s（'+(stV.max*3.6).toFixed(0)+' km/h）· openpilot 使能占比 '+enPct.toFixed(0)+'%'+NL;
+  h+='横向控制激活占比 '+latPct.toFixed(0)+'%（'+latOn+'/'+lat.length+'）· 激活切换 '+trans(lat)+' 次'+NL;
+  h+='转向饱和：'+(sat.length?((100*satN/sat.length).toFixed(1)+'%（'+satN+'/'+sat.length+'）'):'（无数据）');
+  if(sat.length && satN/sat.length>0.05) h+='  ⚠ 饱和偏多，横向能力可能接近上限';
+  h+=NL;
+  if(stLae) h+='横向加速度跟随误差(期望-实际)：均 '+f2(stLae.mean)+' · 平均绝对 '+f2(stAbsLae.mean)+' · P95 '+f2(stLae.p95)+' · 最大 '+f2(Math.max(Math.abs(stLae.min),Math.abs(stLae.max)))+' m/s²'+(Math.abs(stLae.mean)>0.15?('  ⚠ 偏差偏大（实际'+(stLae.mean>0?'跟不上期望':'超过期望')+'）'):'')+NL;
+  if(stDce) h+='曲率跟随误差(期望-实际)：均 '+f2(stDce.mean)+' · 平均绝对 '+f2(st(absOf(dce)).mean)+' · P95 '+f2(stDce.p95)+'（1/m）'+NL;
+  if(stLp) h+='车道线识别概率：均 '+f2(stLp.mean)+' · 最低 '+f2(stLp.min)+' · 中位 '+f2(stLp.p50)+NL;
+  if(stTq) h+='实际转向扭矩：均 '+f2(stTq.mean)+' · 峰值 '+f2(Math.max(Math.abs(stTq.min),Math.abs(stTq.max)))+NL;
+  h+='告警：'+(Object.keys(alertsSeen).length?Object.keys(alertsSeen).join('；'):'无')+NL;
+  h+='</pre>';
+  h+='<div class="row" style="margin-top:6px"><button id="anAi" class="gh">问 AI（带上这份报告）</button><button id="anClose" class="gh">收起</button></div></div></div>';
+  box.innerHTML=h; box.style.display='block';
+  var _c=document.getElementById('anClose'); if(_c) _c.onclick=function(){ box.style.display='none' };
+  var _a=document.getElementById('anAi');
+  if(_a) _a.onclick=function(){
+    var txt=box.querySelector('pre').textContent;
+    fetch('/api/ssh/ai/chat',{method:'POST',headers:{'content-type':'application/json'},
+      body:JSON.stringify({prompt:'你是 openpilot（comma C3）横向控制分析助手。下面是一次真实采样的统计报告，请用中文分析：① 横向跟随/转向能力是否有问题（结合饱和率/跟随误差/车道概率）② 可能原因 ③ 可调参数建议（给参数名与方向）④ 不确定就说不确定。'+String.fromCharCode(10)+String.fromCharCode(10)+txt})})
+      .then(function(r){return r.json()}).then(function(j){
+        var pre=document.createElement('pre');
+        pre.style.cssText='white-space:pre-wrap;font-size:12.5px;background:var(--bg3);border:1px solid var(--line);border-radius:8px;padding:8px;margin-top:6px';
+        pre.textContent=(j&&j.ok&&j.text)?j.text:('AI 不可用：'+((j&&j.error&&j.error.message)||''));
+        box.querySelector('.body').appendChild(pre);
+      }).catch(function(e){ alert('AI 失败：'+e.message) });
+  };
+  try{ localStorage.setItem('c3diagReport', box.querySelector('pre').textContent);
+       localStorage.setItem('c3diagReportAt', new Date().toLocaleString()); }catch(e){}   // 供「综合分析」跨页读取 ✓
+  log('已生成采样分析报告（'+S.length+' 个样本）');
+}
+function snapshot(){
+  if(!samples.length){ log('暂无样本可导出'); return; }
+  var keys=['t','v','ae','pa','oa','ps','sa','sades','ao','ta','td','to','tq','lae','dce','dk','mk','curv','lkc','dev30','sat','lat','ull','lp','en','rd','rv','ra','rj','rak'];
+  var csv=keys.join(',')+'\n'+samples.map(function(s){
+    return keys.map(function(k){ return (s[k]===null||s[k]===undefined)?'':s[k]; }).join(','); }).join('\n');
+  saveFile('data:text/csv;charset=utf-8,'+encodeURIComponent(csv), 'c3-diag-'+Date.now()+'.csv');
+  log('已导出 '+samples.length+' 行');
+}
+var PSLOTS=['A','B','C','D','E','F','G','H','Z'],PSEL={};
+function pKeyOf(s){ return 'c3prof_'+s }
+function pLoad(s){ try{ return JSON.parse(stGet(pKeyOf(s))||'null'); }catch(e){ return null; } }
+function padCJK(s,n){ s=String(s); var len=0,i; for(i=0;i<s.length;i++) len+=(s.charCodeAt(i)>127?2:1);
+  var out=s; while(len<n){ out+=' '; len++; } return out; }
+function profRender(){
+  var bar=document.getElementById('profSlots'); if(!bar) return;
+  bar.innerHTML='';
+  PSLOTS.forEach(function(s){
+    var d=pLoad(s), b=document.createElement('button');
+    b.className='chipq'+(PSEL[s]?' on':''); b.textContent=(s==='Z'?'Z·备份':s)+(d?'':'·空');
+    b.title=d?('备注：'+(d.note||'（无）')+'\n时间：'+d.t+'\n参数：'+Object.keys(d.p||{}).length+' 项'):'空档（选中后点「存为选中档」）';
+    b.onclick=function(){ PSEL[s]=!PSEL[s]; profRender(); loadProfsServer();
+      var n=document.getElementById('profNote'); if(n&&PSEL[s]) n.value=(pLoad(s)||{}).note||''; };
+    bar.appendChild(b);
+  });
+  var sel=Object.keys(PSEL).filter(function(x){return PSEL[x]});
+  var info=document.getElementById('profInfo');
+  if(info){
+    var txt='已选：'+(sel.length?sel.join(','):'无')+(sel.length>1?'（点「对比」看档案之间差异）':(sel.length===1?'（点「对比」与当前设备比）':''));
+    if(sel.length===1&&PALL){ var d=pLoad(sel[0]); var dif=pDiffValues(d);
+      txt+=' · 与当前设备差异 '+Object.keys(dif).length+' 项'; }
+    info.textContent=txt;
+  }
+}
+/** 把当前设备参数存进某一档：本地缓存 + 存到机器（连接器） + 镜像到 C3 设备 */
+function profSaveSlot(slot, note, cb){
+  /* 2026-09-22 修（用户："对比差 180 项 → 证明之前没把参数全部备份进去"）：
+     原来用 exec("/usr/local/venv/bin/python3 dsh-params.py list .") ✗ ——
+     它实际返回一大坨 JSON（registry），不是 k=v 文本 → 页面只解析出 1 条垃圾 ✗
+     → 档案里根本没有真正的参数。改用 /params/all 的 values（与「对比」同一个干净来源 ✓） */
+  get('/params/all?force=1', function(j){
+    var vals=(j&&j.values)||{};
+    var o={}, skipN=0;
+    Object.keys(vals).forEach(function(k){
+      var v=vals[k]; if(v===undefined||v===null||v==='') return;
+      if(profSkip(k)){ skipN++; return; }
+      o[k]=String(v);
+    });
+    var n=Object.keys(o).length;
+    if(!n){ log('读取参数失败，档案未保存'); toast('读取参数失败，档案未保存','err'); return; }
+    stSet(pKeyOf(slot), JSON.stringify({t:new Date().toLocaleString(), note:note||'', p:o}));
+    log('已存档案 '+slot+'（'+n+' 项'+(skipN?('，忽略 '+skipN+' 项未在界面中的'):'')+'）'+(note?('，备注：'+note):''));
+    toast('✓ 已备份到档案 '+slot+'（'+n+' 项）'+(skipN?('，已忽略 '+skipN+' 项未在界面中的'):''),'ok');
+    api('/profiles',{method:'POST',json:{hostId:sel(),action:'save',slot:slot,note:note||'',values:o,count:n}})
+      .then(function(r){ if(r&&r.ok){ log('档案 '+slot+' 已存到机器（并镜像到 C3 设备）'); }
+        else { log('存到机器失败（本地已存）'); toast('本地已存，但同步到机器失败','warn'); } })
+      .catch(function(e){ log('存到机器失败（本地已存）：'+e.message); toast('本地已存，但同步机器失败：'+e.message,'warn'); });
+    profRender();
+    if(cb) cb();
+  });
+}
+function loadProfsServer(){
+  get('/profiles',function(j){
+    if(!j||!j.ok) return;
+    var n=0;
+    Object.keys(j.profiles||{}).forEach(function(slot){
+      var rec=j.profiles[slot]; if(!rec) return;
+      var local=null; try{ local=JSON.parse(stGet(pKeyOf(slot))||'null'); }catch(e){}
+      var recT=Date.parse(rec.t||0)||0, locT=local?Date.parse(local.t||0)||0:0;
+      if(!local||recT>=locT){
+        stSet(pKeyOf(slot), JSON.stringify({t:new Date(recT||Date.now()).toLocaleString(), note:rec.note||'', p:rec.p||{}}));
+        n++;
+      }
+    });
+    if(n) log('已从机器载入 '+n+' 个参数档案');
+    profRender();
+  });
+}
+function profSave(){
+  var sel=Object.keys(PSEL).filter(function(x){return PSEL[x]});
+  if(sel.length!==1){
+    // 2026-09-22 用户反馈「参数备份没效果」：原来这里只写一行日志 ✗ 屏幕上毫无反应
+    if(sel.length>1){ toast('请只选中一个档案位（当前选了 '+sel.length+' 个）','warn'); log('请先只选中一个档案位（当前 '+sel.length+' 个）'); return; }
+    var free=null; for(var i=0;i<PSLOTS.length;i++){ if(!pLoad(PSLOTS[i])){ free=PSLOTS[i]; break; } }
+    if(!free){ toast('A–H/Z 都满了：请先点选一个要覆盖的档位','warn'); log('档案位都满了，请先点选要覆盖的档位'); return; }
+    PSEL[free]=true; profRender();
+    toast('未选档位 → 已自动用空档 '+free,'ok'); log('未选档位 → 自动用空档 '+free);
+    sel=[free];
+  }
+  var s=sel[0], note=((document.getElementById('profNote')||{}).value||'').trim();
+  profSaveSlot(s, note);
+}
+function profDel(){
+  var hostNow=function(){ return document.getElementById('hostSel') ? document.getElementById('hostSel').value : 'c3-lan' };
+  var sel=Object.keys(PSEL).filter(function(x){return PSEL[x]});
+  if(!sel.length){ log('先选中要删除的档案位'); return; }
+  // 删除也要确认（2026-09-20 用户要求）：说清删哪几档、删到哪里、动了 Z 要额外警告
+  var names=sel.map(function(x){ return x==='Z' ? 'Z·备份（固定备份档）' : x; }).join('、');
+  var warn=(sel.indexOf('Z')>=0) ? '\n⚠ Z 是你的固定备份档，删掉就没有基线可回退了。' : '';
+  var empty=sel.filter(function(x){ return !pLoad(x) });
+  if(empty.length===sel.length){ log('选中的档案本来就是空的：'+sel.join(',')); return; }
+  ask('删除档案 '+names+'？\n会同时删除：本地缓存 + 机器上的存档 + C3 设备上的镜像。'+warn, function(){
+    sel.forEach(function(x){
+      stDel(pKeyOf(x));
+      api('/profiles',{method:'POST',json:{hostId:hostNow(),action:'delete',slot:x}}).catch(function(){});
+    });
+    log('已删除档案 '+sel.join(','));
+    profRender();
+  });
+}
+/** 档案相对「当前设备值」的差异（只取有值、且与设备不同的项） */
+/* 2026-09-22：值比较要容错 —— 存档来自 exec 文本（可能带尾部空白/换行 ✗），
+   且 0.5 与 0.50 应视为相同 ✓（原来纯字符串比较 → "没改动也报差异 1 项" ✗） */
+function sameVal(a,b){
+  if(a===undefined||a===null) a='';
+  if(b===undefined||b===null) b='';
+  var x=String(a).trim(), y=String(b).trim();
+  if(x===y) return true;
+  var re=/^[-+]?[0-9]*\.?[0-9]+$/;
+  if(re.test(x)&&re.test(y)){ var nx=parseFloat(x), ny=parseFloat(y); if(isFinite(nx)&&isFinite(ny)) return nx===ny; }
+  return false;
+}
+/** 该参数是否要跳过：「未在设备界面中」默认不存档、也不写回（勾选开关才包含）✓ */
+function profSkip(k){ try{ return !PROF_ALL && pcat(k)==='未在设备界面中'; }catch(e){ return false; } }
+/* 2026-09-22 用户要求：写入参数的日志要"人话"，不要直接把 JSON 丢进日志 ✗
+   输入形如： {"ok": true, "applied": 1, "errors": []}
+   输出： ✅ 写入成功：LateralTorqueAccelFactor = 2750（设备已应用，共 1 项） */
+function logParamSet(k, val, r){
+  var jr=null; try{ jr=JSON.parse(String(r==null?'':r).trim()); }catch(e){}
+  if(jr&&jr.ok){
+    var n=(jr.applied!==undefined?jr.applied:1);
+    var errs=(jr.errors||[]);
+    if(errs.length){
+      log('⚠ 部分成功：'+k+' = '+val+'（已应用 '+n+' 项，'+errs.length+' 个错误）→ '+errs.join('；'));
+      toast('⚠ 部分成功：'+k+' = '+val+'（'+errs.length+' 个错误）','warn');
+    } else {
+      log('✅ 写入成功：'+k+' = '+val+'（设备已应用，共 '+n+' 项）');
+      toast('✓ 写入成功：'+k+' = '+val,'ok');
+    }
+    return true;
+  }
+  var msg=((jr&&jr.error&&(jr.error.message||jr.error))||(jr&&jr.message)||String(r==null?'':r).trim()||'未知原因');
+  log('✗ 写入失败：'+k+' = '+val+' → '+msg);
+  toast('✗ 写入失败：'+msg,'err');
+  return false;
+}
+function pDiffValues(prof){
+  var out={}, cur=(PALL&&PALL.values)||{}, p=(prof&&prof.p)||{};
+  Object.keys(p).forEach(function(k){
+    var v=p[k]; if(v===undefined||v===null||v==='') return;
+    if(profSkip(k)) return;
+    if(!sameVal(cur[k],v)) out[k]=v;
+  });
+  return out;
+}
+/** 应用档案到 C3 设备（只写差异项；写前二次确认；成功后刷新参数） */
+function profApply(){
+  var el=document.getElementById('ab');
+  var sel=Object.keys(PSEL).filter(function(x){return PSEL[x]});
+  if(sel.length!==1){ log('请先只选中一个要应用的档案位'); return; }
+  var s0=sel[0], d=pLoad(s0);
+  if(!d){ log('档案 '+s0+' 是空的'); return; }
+  var dif=pDiffValues(d), ks=Object.keys(dif);
+  if(!ks.length){ log('档案 '+s0+' 与当前设备没有差异，无需应用'); return; }
+  var preview=ks.slice(0,8).map(function(k){ return k+': '+(PALL&&PALL.values?PALL.values[k]:'?')+' → '+dif[k]; }).join('\n');
+  var msg='应用档案 '+s0+(d.note?('（'+d.note+'）'):'')+' 到 C3 设备？\n将写入 '+ks.length+' 项差异：\n'+preview+(ks.length>8?('\n… 其余 '+(ks.length-8)+' 项'):'');
+  var doWrite=function(){
+    if(el) el.textContent='正在应用 '+ks.length+' 项…';
+    api('/params/apply',{method:'POST',json:{hostId:sel(),values:dif}}).then(function(r){
+      log('应用 '+s0+'：写入 '+r.applied+'/'+r.requested+' 项');
+      if(el) el.textContent='已应用档案 '+s0+'：'+r.applied+'/'+r.requested+' 项\n'+(r.output||'').slice(-600);
+      loadPAll(true);            // 刷新参数总览与「差异」计数
+    }).catch(function(e){
+      log('应用失败：'+e.message);
+      if(el) el.textContent='应用失败：'+e.message;
+    });
+  };
+  // ① 先问是否应用  ② 再问是否先把「当前参数」存一份备份（存到 Z·备份，不覆盖别的档）
+  ask(msg,function(){                       // ① 是否应用
+    ask('应用前，先把「当前参数」存一份备份到 Z·备份？\n\n确定 = 先备份再应用\n取消 = 不备份，直接应用',
+      function(){                            // ② 先备份
+        profSaveSlot('Z','应用前备份 '+s0+' @ '+new Date().toLocaleString());
+        setTimeout(doWrite,900);
+      },
+      function(){ doWrite(); });              // ② 不备份
+  });
+}
+/* 2026-09-22 用户要求：选 1 个档案 → 与「当前设备参数」对比；选 ≥2 个 → 档案之间对比 ✓ */
+function profDiffDevice(slot, el){
+  var d=pLoad(slot); if(!d){ el.textContent='档案 '+slot+' 还是空的，先存内容。'; return; }
+  var p=d.p||{}, cur=(PALL&&PALL.values)||{};
+  var ks={}; Object.keys(p).forEach(function(k){ks[k]=1}); Object.keys(cur).forEach(function(k){ks[k]=1});
+  var rows=[], skipN=0;
+  Object.keys(ks).sort().forEach(function(k){
+    if(profSkip(k)){ skipN++; return; }
+    if(sameVal(p[k],cur[k])) return;
+    rows.push([k,(p[k]===undefined||p[k]==='')?'—':String(p[k]),(cur[k]===undefined||cur[k]==='')?'—':String(cur[k])]);
+  });
+  var w=18; rows.forEach(function(r){ if(r[0].length>w) w=Math.min(34,r[0].length); });
+  var cw=16, NL=String.fromCharCode(10);
+  var out='对比：档案 '+slot+(d.note?('（'+d.note+'）'):'')+'  ×  当前设备参数'+NL+'差异 '+rows.length+' 项';
+  out+=(rows.length?'':'（与当前设备完全一致 ✓）')+NL+NL;
+  out+=padCJK('参数',w)+' | '+padCJK(slot,cw)+' | '+padCJK('当前设备',cw)+NL;
+  out+=new Array(w+2*(cw+3)+3).join('-')+NL;
+  rows.forEach(function(r){ out+=padCJK(r[0],w)+' | '+padCJK(r[1],cw)+' | '+padCJK(r[2],cw)+NL; });
+  out+=NL+'备注：'+slot+'：'+(d.note||'（无）')+'   存于 '+d.t+NL;
+  if(skipN) out+=NL+'（已忽略 '+skipN+' 项「未在设备界面中」的参数：默认不存档、也不写回 ✓）';
+  out+=NL+'（当前设备值取自参数总览；点「刷新全部」可更新）';
+  el.textContent=out;
+}
+function profDiff(){
+  var el=document.getElementById('ab'); if(!el) return;
+  var NL=String.fromCharCode(10);
+  var sel=Object.keys(PSEL).filter(function(x){return PSEL[x]});
+  if(!sel.length){ el.textContent='先在上面点选档案胶囊（A–H · Z）：'+NL+'· 选 1 个 = 该档案 × 当前设备参数对比'+NL+'· 选 2 个以上 = 档案之间对比'; return; }
+  if(sel.length===1){ profDiffDevice(sel[0], el); return; }
+  var data=sel.map(function(s){ return {s:s,d:pLoad(s)} }).filter(function(x){return x.d});
+  if(data.length<2){ el.textContent='选中的档案里有空档，先存内容再对比。'; return; }
+  var ks={}; data.forEach(function(x){ Object.keys(x.d.p||{}).forEach(function(k){ks[k]=1}) });
+  var rows=[], skipN=0;
+  var MISS='（未记录）';
+  Object.keys(ks).sort().forEach(function(k){
+    if(profSkip(k)){ skipN++; return; }
+    var vs=data.map(function(x){ var v=(x.d.p||{})[k]; return (v===undefined||v===null||v==='')?MISS:String(v).trim(); });
+    var same=true;
+    for(var i2=1;i2<vs.length;i2++){ if(!sameVal(vs[i2]===MISS?'':vs[i2], vs[0]===MISS?'':vs[0])){ same=false; break; } }
+    if(!same) rows.push({k:k, vs:vs});
+  });
+  var base=data[0].s;
+  var out='档案之间对比（共 '+data.length+' 个）'+NL;
+  data.forEach(function(x){ out+='  · '+x.s+'　'+(x.d.note||'（无备注）')+'　存于 '+x.d.t+NL; });
+  out+=NL+'差异 '+rows.length+' 项'+(rows.length?'（下面只列不同的）':'（所选档案完全一致 ✓）')+NL;
+  if(skipN) out+='（已忽略 '+skipN+' 项「未在设备界面中」的参数：默认不存档、也不写回 ✓）'+NL;
+  out+=NL;
+  rows.forEach(function(r, idx){
+    out+=(idx+1)+'. '+r.k+NL;
+    for(var j2=0;j2<data.length;j2++){
+      var mark='';
+      if(j2>0 && !sameVal(r.vs[j2]===MISS?'':r.vs[j2], r.vs[0]===MISS?'':r.vs[0])) mark='   ← 与 '+base+' 不同';
+      out+='     '+data[j2].s+'（'+(data[j2].d.note||'无备注')+'）＝ '+r.vs[j2]+mark+NL;
+    }
+    out+=NL;
+  });
+  el.textContent=out;
+}
+// 标签页 ⇄ 地址栏 hash 双向绑定（2026-09-20）：主控制台里新增了「调试图表 ↗ / 参数 ↗」
+// 这类直链，落到 /diag#params 必须直接开在参数页；点标签也把 hash 写回去，便于分享与后退。
+var TAB_ALIAS={p1:'charts',p2:'lateral',p3:'params',p4:'device',charts:'p1',lateral:'p2',params:'p3',device:'p4'};
+function showPane(id){
+  var pane=document.getElementById(id); if(!pane) return false;
+  document.querySelectorAll('.tab').forEach(function(x){ x.classList.toggle('on', x.getAttribute('data-p')===id); });
+  document.querySelectorAll('.pane').forEach(function(x){ x.classList.toggle('on', x===pane); });
+  /* ★ 2026-10-05 按需：只有真的切到「参数(p3)」「设备状态(p4)」才去设备上读 ✓
+     （p3 先用 APP 磁盘缓存，秒开；要让设备重扫就点「刷新全部」✓） */
+  try{
+    if(id==='p3' && !PALL && !window.__p3loading){ window.__p3loading=1; loadPAll(false); }
+    if(id==='p4' && !window.__p4loaded){ window.__p4loaded=1; try{ devstat(); }catch(e){} }
+  }catch(e){}
+  /* 2026-09-22 用户要求：采样控制栏（「C3 诊断台」那一行：主机/测试/开始采样/停止/hz/时间窗/重放/快放/CSV）
+     只在「调试图表(p1)」「横向诊断(p2)」显示；「参数(p3)」「设备/日志(p4)」里不出现 ✓ */
+  try{
+    var sb=document.getElementById('sampBar');
+    if(sb) sb.style.display=(id==='p3'||id==='p4')?'none':'';
+  }catch(e){}
+  return true;
+}
+function paneFromHash(){
+  var h=(location.hash||'').replace(/^#/,'').trim().toLowerCase();
+  if(!h) return null;
+  var p=TAB_ALIAS[h]||h;          // 支持 #params 与 #p3 两种写法
+  return /^p[1-4]$/.test(p)?p:null;
+}
+document.querySelectorAll('.tab').forEach(function(t){ t.onclick=function(){
+  var id=t.getAttribute('data-p'); showPane(id);
+  var alias=TAB_ALIAS[id]||id;
+  try{ history.replaceState(null,'','#'+alias); }catch(e){ location.hash=alias; }
+};});
+window.addEventListener('hashchange',function(){ try{ var h=(location.hash||'').replace(/^#/,'').trim().toLowerCase();
+  if(!h) return; var q=/^p[1-4]$/.test(h)?h:TAB_ALIAS[h]; if(q&&/^p[1-4]$/.test(q)) showPane(q); }catch(e){} });
+// 页签路由初始化已挪到脚本末尾（原先在 TAB_ALIAS 定义之前，带 hash/?pane= 时会抛异常）
+document.getElementById('bs').onclick=start;
+document.getElementById('bx').onclick=function(){ if(es){es.close();es=null;} setSt('已停止'); setSamplingUI(false); };
+document.getElementById('bannerX').onclick=function(){ bannerMuted=true; document.getElementById('banner').style.display='none'; };
+document.getElementById('snap').onclick=snapshot;
+if(document.getElementById('anBtn')) document.getElementById('anBtn').onclick=analyzeSample;
+document.getElementById('pall').onclick=function(){ loadPAll(true) };
+/* 2026-09-22 用户要求：导出 CSV / 选导出目录 / 导入并写入 —— 合成一个按钮，点开选功能 */
+function _csvMenu(){
+  var old=document.getElementById('_csvMenu');
+  if(old){ old.remove(); return; }
+  var b=document.getElementById('pcsv'); if(!b) return;
+  var r=b.getBoundingClientRect();
+  var m=document.createElement('div'); m.id='_csvMenu';
+  m.style.cssText='position:fixed;z-index:998;background:var(--card);border:1px solid var(--line);'
+    +'border-radius:10px;box-shadow:0 10px 28px rgba(0,0,0,.22);padding:6px;min-width:230px';
+  m.style.left=Math.max(8,Math.min(r.left,(window.innerWidth||360)-240))+'px';
+  m.style.top=(r.bottom+6)+'px';
+  function item(label,hint,fn){
+    var d=document.createElement('div');
+    d.style.cssText='padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13.5px';
+    d.innerHTML='<b>'+label+'</b>'+(hint?('<div class="note" style="font-size:11.5px;margin-top:2px">'+hint+'</div>'):'');
+    d.onmouseenter=function(){ d.style.background='var(--bg3)'; };
+    d.onmouseleave=function(){ d.style.background=''; };
+    d.onclick=function(){ m.remove(); fn(); };
+    m.appendChild(d);
+  }
+  var dirTxt=SAVEDIR||'下载';
+  item('导出 CSV','导出全部当前参数 → '+dirTxt,function(){ exportAll(); });
+  item('选择导出目录…','换一个保存 CSV 的文件夹',function(){
+    if(!window.__C3APP){ toast('浏览器预览里无法选择目录','warn'); return; }
+    location.href='c3shell://save-dir';
+  });
+  item('导入并写入…','选一个 csv，批量写入设备参数',function(){
+    if(!window.__C3APP){ toast('浏览器里请用电脑选择文件','warn'); return; }
+    location.href='c3shell://pick-csv';
+  });
+  document.body.appendChild(m);
+  setTimeout(function(){
+    document.addEventListener('click',function h(ev){
+      if(m.contains(ev.target)) return;
+      m.remove(); document.removeEventListener('click',h,true);
+    },true);
+  },40);
+}
+document.getElementById('pcsv').onclick=_csvMenu;
+window.__saveDir=function(name){
+  SAVEDIR=name; toast('导出目录已设为：'+name,'ok');
+};
+try{ get('/savedir',function(j){ if(j&&j.dir) SAVEDIR=j.dir; }); }catch(e){}
+// 原生选完文件后回调这里（base64 文本 + 文件名）
+window.__importCsv=function(b64,name){
+  try{
+    var bin=atob(b64||''), u=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i);
+    var txt=(typeof TextDecoder!=='undefined')?new TextDecoder('utf-8').decode(u):decodeURIComponent(escape(bin));
+    log('已选文件：'+name+'（'+txt.length+' 字符）');
+    importAllText(txt);
+  }catch(e){ log('CSV 解析失败：'+e); }
+};
+document.getElementById('pq').oninput=function(){ PFILTER=this.value.trim(); renderParams(); };
+document.getElementById('pOnlySet').onchange=function(){ PSETONLY=!!this.checked; renderParams(); };
+document.getElementById('pDiffOnly').onchange=function(){ PDIFFON=!!this.checked; renderParams(); };
+document.getElementById('pUserOnly').onchange=function(){ PUSERONLY=!!this.checked; PLIMIT=80; renderParams(); };
+document.getElementById('profSaveBtn').onclick=profSave;
+document.getElementById('profDelBtn').onclick=profDel;
+document.getElementById('dab').onclick=profDiff;
+var PROF_ALL=false;   // 2026-09-22 用户要求：默认**不**保存/不写回「未在设备界面中」的参数 ✓
+document.getElementById('profAll').onchange=function(){ PROF_ALL=!!this.checked; profRender();
+  toast(PROF_ALL?'将包含「未在设备界面中」的项':'已排除「未在设备界面中」的项','warn'); };
+document.getElementById('profApplyBtn').onclick=profApply;
+document.getElementById('dref').onclick=devstat;
+document.getElementById('dcard').onclick=function(){ 
+  ask('重启 card 进程？（由 manager 自动拉起，约 10 秒）',function(){
+  exec('sudo pkill -f "selfdrive/car/card" ; sleep 1; echo sent',function(r){ log('重启 card: '+r.trim()); }); }); };
+document.getElementById('dbsm').onclick=function(){
+  ask('应用 BSM 计数器补丁到 card.py？（幂等，需重启 card 生效）',function(){
+  exec('sudo /usr/local/venv/bin/python3 '+DEV+'/dsh-patch-bsm-counter.py --apply 2>&1 | tail -3',function(r){ log('BSM 补丁: '+r.trim()); }); }); };
+(function(){ var s=document.getElementById('win');
+  var w=stGet('win'); if(w && Number(w)>0) WIN_S=Number(w);
+  if(s){ s.value=String(WIN_S);
+    s.onchange=function(){ WIN_S=Number(this.value)||20; stSet('win',String(WIN_S));
+      for(var q=0;q<cvs.length;q++) drawOne(q); }; } })();
+// 重载后自动接回正在跑的采样（2026-09-20）——页面刷新不再丢现场
+(function(){ try{ get('/live/status',function(j){
+  var run=(j.sessions||[]).filter(function(x){return x.status==='running';})[0];
+  if(run){ sid=run.id; attach(); } }); }catch(e){} })();
+// ── 自检/演示模式：/diag?demo=1 用合成数据灌满图表（不连车也能看 UI 与密度）──
+if(/[?&]demo=1/.test(location.search)){
+  var _dt=0, _amp={v:11,ps:11,mx:6,rd:22,rv:2,ta:1.2,td:1.2,to:1.2,sa:1.5,mk:0.9,curv:0.9,dk:0.9,lkc:0.9,ddev:0.1,lae:0.4};
+  setSt('已连接 demo（合成数据）');
+  setInterval(function(){
+    _dt+=0.1;
+    var d={t:_dt, sr:20};
+    C1.concat(C2).forEach(function(C){ C.k.forEach(function(k){
+      var a=_amp[k]||1.5;
+      d[k]=a*(0.6*Math.sin(_dt*(1.1+((k.charCodeAt(0)%5)/6)))+0.25*Math.sin(_dt*5.3))+(Math.random()-0.5)*a*0.12;
+    }); });
+    push(d);
+  }, 100);
+  setTimeout(function(){ try{ snapshot(); }catch(e){} }, 6000);
+}
+mkCharts(C1,'wrap',0); mkCharts(C2,'wrap2',C1.length);
+profRender();
+// 页签路由初始化（必须在 TAB_ALIAS / showPane 定义之后，且容错）
+(function(){ try{
+  var h=(location.hash||'').replace(/^#/,'').trim().toLowerCase();
+  var m=/[?&]pane=([a-z0-9]+)/i.exec(location.search);
+  var want=h||(m?m[1].toLowerCase():'');
+  if(!want) return;
+  var q=/^p[1-4]$/.test(want)?want:TAB_ALIAS[want];   // 两种写法都吃（#p4 / #device）
+  if(q&&/^p[1-4]$/.test(q)) showPane(q);
+}catch(e){} })();
+document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click',function(){
+  setTimeout(function(){ for(var q=0;q<cvs.length;q++) drawOne(q); },30); }); });
+/* ★ 2026-10-05 按需加载（用户要求「页面加载按需」）
+   背景（实测）：远端 params dump 一次约 **5 秒 CPU**、env 约 2.3 秒；
+   行车中打开这一页会把 C3 拖出「立即接管控制 / 进程间通信问题」告警 ✗✗
+   原来这里 mkParams() / readCurated() 会在**每次开页时强制重扫**一遍 ✗
+   现在：参数(p3) 与 设备状态(p4) 都只在**真正打开那一页**时才去设备上读；
+        参数优先吃 APP 的磁盘缓存（秒开 ✓）；要强制重读就点「刷新全部」✓
+        后台任务(jobs) 是本地接口、很轻，保留 ✓ */
+jobsList();
+setInterval(jobsList,8000);
+</script>
+<div id="askMask"><div id="askBox">
+  <div id="askMsg"></div>
+  <div id="askBtns"><button id="askNo" class="gh">取消</button><button id="askYes" class="pri">确定</button></div>
+</div></div>
+<script src="/theme.js?v=0"></script>
+<script>
+/* diagThemeDedupe：诊断页不显示 theme.js 注入的「显示 ⚙」主题/字号按钮（2026-09-21 用户要求）
+   主题与字号统一在「SSH 控制台 → 设置 → 界面」里改。 */
+(function(){
+  function kill(){ var b=document.getElementById('themeBtn'), p=document.getElementById('themePanel');
+    if(b&&b.parentNode) b.parentNode.removeChild(b);
+    if(p&&p.parentNode) p.parentNode.removeChild(p); }
+  try{ new MutationObserver(kill).observe(document.body,{childList:true}); }catch(e){}
+  [60,400,1200,2500].forEach(function(t){ setTimeout(kill,t); });
+})();
+</script>
+<script>
+/* 2026-09-24 R111（用户：拖动排序一点都不好用）：
+   原来这里**并存了三套**拖动排序实现（先后三次迭代都留在文件里 ✗），三套的 pointer 监听互相打架
+   → 一拖就跳、偶发失灵 ✓。现在只保留最后那套「长按悬浮跟随」的实现（下面一节）✓ */
+/* 2026-09-23 用户要求：长按卡片 → 悬浮跟手 → 其他卡片实时让位（真正的拖拽 ✓）*/
+(function(){
+  var ST={card:null, ph:null, zone:null, ox:0, oy:0, w:0, h:0, active:false, timer:0, y0:0, x0:0, id:0};
+  function cardsOf(zone){
+    var w=document.getElementById(zone);
+    if(!w) return [];
+    return Array.prototype.filter.call(w.children, function(c){ return c.classList && c.classList.contains('card'); });
+  }
+  /* 2026-09-24 R112：正文里**不能留把手字符** ✗
+     真因：renumber() 用 textContent 重写标题时，会把上一次加进去的把手「≡」也变成正文 ✗，
+     然后再加一个新把手 → 越积越多（实测标题里堆了 2~3 个 ≡ ✗）。这里两头都防 ✓ */
+  function stripNum(t){ return String(t||'').replace(/^\s*\d+\s*[.、]?\s*/,'').replace(/[≡\s]+$/,''); }
+  function titleOf(c){ var h=c.querySelector('h4'); return h?stripNum(h.textContent):''; }
+  /* 2026-09-24 R111：给每张卡标题加可见的「≡」把手 ✓
+     （原来只写 title 提示 —— 触屏上看不到也摸不到 ✗；renumber 会重写 textContent，所以本函数可重复调用 ✓）*/
+  function grip(c){
+    var h=c.querySelector('h4'); if(!h) return;
+    var olds=h.querySelectorAll('.c3grip');                 /* 2026-09-24 R112：先清干净再放一个 ✓（幂等）*/
+    for(var oi=0; oi<olds.length; oi++){ try{ olds[oi].parentNode.removeChild(olds[oi]); }catch(e){} }
+    var g=document.createElement('span');
+    g.className='c3grip'; g.textContent='≡';
+    g.style.cssText='float:right;opacity:.45;font-weight:400;margin-left:8px;letter-spacing:-1px';
+    h.appendChild(g);
+  }
+  function renumber(){
+    var all=cardsOf('wrap').concat(cardsOf('wrap2'));
+    all.forEach(function(c,i){
+      var h=c.querySelector('h4'); if(!h) return;
+      var olds=h.querySelectorAll('.c3grip');               /* 先摘把手，否则它会被当成标题正文 ✗ */
+      for(var k=0; k<olds.length; k++){ try{ olds[k].parentNode.removeChild(olds[k]); }catch(e){} }
+      h.textContent=(i+1)+' '+stripNum(h.textContent);
+      grip(c);
+    });
+    try{
+      localStorage.setItem('c3chartOrder', JSON.stringify(all.map(titleOf)));
+    }catch(e){}
+  }
+  function lift(c, ev){
+    var r=c.getBoundingClientRect();
+    ST.card=c; ST.zone=(c.parentNode && c.parentNode.id) ? c.parentNode.id : 'wrap';
+    ST.w=r.width; ST.h=r.height; ST.ox=ev.clientX-r.left; ST.oy=ev.clientY-r.top;
+    // 占位块（撑住原位 → 其他卡片围绕它让位 ✓）
+    var ph=document.createElement('div');
+    ph.style.cssText='height:'+r.height+'px;margin:6px 0;border-radius:10px;'
+      +'border:2px dashed var(--acc);background:rgba(31,111,235,.08);box-sizing:border-box';
+    c.parentNode.insertBefore(ph, c);
+    ST.ph=ph;
+    // 卡片变"悬浮"（fixed + 跟手 ✓）
+    c.style.position='fixed'; c.style.left='0px'; c.style.top='0px';
+    c.style.width=ST.w+'px'; c.style.height=ST.h+'px'; c.style.margin='0';
+    c.style.zIndex='9999'; c.style.pointerEvents='none';
+    c.style.transition='none'; c.style.opacity='.96';
+    c.style.transform='translate('+(r.left)+'px,'+(r.top)+'px) scale(1.03) rotate(0.4deg)';
+    c.style.boxShadow='0 18px 40px rgba(0,0,0,.45)';
+    c.classList.add('c3-lifted');
+    ST.active=true;
+    try{ if(navigator.vibrate) navigator.vibrate(15); }catch(e){}
+  }
+  /* 2026-09-24 R111：拖动到边缘附近自动滚动 ✓（否则长列表根本挪不到远处 ✗）*/
+  var AS={el:null, v:0, t:0};
+  function scrollBox(){
+    if(AS.el) return AS.el;
+    var p=ST.card;
+    while(p && p!==document.body){
+      var oy=''; try{ oy=getComputedStyle(p).overflowY; }catch(e){}
+      if((oy==='auto'||oy==='scroll') && p.scrollHeight>p.clientHeight+4){ AS.el=p; return p; }
+      p=p.parentNode;
+    }
+    AS.el=document.scrollingElement||document.documentElement;
+    return AS.el;
+  }
+  function autoScroll(y){
+    var el=scrollBox(); if(!el) return;
+    var se=(document.scrollingElement||document.documentElement);
+    var top=(el===se)?0:el.getBoundingClientRect().top;
+    var bot=(el===se)?window.innerHeight:el.getBoundingClientRect().bottom;
+    var M=90, v=0;
+    if(y<top+M) v=-Math.round((top+M-y)/4);
+    else if(y>bot-M) v=Math.round((y-(bot-M))/4);
+    v=Math.max(-26, Math.min(26, v));
+    if(v===AS.v) return;
+    AS.v=v;
+    if(AS.t) return;
+    (function tick(){
+      if(!ST.active || !AS.v){ AS.t=0; return; }
+      el.scrollTop += AS.v;
+      AS.t=requestAnimationFrame(tick);
+    })();
+    AS.t=1;
+  }
+  function move(ev){
+    if(!ST.active || !ST.card) return;
+    autoScroll(ev.clientY);
+    ST.card.style.transform='translate('+(ev.clientX-ST.ox)+'px,'+(ev.clientY-ST.oy)+'px) scale(1.03) rotate(0.4deg)';
+    // 找目标位置 → 移动占位块 → 其他卡片实时让位 ✓
+    var y=ev.clientY, arr=cardsOf(ST.zone), target=null, below=false;
+    for(var i=0;i<arr.length;i++){
+      var x=arr[i]; if(x===ST.card) continue;
+      var r=x.getBoundingClientRect();
+      if(y >= r.top && y <= r.bottom){ target=x; below=(y > (r.top+r.bottom)/2); break; }
+    }
+    var ph=ST.ph;
+    if(target){
+      if(below) target.parentNode.insertBefore(ph, target.nextSibling);
+      else target.parentNode.insertBefore(ph, target);
+    } else if(arr.length){
+      var last=arr[arr.length-1];
+      if(y > last.getBoundingClientRect().bottom) last.parentNode.appendChild(ph);
+      else if(y < arr[0].getBoundingClientRect().top) arr[0].parentNode.insertBefore(ph, arr[0]);
+    }
+  }
+  function drop(ev){
+    if(!ST.active || !ST.card) return;
+    var c=ST.card, ph=ST.ph;
+    c.style.position=''; c.style.left=''; c.style.top=''; c.style.width=''; c.style.height='';
+    c.style.margin=''; c.style.zIndex=''; c.style.pointerEvents='';
+    c.style.transform=''; c.style.opacity=''; c.style.boxShadow='';
+    c.classList.remove('c3-lifted');
+    try{ if(ph && ph.parentNode===c.parentNode) c.parentNode.replaceChild(c, ph); else if(ph) ph.parentNode.removeChild(ph); }catch(e){}
+    renumber();
+    ST.card=null; ST.ph=null; ST.active=false;
+  }
+  function setup(){
+    ['wrap','wrap2'].forEach(function(zone){
+      var w=document.getElementById(zone); if(!w) return;
+      cardsOf(zone).forEach(function(c){
+        if(c.__d3) return; c.__d3=1;
+        var h=c.querySelector('h4');
+        if(h){ h.style.cursor='grab'; h.title=(h.title?h.title+' · ':'')+'长按卡片可悬浮拖动排序 ✓'; grip(c); }
+        c.style.userSelect='none'; c.style.webkitUserSelect='none';
+        c.addEventListener('pointerdown', function(ev){
+          if(ev.button!==undefined && ev.button!==0) return;
+          if(ST.active) return;
+          /* 2026-09-24 R111：从按钮/输入框/下拉框上按下时**不启动拖动** ✓（否则点按钮会被当成拖动 ✗）*/
+          try{
+            var tg=ev.target;
+            while(tg && tg!==c){
+              var tn=(tg.tagName||'').toLowerCase();
+              if(tn==='button'||tn==='input'||tn==='select'||tn==='textarea'||tn==='a'||tn==='label') return;
+              tg=tg.parentNode;
+            }
+          }catch(e){}
+          ST.y0=ev.clientY; ST.x0=ev.clientX; ST.id=ev.pointerId;
+          var c2=c;
+          clearTimeout(ST.timer);
+          ST.timer=setTimeout(function(){ lift(c2, ev); }, 260);   // 长按 260ms 悬浮 ✓（轻点不触发 ✓）
+        });
+        c.addEventListener('pointermove', function(ev){
+          if(!ST.active){
+            if(Math.abs(ev.clientY-ST.y0) > 6 || Math.abs(ev.clientX-ST.x0) > 6){ clearTimeout(ST.timer); }
+            return;
+          }
+          ev.preventDefault();
+          move(ev);
+        }, {passive:false});
+        function end(ev){ clearTimeout(ST.timer); if(ST.active) { drop(ev); } }
+        c.addEventListener('pointerup', end);
+        c.addEventListener('pointercancel', end);
+      });
+    });
+    document.addEventListener('pointerup', function(){ if(ST.active) drop(); }, true);
+    /* 2026-09-24 R111：**关键修复** —— 拖动时页面不能跟着滚 ✗
+       （原来只在 pointermove 上 preventDefault，挡不住 touch 滚动 ✓ → 卡片和页面一起动 = 没法用 ✗）
+       touchmove 用非 passive 监听 + preventDefault 才能真正拦住滚动 ✓ */
+    document.addEventListener('touchmove', function(ev){
+      if(!ST.active) return;
+      ev.preventDefault();
+      try{ var t=ev.touches && ev.touches[0]; if(t) move({clientX:t.clientX, clientY:t.clientY}); }catch(e){}
+    }, {passive:false});
+    document.addEventListener('contextmenu', function(e){ if(ST.active) e.preventDefault(); });
+    return true;
+  }
+  function applySaved(){
+    var ord=null; try{ ord=JSON.parse(localStorage.getItem('c3chartOrder')||'null'); }catch(e){}
+    if(!ord||!ord.length) return;
+    /* 2026-09-24 R113：存档键也清洗一遍 ✓
+       （R111/R112 那段时期标题正文里混进过把手字符 ≡ ✗，旧存档的键带着它，
+         跟现在的干净标题对不上 → 恢复时会静默失败、顺序白存 ✗）*/
+    ord=ord.map(function(k){ return stripNum(k); });
+    var byKey={}, zs={};
+    ['wrap','wrap2'].forEach(function(z){ cardsOf(z).forEach(function(c){ byKey[titleOf(c)]=c; zs[titleOf(c)]=z; }); });
+    ord.forEach(function(k){ var c=byKey[k]; if(!c) return; document.getElementById(zs[k]||'wrap').appendChild(c); });
+    renumber();
+  }
+  var n=0, restored=false;
+  /* 2026-09-24 R114：applySaved() 原来**只在第一次 boot 调用** ✗
+     而第一次 boot（DOMContentLoaded）时曲线卡片可能**还没创建好**（mkCharts 在后面才跑 ✓）
+     → 找不到卡片 → 顺序其实**从来没恢复过** ✗（用户拖完看着记住了，重开就变回去 ✗）
+     改成：每次 boot 都试（applySaved 幂等 ✓），成功一次就停 ✓；拖动中不打扰 ✓ */
+  function boot(){
+    n++;
+    var ok=setup();
+    if(ok && !restored && !ST.active){ try{ restored = applySaved() !== false; }catch(e){} }
+    if(!restored && n<=8) setTimeout(boot,1200);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
+})();
+</script><script>
+/* 2026-09-23 v1.7 #7：页签可横向滑动 + 点开自动滚到可见 ✓ */
+(function(){
+  function box(){ return document.querySelector('nav.tabs'); }
+  function centerActive(){
+    try{
+      var w=box(); if(!w) return;
+      var on=w.querySelector('button.on')||w.querySelector('button.primary');
+      if(!on) return;
+      var target=on.offsetLeft - (w.clientWidth - on.offsetWidth)/2;
+      if(Math.abs(w.scrollLeft - target) > 8) w.scrollTo({left:Math.max(0,target), behavior:'smooth'});
+    }catch(e){}
+  }
+  function bindDrag(){
+    var w=box(); if(!w || w.__h7) return; w.__h7=1;
+    var down=false, x0=0, s0=0, moved=0;
+    w.addEventListener('pointerdown', function(ev){ down=true; x0=ev.clientX; s0=w.scrollLeft; moved=0; });
+    w.addEventListener('pointermove', function(ev){
+      if(!down) return;
+      var dx=ev.clientX-x0; moved=Math.max(moved, Math.abs(dx));
+      if(Math.abs(dx)>6){ w.scrollLeft=s0-dx; ev.preventDefault(); }
+    }, {passive:false});
+    w.addEventListener('pointerup', function(){ down=false; });
+    w.addEventListener('pointercancel', function(){ down=false; });
+    w.addEventListener('wheel', function(ev){ if(ev.deltaY) { w.scrollLeft += ev.deltaY; ev.preventDefault(); } }, {passive:false});
+    w.addEventListener('click', function(){ setTimeout(centerActive, 60); });
+  }
+  function boot(){ bindDrag(); centerActive(); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
+  setTimeout(boot, 800); setTimeout(centerActive, 1600);
+})();
+</script>
+
+<script>
+/* 2026-10-04：点曲线卡片 → 放大占满其它卡片的位置；再点一次收起（独立脚本，避免作用域问题）*/
+(function(){
+  function cards(){ var a=[]; ["wrap","wrap2"].forEach(function(id){ var w=document.getElementById(id); if(w) a=a.concat(Array.prototype.slice.call(w.children)); }); return a; }
+  function toggle(card){
+    var on=card.classList.contains("solo");
+    cards().forEach(function(c){ c.classList.remove("solo") });
+    if(on){ document.body.classList.remove("c3solo"); } else { card.classList.add("solo"); document.body.classList.add("c3solo"); }
+    try{ window.dispatchEvent(new Event("resize")); }catch(e){}
+  }
+  function wire(){
+    cards().forEach(function(c){
+      if(c.__c3zoom) return; c.__c3zoom=1;
+      c.addEventListener("click",function(ev){
+        var t=ev.target;
+        while(t && t!==c){
+          var cn=String((t.className&&t.className.baseVal!==undefined)?t.className.baseVal:(t.className||""));
+          if(cn.indexOf("chip")>=0 || cn.indexOf("c3grip")>=0) return;
+          if(/^(INPUT|SELECT|BUTTON|A|TEXTAREA)$/.test(t.tagName||"")) return;
+          t=t.parentNode;
+        }
+        toggle(c);
+      },false);
+    });
+  }
+  function boot(){ wire(); setInterval(wire,3000); }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot); else boot();
+})();
+</script>
+</body>
+</html>
+<script>
+/* 页面 JS 报错回传（2026-09-21 用户建议：出问题直接读 APP 日志） */
+(function(){
+  function send(level,msg,where){
+    try{ fetch('/api/log',{method:'POST',headers:{'content-type':'application/json'},
+      body:JSON.stringify({level:level,msg:String(msg).slice(0,600),where:where||''})}); }catch(e){}
+  }
+  window.onerror=function(m,s,l,c,e){ send('error', m+' | '+(e&&e.stack?String(e.stack).slice(0,300):''), (s||'')+':'+l); };
+  window.addEventListener('unhandledrejection',function(ev){ send('reject',(ev.reason&&ev.reason.message)||String(ev.reason),''); });
+  send('info','page loaded '+(location.pathname+location.hash),'');
+})();
+</script>
+<script>
+/* 参数写入前的页面内确认框（2026-09-21）。WebView 里 native confirm 不弹，故自绘。 */
+function askConfirm(msg, onOk, onCancel){
+  var m=document.getElementById('cfMask');
+  if(!m){
+    m=document.createElement('div'); m.id='cfMask';
+    m.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.62);display:none;align-items:center;justify-content:center;z-index:99;padding:12px';
+    m.innerHTML='<div style="background:var(--card);border:1px solid var(--line);border-radius:14px;max-width:620px;width:min(620px,94vw);overflow:hidden">'
+      +'<div id="cfMsg" style="padding:14px 16px;white-space:pre-wrap;font-size:14px;line-height:1.65"></div>'
+      +'<div style="display:flex;justify-content:flex-end;padding:10px 14px;border-top:1px solid var(--line)">'
+      +'<button id="cfNo" class="ghost" style="margin-right:8px">取消</button><button id="cfYes" class="pri">确定写入</button></div></div>';
+    document.body.appendChild(m);
+  }
+  document.getElementById('cfMsg').textContent=msg;
+  m.style.display='flex';
+  var yes=document.getElementById('cfYes'), no=document.getElementById('cfNo');
+  function done(ok){ m.style.display='none'; yes.onclick=null; no.onclick=null; if(ok&&onOk) onOk(); else if(!ok&&onCancel) onCancel(); }
+  yes.onclick=function(){ done(true) }; no.onclick=function(){ done(false) };
+}
+</script>
+<script>
+/* nestedMenu（2026-09-21 用户要求）：车机上把菜单做成"一级菜单里含二级菜单"。
+   一级：控制台 / 转向诊断 / 工具 / 赞赏 / 日志（固定存在，永不消失 → 随时能回去）
+   二级：各页自己的页签（控制台：主机/终端/文件/实时/运维/设置；诊断：调试图表/横向诊断/参数/设备日志）
+   点一级：当前页→展开/收起；别的页→跳过去（那边默认展开） */
+(function(){
+  function kind(){ try{ return /\/diag/.test(location.pathname) ? 'diag' : 'console' }catch(e){ return 'console' } }
+  function nonce(){ return '?t=' + Date.now() }
+  /* 2026-10-05：整页跳转统一走过渡（先淡出到背景色再跳，落地淡入）→ 不再生硬/闪烁 ✓ */
+  function go(u){ var _f=function(){ location.href = u + nonce() }; if(window.__c3veilOut) window.__c3veilOut(_f); else _f(); }
+  function container(){                                  // 通用：找到"页签容器"
+    var c=document.querySelector('nav.tabs'); if(c) return c;
+    var t=document.querySelector('[data-p]'); if(t&&t.parentNode) return t.parentNode;
+    var b=document.querySelector('[data-tab]'); if(b&&b.parentNode) return b.parentNode;
+    var s=document.querySelector('.tabs'); if(s) return s;
+    return null;
+  }
+  function build(){
+    var side=container(); if(!side||document.getElementById('nmMenu')) return;
+    /* 方案A（2026-09-22）：手机/平板 = 一级菜单在 APP 原生顶栏，网页只保留二级页签 → 不重建菜单 */
+    if((document.documentElement.getAttribute('data-layout')||'tablet')!=='car') return;
+    var kids=Array.prototype.slice.call(side.children);   // 原页签（保留事件）
+    kids=kids.filter(function(c){ var t=String(c.textContent||'').trim();
+      if(t==='参数'||t==='参数设置'){ c.style.display='none'; return false; } return true; });   /* R103 ✓ */
+    var k=kind();
+    /* 2026-09-22 布局：手机/平板 = 顶部两行（第1行一级 / 第2行二级）；车机 = 左栏竖排 */
+    var TOP=(document.documentElement.getAttribute('data-layout')||'tablet')!=='car';
+    side.innerHTML=''; side.id='nmMenu';
+    side.style.cssText = TOP
+      ? 'display:flex;flex-direction:column;gap:4px;padding:5px 8px;background:var(--bg2);border-bottom:1px solid var(--line)'
+      : 'display:flex;flex-direction:column;padding:6px 5px;overflow-y:auto';
+    var nmTop=null, nmSub=null;
+    if(TOP){
+      nmTop=document.createElement('div'); nmTop.id='nmTopRow';
+      nmTop.style.cssText='display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:4px;overflow-x:auto';
+      nmSub=document.createElement('div'); nmSub.id='nmSubRow';
+      nmSub.style.cssText='display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;gap:2px';
+      /* 参照 1.79 原始布局：一级行放页面最顶（header 之上）；二级行留在原位（header 之下） */
+      var _hdr=document.querySelector('header');
+      if(_hdr&&_hdr.parentNode){ _hdr.parentNode.insertBefore(nmTop,_hdr); side.appendChild(nmSub); }
+      else { side.appendChild(nmTop); side.appendChild(nmSub); }
+    }
+    /* 2026-09-24 R46（用户要求）：一级菜单要有"选中态" —— 当前模块高亮 ✓，其它未选中的收起 ✓
+       真因：以前"是不是选中"只按 kind()（console/diag）判断，而投屏/AI 分析/界面设置/软件设置
+       都是**控制台页里的二级页签** → 停在这几个页签时仍然高亮"控制台"，且它的子菜单一直展开 ✗ */
+    var REG=[];
+    function activeKey(){
+      try{
+        if(kind()==='diag'){
+          var _p3=document.getElementById('p3');
+          if(_p3 && (' '+(_p3.className||'')+' ').indexOf(' on ')>=0) return 'params';   /* R103：参数页高亮「参数设置」✓ */
+          return 'diag';
+        }
+        var q=String(location.search||'');
+        /* ① 先看"当前激活的 section"（最可靠）：二级页签被搬进左栏后，
+           软件设置那个按钮会脱离 DOM → 查 nav.tabs button.on 查不到它 ✗ */
+        var secs=document.querySelectorAll('section');
+        for(var i=0;i<secs.length;i++){
+          var el=secs[i], cn=' '+(el.className||'')+' ';
+          if(cn.indexOf(' on ')<0) continue;
+          var id=el.id||'';
+          if(id==='tab-cast') return 'cast';
+          if(id==='tab-aian') return 'ai';
+          if(id==='tab-uiset') return 'ui';
+          if(id==='tab-settings') return 'settings';
+        }
+        /* ② 回落：看高亮的二级页签按钮 */
+        var b=document.querySelector('nav.tabs button.on');
+        var t=b?(b.getAttribute('data-tab')||''):'';
+        if(t==='cast') return 'cast';
+        if(t==='aian') return 'ai';
+        if(t==='uiset') return 'ui';
+        if(t==='settings') return 'settings';
+        if(t&&t!=='hosts') return 'console';          // 其它二级页签都归控制台 ✓
+        if(/[?&]ai=1/i.test(q)) return 'ai';          // 初始深链（页签还没被点之前）
+        if(/[?&]ui=1/i.test(q)) return 'ui';
+        if(/[?&]tab=cast/i.test(q)) return 'cast';
+        if(/[?&]tab=aian/i.test(q)) return 'ai';
+        if(/[?&]tab=uiset/i.test(q)) return 'ui';
+        if(/[?&]tab=settings/i.test(q)) return 'settings';
+        return 'console';
+      }catch(e){ return 'console'; }
+    }
+    function paint(rec, cur){
+      var head=rec.head, own=rec.own||[];
+      if(rec.top){
+        head.style.background=cur?'var(--acc)':'var(--bg3)';
+        head.style.color=cur?'#fff':'var(--fg)';
+        head.style.borderColor=cur?'var(--acc)':'var(--line)';
+        return;
+      }
+      head.textContent=(own.length?(cur?(rec.open===false?'▸ ':'▾ '):'▸ '):'   ')+rec.label;
+      head.style.background=cur?'var(--acc)':'var(--bg3)';
+      head.style.color=cur?'#fff':'var(--fg)';
+      if(rec.sub) rec.sub.style.display=(cur&&rec.open!==false)?'block':'none';
+    }
+    function applyState(){
+      var a=activeKey();
+      for(var i=0;i<REG.length;i++) paint(REG[i], REG[i].key===a);
+    }
+    function item(label, act, own, cur, key){
+      if(TOP){
+        var h=document.createElement('div');
+        h.textContent=label;
+        h.style.cssText='cursor:pointer;padding:4px 11px;margin:0;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap;border:1px solid var(--line)';
+        h.onclick=function(){ if(activeKey()===key) return; go(act); };
+        nmTop.appendChild(h);
+        if(cur&&own&&own.length){ own.forEach(function(c){ nmSub.appendChild(c); }); }
+        REG.push({key:key,head:h,own:own||[],label:label,top:true,open:true});
+        return;
+      }
+      var wrap=document.createElement('div'); wrap.style.cssText='display:block;margin:0';
+      var head=document.createElement('div');
+      head.style.cssText='cursor:pointer;padding:6px 8px;margin:2px 0;border-radius:8px;font-size:12.5px;font-weight:600;border:1px solid var(--line)';
+      var sub=document.createElement('div');
+      sub.style.cssText='display:none;margin:2px 0 6px 8px;padding-left:6px;border-left:2px solid var(--line)';
+      (own||[]).forEach(function(c){ sub.appendChild(c); });
+      var rec={key:key,head:head,sub:sub,own:own||[],label:label,top:false,open:true};
+      head.onclick=function(){
+        if(own&&own.length){
+          if(activeKey()===key){ rec.open=(rec.open===false); paint(rec,true); }   // 当前模块：只切换展开/收起 ✓
+          else go(act);                                                           // 别的模块：跳过去（那边默认展开 ✓）
+        } else go(act);
+      };
+      wrap.appendChild(head); wrap.appendChild(sub); side.appendChild(wrap);
+      REG.push(rec); paint(rec,cur);
+    }
+    try{ window.__nmApply=applyState; }catch(e){}
+    var _setTab=null, _rest=[];
+    /* 2026-10-05 修（用户报「投屏怎么又在控制台里面有入口了」）：投屏 / AI 分析 / 界面设置
+       都已提升为一级菜单 → 左栏二级里必须藏起来并打 __hideDup 标记（否则功能开关那套会把 display 改回来 ✗）*/
+    kids.forEach(function(c){ var tx=String(c.textContent||'').trim();
+      if(tx==='软件设置') _setTab=c;
+      else if(tx==='界面设置'||tx==='AI 分析'||tx==='投屏'){ c.style.display='none'; c.__hideDup=1; _rest.push(c); }
+      else _rest.push(c); });
+    item('控制台','c3shell://page?p=console', k==='console'?_rest:null, false, 'console');
+
+    item('投屏','c3shell://page?p=console&cast=1', null, false, 'cast');
+    try{
+      if(k==='console'){
+        var pt=localStorage.getItem('c3pendingTab');
+        if(pt==='软件设置'){ localStorage.removeItem('c3pendingTab'); setTimeout(function(){ if(_setTab) _setTab.click(); },700); }
+      }
+    }catch(e){}
+    item('运行曲线','c3shell://page?p=diag',  k==='diag'?kids:null,    false, 'diag');   /* R110：改名 ✓ */
+    item('参数设置','c3shell://page?p=diag&pane=params', null, false, 'params');   /* 2026-09-24 R103：参数提升为一级菜单 ✓ */
+    /* 2026-09-24 R67：设备查找已移到「设备查找」→「主机」页动作行 ✓ */
+    item('AI 分析','c3shell://page?p=console&ai=1', null, false, 'ai');   // 2026-09-22：迁移到主菜单，放设备查找下面 ✓
+    (function(){                                  /* 「设置」提升为一级菜单（2026-09-21 用户要求） */
+      var head=document.createElement('div');
+      head.textContent='软件设置';
+      head.style.cssText = TOP
+        ? 'cursor:pointer;padding:4px 11px;margin:0;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap;background:var(--bg3);color:var(--fg);border:1px solid var(--line)'
+        : 'cursor:pointer;padding:6px 8px;margin:2px 0;border-radius:8px;font-size:12.5px;font-weight:600;background:var(--bg3);color:var(--fg);border:1px solid var(--line)';
+      head.onclick=function(){
+        if(k==='console' && _setTab){ try{ _setTab.click(); }catch(e){} }
+        else { try{ localStorage.setItem('c3pendingTab','软件设置'); }catch(e){} go('c3shell://page?p=console'); }
+      };
+      (TOP?nmTop:side).appendChild(head);
+      REG.push({key:'settings',head:head,sub:null,own:[],label:'软件设置',top:!!TOP,open:true});
+      paint(REG[REG.length-1],false);
+    })();
+    item('赞赏','c3shell://reward', null, false, 'reward');
+    item('界面设置','c3shell://page?p=console&ui=1', null, false, 'ui');   // 2026-09-22 用户要求：升为一级菜单，放赞赏下面 ✓
+    item('软件日志','c3shell://logs', null, false, 'logs');
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',build); else build();
+  setTimeout(build,700);
+  /* 选中态刷新：app 用 jsSwitchTab 切页签不会重载页面 → 定时把高亮/收起对齐当前模块 ✓（只改样式，很轻）*/
+  setInterval(function(){ try{ if(window.__nmApply) window.__nmApply(); }catch(e){} }, 900);
+})();
+  /* ── 版本号搬到菜单最后一行（2026-09-21）：确定性识别 + 移动 + 晚渲染重试 ── */
+  function isVer(t){ t=String(t||'').trim(); return /^v?\d+(\.\d+)+$/.test(t) || /^版本\s*v?\d/.test(t); }
+  function diag(msg){ try{ fetch('/api/log',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({msg:'verScan '+msg})}); }catch(e){} }
+  /* 版本号（2026-09-21 最终方案）：
+     ① 版本文本在 a11y 树可见、但**不是普通 DOM 文本节点**（日志证明扫不到）→ 搬不动
+     ② 改为：按"位置"把侧边栏顶部那个神秘元素**隐藏**（并打印它是什么）
+     ③ 自己在菜单最后 append 一行「版本 v__APPVER__」（模板会替换成真实版本号） */
+  function placeVer(){
+    try{
+      var side=document.getElementById('nmMenu')||document.querySelector('nav.tabs')||document.querySelector('.tabs');
+      if(!side) { setTimeout(placeVer,1000); return; }
+      /* 方案A：手机/平板不显示网页版本号（原生顶栏右侧已有 vX.Y） */
+      if((document.documentElement.getAttribute('data-layout')||'tablet')!=='car') return;
+      var r=side.getBoundingClientRect();
+      var all=document.querySelectorAll('*');
+      for(var i=0;i<all.length;i++){
+        var n=all[i];
+        if(side.contains(n)||n.id==='sideVer') continue;
+        if(n.children.length) continue;
+        var b=n.getBoundingClientRect();
+        if(b.width>0 && b.height>0 && b.left<r.right && b.top>=r.top-4 && b.top<r.top+140){
+          n.style.display='none';                       // 隐藏原位置那个
+          diag('hidePos '+n.tagName+'.'+(n.className||'')+'|'+String(n.textContent||'').trim().slice(0,20));
+        }
+      }
+      var mine=document.getElementById('sideVer');
+      if(!mine){
+        mine=document.createElement('div'); mine.id='sideVer';
+        mine.style.cssText='display:block;margin:auto 2px 0;padding:6px 2px 0;font-size:11px;color:var(--dim);border-top:1px solid var(--line)';   /* margin-top:auto → 钉到最底部 */
+        side.appendChild(mine);
+      }
+      mine.textContent='版本 v__APPVER__';
+    }catch(e){ diag('placeVer 异常 '+e.message); }
+  }
+  setTimeout(placeVer,400); setTimeout(placeVer,1800);
+
+</script>
+<script>
+/* busyCache（2026-09-21）：① 慢请求显示「加载中」（异步、界面可切）
+   ② 只读接口 60 秒内**读缓存**（设备/日志每次进都拉 148KB ls + 137KB routes + 229KB exec 会卡）
+      只读白名单：ls / routes / params/all / jobs / live/status / drive/status
+      点「刷新」(dref) 或任何 data-nocache 元素 → 本次绕过缓存 */
+(function(){
+  var CACHE={}, TTL=60000, NOCACHE=false, READ=['/ls','/routes','/params/all','/jobs','/live/status','/drive/status'];
+  var pending=0;
+  function paneEl(){ var p=document.getElementById('p4'); if(!p) return null; var e=document.getElementById('_busy');
+    if(!e){ e=document.createElement('div'); e.id='_busy';
+      e.style.cssText='display:none;margin:0 0 8px;padding:8px 12px;border-radius:10px;font-size:13px;background:var(--bg3);color:var(--acc);border:1px solid var(--line)';
+      p.insertBefore(e,p.firstChild); } return e; }
+  function busy(on,txt){
+    pending+=on?1:-1; if(pending<0)pending=0;
+    var e=paneEl(); if(!e) return;
+    e.style.display=pending>0?'block':'none';
+    e.textContent=txt||'⏳ 加载中…（设备日志类数据较大，通常几秒；期间界面可正常切换）';
+  }
+  function isRead(u){ u=String(u||''); for(var i=0;i<READ.length;i++) if(u.indexOf(READ[i])>=0) return true; return false; }
+  function wrap(name){
+    try{
+      var f=window[name]; if(typeof f!=='function'||f.__wrapped) return;
+      var g=function(){
+        var a=Array.prototype.slice.call(arguments);
+        var u=(typeof a[0]==='string')?a[0]:JSON.stringify(a[0]||'');
+        var cb=null, ci=-1;
+        for(var i=a.length-1;i>=0;i--){ if(typeof a[i]==='function'){ cb=a[i]; ci=i; break; } }
+        if(isRead(u) && !NOCACHE){
+          var k=name+'|'+u, now=Date.now();
+          if(CACHE[k] && (now-CACHE[k].t)<TTL){
+            if(cb){ try{ return cb(CACHE[k].v); }catch(e){} }
+          }
+        }
+        if(ci>=0){
+          a[ci]=function(r){ if(isRead(u)){ CACHE[name+'|'+u]={t:Date.now(),v:r}; } busy(false); if(cb) return cb.apply(null,arguments); };
+          busy(true, isRead(u)?'⏳ 首次加载该数据…（已缓存，之后切换很快）':null);
+        } else { busy(true); setTimeout(function(){ busy(false); },800); }
+        try{ return f.apply(null,a); }catch(e){ busy(false); throw e; }
+      };
+      g.__wrapped=true; window[name]=g;
+    }catch(e){}
+  }
+  ['exec','api','get','post'].forEach(wrap);
+  function hookNocache(){ try{
+      document.addEventListener('click',function(ev){
+        var t=ev.target; while(t&&t!==document){ if(t.id==='dref'||t.getAttribute&&t.getAttribute('data-nocache')!==null){ NOCACHE=true; setTimeout(function(){NOCACHE=false;},1500); return; } t=t.parentNode; }
+      },true);
+    }catch(e){} }
+  hookNocache();
+})();
+</script>

@@ -1,0 +1,11 @@
+name = "c3shell-api"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+[[kv_namespaces]]
+binding = "CARDS"
+id = "把 wrangler kv namespace create CARDS 输出里的 id 填这里"
+
+[vars]
+# 建议用 wrangler secret put TOKEN，而不是把口令写在这个文件里
+TOKEN = "改成你的管理口令"

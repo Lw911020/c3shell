@@ -1,0 +1,359 @@
+/* 主题 + 字号（2026-09-20 用户要求：春夏秋冬四套主题、字体颜色自适应；手机上调小一点好操作）
+   两页（控制台 / 诊断台）共用；由 /theme.js 注入切换 UI 并持久化。 */
+:root{
+  --bg:#0f1115; --bg2:#161a21; --bg3:#1d222b; --card:#161a21; --line:#2a3140;
+  --fg:#e6edf3; --dim:#c2ccd8; --acc:#4b8cf7; --ok:#3fb950; --warn:#d29922; --err:#f85149;
+  --fs:13px; --fs-sm:12px; --fs-xs:11px; --pad:8px; --row:7px;
+}
+/* ── 春：嫩绿 + 暖白 ── */
+html[data-theme="light"]{
+  /* 白底经典配色（2026-09-21）—— 浅底深字、经典蓝强调、白天/强光下更清楚 */
+  --bg:#f4f6f9; --bg2:#ffffff; --bg3:#eaeef3; --card:#ffffff; --line:#d8dee7;
+  --fg:#1b1f24; --dim:#525c6b; --acc:#1f6feb;
+  --y:#a8620a; --g:#1a7f37; --o:#bc4c00; --r:#cf222e; --b:#1f6feb;
+  --chartbg:#ffffff;
+}
+html[data-theme="light"] body{background:var(--bg) !important;color:var(--fg) !important}
+html[data-theme="light"] header{background:var(--bg2) !important;border-bottom-color:var(--line) !important}
+html[data-theme="light"] nav.tabs{background:var(--bg2) !important}
+html[data-theme="light"] .card{background:var(--card) !important;border-color:var(--line) !important}
+html[data-theme="light"] .card h4,html[data-theme="light"] .card h3{color:var(--fg) !important;border-bottom-color:var(--line) !important}
+html[data-theme="light"] input,html[data-theme="light"] select,html[data-theme="light"] textarea{background:#fff !important;color:var(--fg) !important;border-color:var(--line) !important}
+html[data-theme="light"] .chip,html[data-theme="light"] .pill,html[data-theme="light"] .chipq{background:var(--bg3) !important;color:var(--fg) !important}
+html[data-theme="light"] .prow .nm{color:var(--fg) !important}
+html[data-theme="light"] .prow .zh,html[data-theme="light"] .prow .ds,html[data-theme="light"] .note{color:var(--dim) !important}
+html[data-theme="light"] #askMask,html[data-theme="light"] #cfMask{background:rgba(20,26,34,.42) !important}
+html[data-theme="light"] .phead{background:var(--bg3) !important;color:var(--dim) !important}
+html[data-theme="light"] .tab.on,html[data-theme="light"] .tabs .on{background:var(--acc) !important;color:#fff !important}
+html[data-theme="spring"]{
+  --bg:#0e1410; --bg2:#151d16; --bg3:#1c2620; --card:#151d16; --line:#2a3a2e;
+  --fg:#e8f2e9; --dim:#bcd3c0; --acc:#43c26b; --ok:#43c26b; --warn:#d7b34a; --err:#e0605c;; --chartbg:#0b0f14}
+
+/* ── 夏：海蓝 + 亮青 ── */
+html[data-theme="summer"]{
+  --bg:#0b1116; --bg2:#111c24; --bg3:#16252f; --card:#111c24; --line:#22404f;
+  --fg:#e6f3fa; --dim:#bcd6e4; --acc:#25b0e6; --ok:#2fbf9a; --warn:#e0b03c; --err:#ef6155;; --chartbg:#0b0f14}
+
+/* ── 秋：琥珀 + 橙金 ── */
+html[data-theme="autumn"]{
+  --bg:#141009; --bg2:#1e1811; --bg3:#282017; --card:#1e1811; --line:#3d3021;
+  --fg:#f6ecdd; --dim:#d8c4a4; --acc:#e08a1e; --ok:#59a55f; --warn:#e0b03c; --err:#e0574a;; --chartbg:#0b0f14}
+
+/* ── 冬：冷蓝 + 雪白 ── */
+html[data-theme="winter"]{
+  --bg:#0c1016; --bg2:#121822; --bg3:#18202c; --card:#121822; --line:#26344a;
+  --fg:#eaf1fb; --dim:#c2d2e8; --acc:#6ea8ff; --ok:#4fb3a6; --warn:#d7b96a; --err:#e2666c;; --chartbg:#0b0f14}
+
+/* ── 字号/密度：手机默认走紧凑 ── */
+html[data-density="compact"]{ --fs:12px; --fs-sm:11px; --fs-xs:10.5px; --pad:6px; --row:5px }
+html[data-density="large"]{ --fs:15px; --fs-sm:13.5px; --fs-xs:12.5px; --pad:10px; --row:9px }
+
+/* 主题切换面板 */
+#themeBtn{background:transparent;border:1px solid var(--line);color:var(--dim);border-radius:8px;
+  padding:4px 9px;font-size:12px;cursor:pointer}
+#themeBtn:hover{color:var(--fg);border-color:var(--acc)}
+#themePanel{position:fixed;right:10px;top:54px;z-index:80;background:var(--bg2);border:1px solid var(--line);
+  border-radius:10px;padding:10px 12px;display:none;box-shadow:0 12px 32px rgba(0,0,0,.45);min-width:210px}
+#themePanel.on{display:block}
+#themePanel .t{font-size:12px;color:var(--dim);margin:2px 0 6px}
+#themePanel .row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+#themePanel button{border:1px solid var(--line);background:var(--bg3);color:var(--fg);border-radius:8px;
+  padding:4px 10px;font-size:12px;cursor:pointer}
+#themePanel button.on{border-color:var(--acc);background:var(--acc);color:#0b0f14;font-weight:600}
+
+/* ── 让字号/密度真正生效（原来两页字号是写死的，这里统一接管）── */
+html[data-density] body{font-size:var(--fs) !important;line-height:1.5}
+html[data-density] .note,html[data-density] .ds,html[data-density] .vals,html[data-density] .dim,
+html[data-density] .frow .meta,html[data-density] .th,html[data-density] .crumb{font-size:var(--fs-sm)}
+html[data-density] button,html[data-density] input,html[data-density] select,html[data-density] textarea,
+html[data-density] label,html[data-density] .pill{font-size:var(--fs-sm)}
+html[data-density] .card h3{font-size:calc(var(--fs) + 2px)}
+html[data-density] .card h4{font-size:calc(var(--fs) + 0.5px)}
+html[data-density] td,html[data-density] th{font-size:var(--fs-sm);padding:calc(var(--row) - 1px) 8px}
+html[data-density] .prow{padding:var(--row) 0}
+html[data-density] .phead{padding:calc(var(--row) - 1px) 0}
+html[data-density] .frow{padding:var(--row) 12px}
+html[data-density="compact"] header{padding:6px 8px}
+html[data-density="compact"] .row{padding:5px 6px}
+html[data-density="compact"] nav.tabs button{padding:7px 10px}
+html[data-density="compact"] .card{padding:8px 10px}
+html[data-density="compact"] .prow input{width:92px}
+html[data-density="compact"] .prow .nm{max-width:130px}
+
+/* 兜底：直接给关键容器上色，避免页面里写死的具体色值盖住主题 */
+html[data-theme] body{background:var(--bg) !important;color:var(--fg) !important}
+html[data-theme] header{background:var(--bg2) !important;border-bottom-color:var(--line) !important}
+html[data-theme] nav.tabs{background:var(--bg2) !important}
+html[data-theme] .card{background:var(--card) !important;border-color:var(--line) !important}
+html[data-theme] .th{background:var(--bg3) !important}
+html[data-theme] .pcat{background:var(--bg3) !important;border-left-color:var(--acc) !important}
+
+/* ── UI 美化：参考 HyperOS（2026-09-21）── */
+.card{border-radius:18px !important;
+  border-color:var(--line) !important;
+  box-shadow:0 3px 14px rgba(0,0,0,.20)}
+header{ /* 不用 backdrop-filter：图表页频繁重绘时模糊会闪（2026-09-21 用户反馈） */
+  border-bottom:1px solid var(--line) !important}
+button,.chipq,.ghost,.primary,.pill{border-radius:999px !important}
+input,select,textarea{border-radius:12px !important}
+nav.tabs button{border-radius:999px !important}
+.card h4{font-weight:600;letter-spacing:.2px;margin-bottom:2px}
+.row{gap:8px}
+details.adv>summary{border-radius:12px}
+
+/* 对比度提升（2026-09-21 用户反馈：字体颜色太淡） */
+.note,.dim,.prow .ds,.prow .ln2,.prow .zh,label,.th{color:var(--dim) !important}
+.xterm{color:#e8f0f8}
+
+/* 2026-09-21 用户反馈「之前的样式都可以，为什么现在不行」→ 整块撤掉 UI 精修（按钮被撑大/卡片重阴影/分隔线），回到原观感 */
+
+/* ── Chromium 74 兼容（BYD DiLink 车机 WebView=74，flex gap 不支持）── */
+.prow .ln1 > * + *,.prow .ln2 > * + *{margin-left:8px}
+.tabs > * + *{margin-left:4px}
+.vals > * + *{margin-left:8px}
+.mrow > * + *, .row1 > * + *{margin-left:8px}
+#askBtns > * + *{margin-left:8px}
+.banner > * + *{margin-left:10px}
+.flag > * + *{margin-left:7px}
+.chip > * + *{margin-left:6px}
+
+/* ── 车机大屏模式（2026-09-21 重做：横屏 ≥1200px 自动放大，符合臂长+座椅的观看距离）──
+   只影响大屏横屏（车机），手机/平板窄视口完全不受影响。 */
+/* ── 车机模式（2026-09-22 改：只在 html[data-layout="car"] 下生效）──
+   手机/平板默认 = 1.97 原始布局：菜单永远在最上面，不再按宽度自动变左栏。 */
+html[data-layout="car"] body {font-size:13px !important;padding-left:150px !important}
+html[data-layout="car"] nav.tabs, html[data-layout="car"] #tabs, html[data-layout="car"] .tabs {
+    position:fixed !important;left:0 !important;top:0 !important;bottom:0 !important;
+    width:142px !important;margin:0 !important;display:flex !important;flex-direction:column !important;
+    flex-wrap:nowrap !important;background:var(--bg2) !important;border-right:1px solid var(--line) !important;
+    border-bottom:0 !important;padding:6px 5px !important;overflow-y:auto !important;z-index:20 !important;
+  }
+/* 2026-10-05 用户要求：车机左栏不再出现「界面设置」；并把同样已提升为一级菜单的
+   「投屏 / AI 分析 / 软件设置」一起锁死 —— 用 CSS 兜底，**不依赖 JS 里 __hideDup 的执行时序** ✓ */
+html[data-layout="car"] nav.tabs button[data-tab="uiset"],
+html[data-layout="car"] nav.tabs button[data-tab="cast"],
+html[data-layout="car"] nav.tabs button[data-tab="aian"],
+html[data-layout="car"] nav.tabs button[data-tab="settings"]{display:none !important}
+html[data-layout="car"] nav.tabs button, html[data-layout="car"] #tabs button, html[data-layout="car"] .tabs button, html[data-layout="car"] .tabs .tab {
+    width:100% !important;min-height:34px !important;font-size:12.5px !important;
+    padding:5px 8px !important;text-align:left !important;margin:2px 0 !important;border-radius:8px !important;
+  }
+html[data-layout="car"] header {padding:5px 10px !important}
+html[data-layout="car"] header * {font-size:12.5px !important;line-height:1.35 !important}
+html[data-layout="car"] button, html[data-layout="car"] .primary, html[data-layout="car"] .ghost, html[data-layout="car"] .chipq, html[data-layout="car"] .pwt {min-height:32px !important;font-size:12.5px !important;padding:5px 10px !important}
+html[data-layout="car"] input, html[data-layout="car"] select, html[data-layout="car"] textarea {min-height:32px !important;font-size:12.5px !important;padding:5px 8px !important}
+html[data-layout="car"] .card {padding:8px 10px !important;border-radius:10px !important}
+html[data-layout="car"] .card h4, html[data-layout="car"] .card h3 {font-size:14px !important;margin:0 0 4px !important;padding-bottom:3px !important}
+html[data-layout="car"] .note {font-size:11.5px !important;line-height:1.4 !important}
+html[data-layout="car"] .prow {padding:6px 0 !important;font-size:12.5px !important}
+html[data-layout="car"] .prow .nm, html[data-layout="car"] .prow .zh, html[data-layout="car"] .prow .ds {font-size:11.5px !important}
+html[data-layout="car"] .pill {font-size:11.5px !important;padding:3px 8px !important}
+html[data-layout="car"] .row, html[data-layout="car"] .row1 {margin:4px 0 !important}
+html[data-layout="car"] #termWrap {height:calc(100vh - 150px) !important;min-height:0 !important}
+html[data-layout="car"] #termStat {flex:0 0 auto !important;min-height:12px !important}
+
+
+/* 白底：写死深色块覆盖（2026-09-21 用户反馈"各地方都有黑色的底，不彻底"）*/
+html[data-theme="light"] #termWrap{background:var(--bg2) !important;background-image:none !important;border-color:var(--line) !important}
+html[data-theme="light"] .bar{background:var(--bg2) !important;background-image:none !important;border-color:var(--line) !important}
+html[data-theme="light"] .card h3{background:var(--bg2) !important;background-image:none !important;border-color:var(--line) !important}
+html[data-theme="light"] :root{background:var(--bg2) !important;background-image:none !important;border-color:var(--line) !important}
+html[data-theme="light"] label.f input{background:var(--bg2) !important;background-image:none !important;border-color:var(--line) !important}
+html[data-theme="light"] label.f select{background:var(--bg2) !important;background-image:none !important;border-color:var(--line) !important}
+html[data-theme="light"] label.f textarea{background:var(--bg2) !important;background-image:none !important;border-color:var(--line) !important}
+html[data-theme="light"] .phead{background:var(--bg3) !important;color:var(--dim) !important}
+html[data-theme="light"] .chipq{background:var(--bg3) !important;color:var(--fg) !important}
+
+/* 隐藏不再使用的字段（2026-09-21 用户要求；用 CSS 隐藏最安全，不动 JS） */
+label.f.hide,.hide{display:none !important}
+
+/* 隐藏各页签下的说明行（2026-09-21 用户要求） */
+.th{display:none !important}
+
+/* 车机：调试图表卡片缩小、一排三个、两排可见（2026-09-21 用户要求） */
+/* ── 车机模式（2026-09-22 改：只在 html[data-layout="car"] 下生效）──
+   手机/平板默认 = 1.97 原始布局：菜单永远在最上面，不再按宽度自动变左栏。 */
+html[data-layout="car"] #wrap, html[data-layout="car"] #wrap2 {grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:8px !important}   /* 2026-10-04 用户要求：车机模式也默认两列（两张卡片宽）*/
+html[data-layout="car"] .wrap>.card:only-child{grid-column:1/-1 !important}   /* 2026-10-05 用户要求：独苗卡片要占满整行，不能只占半行 ✓ */
+html[data-layout="car"] #wrap .card, html[data-layout="car"] #wrap2 .card {padding:4px 6px !important;border-radius:8px !important;margin:0 !important}
+html[data-layout="car"] #wrap canvas, html[data-layout="car"] #wrap2 canvas {height:110px !important}
+/* 2026-10-04 单卡片放大时：车机模式的 110px/紧凑样式也一起让位（特异性更高，才能压过上面带 !important 的车机规则）*/
+body.c3solo #wrap .card.solo canvas, body.c3solo #wrap2 .card.solo canvas {height:68vh !important;max-height:620px !important}   /* 2026-10-05 同上：车机旧 WebView 不认 min() → 用 68vh + max-height 兜底，放大后才真的铺满 ✓ */
+body.c3solo #wrap .card.solo, body.c3solo #wrap2 .card.solo {padding:10px 12px !important;border-radius:12px !important}
+body.c3solo #wrap .card.solo h4, body.c3solo #wrap2 .card.solo h4 {font-size:14px !important;margin:0 0 8px !important}body.c3solo #wrap .card.solo .vals, body.c3solo #wrap2 .card.solo .vals {font-size:12.5px !important}
+html[data-layout="car"] #wrap .card h4, html[data-layout="car"] #wrap2 .card h4 {font-size:11.5px !important;margin:0 0 1px !important;padding-bottom:1px !important;line-height:1.2 !important}
+html[data-layout="car"] #wrap .vals, html[data-layout="car"] #wrap2 .vals {font-size:10.5px !important;margin-top:1px !important;gap:3px !important;line-height:1.25 !important}
+html[data-layout="car"] #wrap .chip, html[data-layout="car"] #wrap2 .chip {font-size:10.5px !important;padding:1px 5px !important}
+
+
+/* 左栏版本号沉底（2026-09-21） */
+#accMenu{justify-content:flex-start}
+#sideVer{margin:10px 2px 0 !important;padding-top:6px !important}   /* 紧跟菜单项下面，不沉底 */
+
+/* ══════════════════════════════════════════════════════════════════════
+   白底黑字（经典）彻底版 —— 2026-09-22 用户要求「主题用白底黑字，全部替换掉，
+   不要留任何残留问题」。上面那份 light 块只换了变量和少量选择器，页面里还写死
+   着一批深色（渐变表头 / 终端 / 画布 / 表格 / 提示条…）→ 这里一次补完。
+   只作用于 html[data-theme="light"]，其余四套深色主题不受影响。
+   ══════════════════════════════════════════════════════════════════════ */
+html[data-theme="light"]{
+  --bg:#ffffff; --bg2:#ffffff; --bg3:#f2f4f7; --card:#ffffff; --line:#d0d7de;
+  --fg:#000000; --dim:#3d444d; --fg2:#57606a; --acc:#1f6feb;
+  --ok:#1a7f37; --warn:#9a6700; --err:#cf222e;
+  --y:#a8620a; --g:#1a7f37; --o:#bc4c00; --r:#cf222e; --b:#1f6feb;
+  --chartbg:#ffffff; --grid:#e4e8ee; --sel:#dbe7ff; --shade:rgba(0,0,0,.05);
+}
+/* 底色：一律纯白，渐变也去掉 */
+html[data-theme="light"] body,html[data-theme="light"] .wrap,html[data-theme="light"] #wrap,
+html[data-theme="light"] #wrap2,html[data-theme="light"] main,html[data-theme="light"] section{
+  background:#ffffff !important;background-image:none !important;color:#000000 !important}
+html[data-theme="light"] header{background:#ffffff !important;background-image:none !important;
+  border-bottom:1px solid #d0d7de !important;box-shadow:none !important}
+html[data-theme="light"] nav.tabs{background:#ffffff !important;background-image:none !important}
+/* 2026-10-05 用户反馈"窄屏/浅色下顶部菜单看不出选中"：原来写成白底黑字 ✗ → 改成蓝底白字 ✓ */
+html[data-theme="light"] nav.tabs button.on{background:#1f6feb !important;color:#ffffff !important;
+  box-shadow:0 1px 4px rgba(31,111,235,.35) !important;font-weight:600 !important}
+html[data-theme="light"] nav.tabs button:active{background:#dbe7fb !important}
+html[data-theme="light"] .bar{background:#f7f8fa !important;background-image:none !important;border-color:#d0d7de !important}
+html[data-theme="light"] .card{background:#ffffff !important;border:1px solid #d0d7de !important;
+  box-shadow:0 1px 3px rgba(0,0,0,.06) !important}
+html[data-theme="light"] .card h3{background:#f7f8fa !important;background-image:none !important;
+  color:#000000 !important;border-bottom:1px solid #d0d7de !important}
+html[data-theme="light"] .card h4{color:#000000 !important;border-bottom-color:#d0d7de !important}
+/* 表单 / 终端输入 */
+html[data-theme="light"] input,html[data-theme="light"] select,html[data-theme="light"] textarea,
+html[data-theme="light"] label.f input,html[data-theme="light"] label.f select,html[data-theme="light"] label.f textarea{
+  background:#ffffff !important;color:#000000 !important;border-color:#d0d7de !important}
+/* 终端：白底黑字 */
+html[data-theme="light"] #termWrap{background:#ffffff !important;background-image:none !important;border-color:#d0d7de !important}
+html[data-theme="light"] #term,html[data-theme="light"] #termText,html[data-theme="light"] .xterm,
+html[data-theme="light"] .xterm-viewport,html[data-theme="light"] .xterm-screen{
+  background:#ffffff !important;color:#000000 !important}
+html[data-theme="light"] .xterm textarea,html[data-theme="light"] .xterm-helper-textarea{
+  background:#ffffff !important;color:#000000 !important}
+/* 文本 / 列表 / 表格 */
+html[data-theme="light"] .zh{color:#000000 !important}
+html[data-theme="light"] .note,html[data-theme="light"] .empty,html[data-theme="light"] .ds,
+html[data-theme="light"] .dim,html[data-theme="light"] .prow .ds{color:#3d444d !important}
+html[data-theme="light"] .frow{border-bottom-color:#e4e8ee !important}
+html[data-theme="light"] .frow:hover{background:#f2f4f7 !important}
+html[data-theme="light"] table th{background:#f7f8fa !important;color:#000000 !important;border-color:#d0d7de !important}
+html[data-theme="light"] table td{border-color:#e4e8ee !important;color:#000000 !important}
+html[data-theme="light"] tr:hover{background:#f2f4f7 !important}
+/* 代码 / 输出框 / 参数表头 / 徽标 */
+html[data-theme="light"] pre,html[data-theme="light"] code,html[data-theme="light"] .mbox,
+html[data-theme="light"] #pout{background:#f7f8fa !important;color:#000000 !important;border-color:#d0d7de !important}
+html[data-theme="light"] .phead{background:#f2f4f7 !important;color:#3d444d !important}
+html[data-theme="light"] .pcat{background:#eef4ff !important;color:#0a3069 !important}
+html[data-theme="light"] .chip,html[data-theme="light"] .pill,html[data-theme="light"] .chipq{
+  background:#f2f4f7 !important;color:#000000 !important;border-color:#d0d7de !important}
+html[data-theme="light"] .flag{background:#ffffff !important;border-color:#d0d7de !important;color:#3d444d !important}
+html[data-theme="light"] .flag .dot{background:#9aa4b2 !important}
+/* 画布 / 提示条 / 弹层 */
+html[data-theme="light"] canvas{background:#ffffff !important;border-color:#d0d7de !important}
+html[data-theme="light"] .banner{background:#fff8e1 !important;border-bottom:1px solid #e0b03c !important;color:#7a4f01 !important}
+html[data-theme="light"] #askMask,html[data-theme="light"] #cfMask{background:rgba(20,26,34,.18) !important}
+html[data-theme="light"] #toast{background:#ffffff !important;color:#000000 !important;border:1px solid #d0d7de !important;box-shadow:0 6px 18px rgba(0,0,0,.12) !important}
+
+/* ══════════════════════════════════════════════════════════════════════
+   状态胶囊：**有颜色外框 + 醒目配色**（2026-09-22 用户要求）
+   涉及两颗：连接状态（控制台 #statusPill / 诊断页 #st）· 辅助驾驶状态（#drvChip）
+   原因：浅色主题里 .pill 被统一刷成"浅底黑字" → 状态色全丢了 ✗ → 这里按状态重新上色
+   （同等优先级 + !important 把颜色从上面那条通用规则手里抢回来）
+   ══════════════════════════════════════════════════════════════════════ */
+.pill.ok,.pill.err,.pill.busy,.pill.on{font-weight:600 !important;border-width:1.5px !important}
+.pill.ok::before,.pill.err::before,.pill.busy::before{width:9px !important;height:9px !important;opacity:1 !important}
+.pill.ok  {color:var(--ok);  border-color:var(--ok);  background:rgba(63,185,80,.14)}
+.pill.err {color:var(--err); border-color:var(--err); background:rgba(248,81,73,.14)}
+.pill.busy{color:var(--warn);border-color:var(--warn);background:rgba(210,153,34,.16)}
+.pill.on  {color:#0b0f14;    border-color:var(--g);   background:var(--g)}
+/* 浅色主题下的状态色（深底浅字换成"浅底 + 深色描边"，一眼能看出状态） */
+html[data-theme="light"] .pill.ok  {color:#0f7b32 !important;border-color:#0f7b32 !important;background:#e6f6ea !important}
+html[data-theme="light"] .pill.err {color:#c62828 !important;border-color:#c62828 !important;background:#fdecec !important}
+html[data-theme="light"] .pill.busy{color:#8a5a00 !important;border-color:#c07a00 !important;background:#fff6e0 !important}
+html[data-theme="light"] .pill.on  {color:#0b3d1e !important;border-color:#0f7b32 !important;background:#b7e4c7 !important}
+
+/* ======================================================================
+   2026-09-22 fix: 用户反馈"字号设置没用"
+   root cause: 车机大屏模式规则 html[data-layout="car"] ... {font-size:12.5px !important}
+   用了 !important, 而字号规则没带 !important 又排在前面 -> 车机模式下被整段盖掉
+   fix: 同特异度 + !important + 放到文件最后 (后出现者胜)
+   ====================================================================== */
+html[data-density="compact"]{ --fs:12px; --fs-sm:11px; --fs-xs:10.5px; --row:5px }
+html[data-density="large"]  { --fs:15px; --fs-sm:13.5px; --fs-xs:12.5px; --row:9px }
+html[data-density] body{ font-size:var(--fs) !important }
+
+html[data-density] header *,
+html[data-density] .note,
+html[data-density] .ds,
+html[data-density] .dim,
+html[data-density] .th,
+html[data-density] .crumb,
+html[data-density] .vals,
+html[data-density] .chip,
+html[data-density] .pill,
+html[data-density] button,
+html[data-density] input,
+html[data-density] select,
+html[data-density] textarea,
+html[data-density] label,
+html[data-density] .prow,
+html[data-density] .prow .nm,
+html[data-density] .prow .zh,
+html[data-density] .prow .ds{ font-size:var(--fs-sm) !important }
+
+html[data-density] .card h3{ font-size:calc(var(--fs) + 2px) !important }
+html[data-density] .card h4{ font-size:calc(var(--fs) + 0.5px) !important }
+html[data-density] td, html[data-density] th{ font-size:var(--fs-sm) !important }
+
+html[data-density="compact"] .card{ padding:8px 10px !important }
+html[data-density="large"]   .card{ padding:12px 14px !important }
+html[data-density="compact"] .row{ padding:5px 6px !important }
+html[data-density="large"]   .row{ padding:9px 10px !important }
+html[data-density="compact"] header{ padding:6px 8px !important }
+html[data-density="large"]   header{ padding:10px 12px !important }
+
+/* 2026-09-22 用户要求："多个按钮没有选择交互，全部查找一下"
+   主题(白底/春夏秋冬) / 字号(小标准大) / 显示模式(手机平板车机) / 音色预设 —— 这四组原来看不出选的是哪个
+   选中态用中性样式：深一档底 + 深色描边 + 加粗（不用蓝色高亮） */
+#setUi button.on, #setVoice button.on{
+  background:var(--line) !important; border-color:var(--fg) !important;
+  color:var(--fg) !important; font-weight:700 !important;
+  box-shadow: inset 0 0 0 1px var(--fg);
+}
+
+/* ======================================================================
+   2026-09-22 用户要求：显示模式切换要有"过渡动画效果"
+   切之前先淡出(leaving)，切完重载落地时淡入+左栏滑入(entering)
+   ====================================================================== */
+html.c3-leaving body{ opacity:.2; transform:scale(.994); transition:opacity .17s ease, transform .17s ease }
+/* 2026-10-05 v2：起点从 0 改成 .4 —— 淡入过程中**页面任何时刻都不会全白**（用户反馈"有白屏"）✓ */
+@keyframes c3FadeIn{ from{opacity:.4; transform:translateY(-6px)} to{opacity:1; transform:none} }
+@keyframes c3SlideIn{ from{opacity:0; transform:translateX(-16px)} to{opacity:1; transform:none} }
+@keyframes c3GrowIn{ from{opacity:0; transform:scale(.985)} to{opacity:1; transform:none} }
+html.c3-entering body{ animation:c3FadeIn .22s ease both }
+html.c3-entering header{ animation:c3FadeIn .2s ease both }
+html.c3-entering[data-layout="car"] #nmMenu,
+html.c3-entering[data-layout="car"] nav.tabs{ animation:c3SlideIn .28s cubic-bezier(.2,.7,.3,1) both }
+html.c3-entering:not([data-layout="car"]) nav.tabs,
+html.c3-entering:not([data-layout="car"]) #nmTopRow{ animation:c3GrowIn .24s ease both }
+
+/* ======================================================================
+   2026-10-05 用户反馈「菜单之间切换很生硬，而且有种闪烁的效果」→ 换页做交叉淡入
+   ① 换页（控制台 ⇄ 运行曲线 ⇄ 参数…）原来是 location.href 直跳：WebView 重绘那一帧就是那下"闪" ✗
+      现在：出发前把 body 淡到跟背景一致 → 新页在 <head> 里读到标记就先藏住正文 → 落地再淡入 ✓
+   ② 页内切页签（调试图表/横向诊断/参数/设备状态）原来是瞬间 display 切换 → 统一给一个淡入上浮 ✓
+   ====================================================================== */
+/* v2（2026-10-05 用户反馈 v1 会白屏一段时间）：**不再用"藏住正文"的遮罩** ✗
+   改成复用既有 c3-entering 动画做"时间有界"的淡入（固定 .22s，与加载快慢无关）✓
+   下面这条只留给页内切页签（调试图表/横向诊断/参数/设备状态）用 ✓ */
+@keyframes c3PaneIn{ from{opacity:0; transform:translateY(5px)} to{opacity:1; transform:none} }
+
+/* 2026-09-23 车机低配：关过渡动画省 CPU */
+html[data-low="1"] *{ animation:none !important; transition:none !important }
+
+/* 2026-10-05 用户反馈"顶部菜单看不出选中"：原来 .on 只有文字变色+2px 下划线（深色下几乎看不见）→ 统一改成实心蓝底白字药丸 ✓ */
+nav.tabs button.on{background:var(--acc,#1f6feb) !important;color:#fff !important;
+  border-bottom-color:transparent !important;box-shadow:0 1px 4px rgba(31,111,235,.35) !important;font-weight:600 !important}
+nav.tabs button.on:hover{background:var(--acc,#1f6feb) !important}
+nav.tabs button:active{opacity:.85}
